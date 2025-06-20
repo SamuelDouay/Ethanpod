@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>fr.github</groupId>
+        <artifactId>ethanpod-parent</artifactId>
+        <version>0.0.1</version>
+    </parent>
+
+    <artifactId>ethanpod-app</artifactId>
+    <packaging>jar</packaging>
+    <name>EthanPod Application</name>
+
+    <dependencies>
+        <!-- Tous les modules internes -->
+        <dependency>
+            <groupId>fr.github</groupId>
+            <artifactId>ethanpod-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>fr.github</groupId>
+            <artifactId>ethanpod-util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>fr.github</groupId>
+            <artifactId>ethanpod-logic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>fr.github</groupId>
+            <artifactId>ethanpod-service</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>fr.github</groupId>
+            <artifactId>ethanpod-view</artifactId>
+        </dependency>
+
+        <!-- JavaFX (nécessaire pour l'exécution) -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+        </dependency>
+
+        <!-- Tests -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Plugin d'assemblage pour créer le JAR exécutable -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <!-- get all project dependencies -->
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <!-- MainClass in manifest make a executable jar -->
+                    <archive>
+                        <manifest>
+                            <mainClass>fr.github.ethanpod.app.Main</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <!-- bind to the packaging phase -->
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
