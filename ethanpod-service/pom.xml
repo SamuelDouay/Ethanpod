@@ -30,12 +30,6 @@
             <artifactId>ethanpod-logic</artifactId>
         </dependency>
 
-        <!-- RSS -->
-        <dependency>
-            <groupId>com.apptasticsoftware</groupId>
-            <artifactId>rssreader</artifactId>
-        </dependency>
-
         <!-- Tests -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
