@@ -39,16 +39,16 @@ This command generates an executable JAR file with all dependencies included.
 ````bash
 java -jar target/EthanPod-0.0.1-jar-with-dependencies.jar
 ````
-## Technologies utilisées
+## Technologies Used
 
-- Java 22
-- JavaFX 25 pour l'interface utilisateur
-- SQLite pour la base de données
-- Log4j2 pour la journalisation
-- JUnit 5 pour les tests
-- Jackson pour le traitement JSON
-- RSSReader pour l'analyse des flux RSS
-- Ikonli pour les icônes dans l'interface
+- Java 24
+- JavaFX 25 for the user interface
+- SQLite for the database
+- Log4j2 for logging
+- JUnit 5 for testing
+- Jackson for JSON processing
+- RSSReader for parsing RSS feeds
+- Ikonli for icons in the interface
 
 ### Structure du projet
 
