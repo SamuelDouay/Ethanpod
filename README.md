@@ -1,3 +1,14 @@
+[![Quality Gate Status](http://sonar.sadory.fr/api/project_badges/measure?project=Ethanpod&metric=alert_status&token=sqb_69a58cbad3d753cac2a3458519667339d8d3e04f)](http://sonar.sadory.fr/dashboard?id=Ethanpod)
+[![Maintainability Rating](http://sonar.sadory.fr/api/project_badges/measure?project=Ethanpod&metric=sqale_rating&token=sqb_69a58cbad3d753cac2a3458519667339d8d3e04f)](http://sonar.sadory.fr/dashboard?id=Ethanpod)
+[![Reliability Rating](http://sonar.sadory.fr/api/project_badges/measure?project=Ethanpod&metric=reliability_rating&token=sqb_69a58cbad3d753cac2a3458519667339d8d3e04f)](http://sonar.sadory.fr/dashboard?id=Ethanpod)
+[![Security Rating](http://sonar.sadory.fr/api/project_badges/measure?project=Ethanpod&metric=security_rating&token=sqb_69a58cbad3d753cac2a3458519667339d8d3e04f)](http://sonar.sadory.fr/dashboard?id=Ethanpod)
+[![Lines of Code](http://sonar.sadory.fr/api/project_badges/measure?project=Ethanpod&metric=ncloc&token=sqb_69a58cbad3d753cac2a3458519667339d8d3e04f)](http://sonar.sadory.fr/dashboard?id=Ethanpod)
+[![Coverage](http://sonar.sadory.fr/api/project_badges/measure?project=Ethanpod&metric=coverage&token=sqb_69a58cbad3d753cac2a3458519667339d8d3e04f)](http://sonar.sadory.fr/dashboard?id=Ethanpod)
+[![Technical Debt](http://sonar.sadory.fr/api/project_badges/measure?project=Ethanpod&metric=sqale_index&token=sqb_69a58cbad3d753cac2a3458519667339d8d3e04f)](http://sonar.sadory.fr/dashboard?id=Ethanpod)
+[![Vulnerabilities](http://sonar.sadory.fr/api/project_badges/measure?project=Ethanpod&metric=vulnerabilities&token=sqb_69a58cbad3d753cac2a3458519667339d8d3e04f)](http://sonar.sadory.fr/dashboard?id=Ethanpod)
+[![Code Smells](http://sonar.sadory.fr/api/project_badges/measure?project=Ethanpod&metric=code_smells&token=sqb_69a58cbad3d753cac2a3458519667339d8d3e04f)](http://sonar.sadory.fr/dashboard?id=Ethanpod)
+[![Bugs](http://sonar.sadory.fr/api/project_badges/measure?project=Ethanpod&metric=bugs&token=sqb_69a58cbad3d753cac2a3458519667339d8d3e04f)](http://sonar.sadory.fr/dashboard?id=Ethanpod)
+
 # EthanPod
 
 EthanPod is a Java application for managing and listening to podcasts.
