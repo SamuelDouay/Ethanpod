@@ -2,6 +2,7 @@ package fr.github.ethanpod.view.component.navigation;
 
 import fr.github.ethanpod.core.item.NavigationItem;
 import javafx.scene.layout.HBox;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 public class NavigationComponent {
     public NavigationComponent() {
@@ -14,12 +15,11 @@ public class NavigationComponent {
                 .setSelected(item.isSelected())
                 .withBadgeCount(item.getNumber());
 
-        if (item.getImageUrl() != null) {
-            builder.withImage(item.getImageUrl());
-        } else if (item.getIcon() != null) {
-            builder.withIcon(item.getIcon());
+        if (item.isIcon()) {
+            builder.withIcon(new FontIcon(item.getName()));
+        } else {
+            builder.withImage(item.getName());
         }
-
         return builder.build();
     }
 }

@@ -1,7 +1,5 @@
 package fr.github.ethanpod.app;
 
-import fr.github.ethanpod.logic.MainLogic;
-import fr.github.ethanpod.view.MainView;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -42,7 +40,7 @@ public class Main {
                 Thread.currentThread().setName("LogicThread");
                 logger.info("Démarrage de la logique métier dans un thread dédié");
                 try {
-                    MainLogic.start();
+                    fr.github.ethanpod.logic.Main.start();
                     // Maintenir la logique en vie jusqu'à ce que l'application soit terminée
                     while (isRunning.get()) {
                         try {
@@ -66,7 +64,7 @@ public class Main {
                 Thread.currentThread().setName("ViewThread");
                 logger.info("Démarrage de l'interface utilisateur dans un thread dédié");
                 try {
-                    MainView.main(args);
+                    fr.github.ethanpod.view.Main.main(args);
                 } catch (Exception e) {
                     logger.error("Erreur dans le thread d'interface utilisateur", e);
                 } finally {

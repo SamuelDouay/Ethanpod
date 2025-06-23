@@ -2,7 +2,6 @@ package fr.github.ethanpod.view.layout;
 
 import fr.github.ethanpod.core.item.ItemManager;
 import fr.github.ethanpod.core.item.NavigationItem;
-import fr.github.ethanpod.service.NavigationService;
 import fr.github.ethanpod.view.component.navigation.NavigationComponent;
 import fr.github.ethanpod.view.layout.context.FeedContext;
 import fr.github.ethanpod.view.util.ColorThemeConstants;
@@ -28,12 +27,12 @@ public class NavigationContainer {
     private final ItemManager manager;
     private final List<HBox> listNav;
     private LayoutManager layoutManager;
-    private final NavigationService navigationService;
+    //private final NavigationService navigationService;
 
     public NavigationContainer() {
         this.manager = new ItemManager();
         this.listNav = new ArrayList<>();
-        this.navigationService = new NavigationService();
+        //this.navigationService = new NavigationService();
     }
 
     public NavigationContainer(LayoutManager layoutManager) {
@@ -60,15 +59,15 @@ public class NavigationContainer {
     private VBox createFixedList() {
         VBox box = createList();
 
-        NavigationItem homeItem = new NavigationItem(new FontIcon(MaterialDesignH.HOME), "Home");
+        NavigationItem homeItem = new NavigationItem(MaterialDesignH.HOME.getDescription(), "Home", true);
         homeItem.setSelected(true);
-        NavigationItem playlistItem = new NavigationItem(new FontIcon(MaterialDesignP.PLAYLIST_PLAY), "Queue");
-        NavigationItem inboxItem = new NavigationItem(new FontIcon(MaterialDesignI.INBOX), "Inbox", navigationService.getNumberOfInbox());
-        NavigationItem episodesItem = new NavigationItem(new FontIcon(MaterialDesignR.RSS), "Episodes");
-        NavigationItem subscriptionsItem = new NavigationItem(new FontIcon(MaterialDesignV.VIEW_GRID_OUTLINE), "Subscription", navigationService.getNumberOfInbox());
-        NavigationItem downloadsItem = new NavigationItem(new FontIcon(MaterialDesignD.DOWNLOAD), "Downloads", 123);
-        NavigationItem historyItem = new NavigationItem(new FontIcon(MaterialDesignH.HISTORY), "Playback history");
-        NavigationItem addPodcastItem = new NavigationItem(new FontIcon(MaterialDesignP.PLUS), "Add podcast");
+        NavigationItem playlistItem = new NavigationItem(MaterialDesignP.PLAYLIST_PLAY.getDescription(), "Queue", true);
+        NavigationItem inboxItem = new NavigationItem(MaterialDesignI.INBOX.getDescription(), "Inbox", 120, true);
+        NavigationItem episodesItem = new NavigationItem(MaterialDesignR.RSS.getDescription(), "Episodes", true);
+        NavigationItem subscriptionsItem = new NavigationItem(MaterialDesignV.VIEW_GRID_OUTLINE.getDescription(), "Subscription", 120,true);
+        NavigationItem downloadsItem = new NavigationItem(MaterialDesignD.DOWNLOAD.getDescription(), "Downloads", 123, true);
+        NavigationItem historyItem = new NavigationItem(MaterialDesignH.HISTORY.getDescription(), "Playback history",true);
+        NavigationItem addPodcastItem = new NavigationItem(MaterialDesignP.PLUS.getDescription(), "Add podcast",true);
 
         listNav.add(createNavigationComponent(homeItem, LayoutType.HOME));
         listNav.add(createNavigationComponent(playlistItem, LayoutType.QUEUE));
@@ -87,9 +86,10 @@ public class NavigationContainer {
     private ScrollPane createScrollList() {
         VBox box = createList();
 
+        /*
         for (NavigationItem navigationItem : navigationService.getList()) {
             box.getChildren().add(createNavigationComponent(navigationItem, LayoutType.FEED));
-        }
+        } */
 
         ScrollPane scrollPane = getScrollPane(box);
         VBox.setVgrow(scrollPane, Priority.ALWAYS);

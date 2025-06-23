@@ -1,7 +1,7 @@
 package fr.github.ethanpod.view.component.surprise;
 
-import com.podcast.antennapod.view.util.ColorThemeConstants;
-import com.podcast.antennapod.view.util.ImageCache;
+import fr.github.ethanpod.view.util.ColorThemeConstants;
+import fr.github.ethanpod.view.util.ImageCache;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;

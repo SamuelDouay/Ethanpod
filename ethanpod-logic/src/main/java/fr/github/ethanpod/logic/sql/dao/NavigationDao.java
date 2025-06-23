@@ -37,7 +37,7 @@ public class NavigationDao {
                 String title = resultSet.getString("title");
                 String imgUrl = resultSet.getString("image_url");
                 int unreadCount = resultSet.getInt("unread_count");
-                res.add(new NavigationItem(imgUrl, title, unreadCount));
+                res.add(new NavigationItem(imgUrl, title, unreadCount, false));
             }
 
         } catch (SQLException e) {

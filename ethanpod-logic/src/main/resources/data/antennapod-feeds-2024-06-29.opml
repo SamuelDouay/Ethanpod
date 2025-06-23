@@ -1,0 +1,129 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no' ?>
+<opml version="2.0">
+  <head>
+    <title>AntennaPod Subscriptions</title>
+    <dateCreated>29 Jun 24 14:45:48 +0200</dateCreated>
+  </head>
+  <body>
+    <outline text="2 Heures De Perdues" title="2 Heures De Perdues" type="rss" xmlUrl="http://www.2hdp.fr/2HDP.xml" htmlUrl="http://www.2hdp.fr/" />
+    <outline text="2CP3PC | Ça Podcast Pas 3 pattes à un Canard" title="2CP3PC | Ça Podcast Pas 3 pattes à un Canard" type="rss" xmlUrl="https://2cp3pc.lepodcast.fr/rss" htmlUrl="https://2cp3pc.lepodcast.fr/" />
+    <outline text="4 quarts d'heure" title="4 quarts d'heure" type="rss" xmlUrl="https://feeds.acast.com/public/shows/4-quarts-dheure" htmlUrl="https://shows.acast.com/4-quarts-dheure/episodes/kal-rencontre-un-medium" />
+    <outline text="Affaires sensibles" title="Affaires sensibles" type="rss" xmlUrl="https://radiofrance-podcast.net/podcast09/35099478-7c72-4f9e-a6de-1b928400e9e5/rss_13940.xml" htmlUrl="http://www.franceinter.fr/emission-affaires-sensibles" />
+    <outline text="Affaires étrangères" title="Affaires étrangères" type="rss" xmlUrl="https://radiofrance-podcast.net/podcast09/35099478-7c72-4f9e-a6de-1b928400e9e5/rss_12841.xml" htmlUrl="https://www.franceculture.fr/emissions/affaires-etrangeres" />
+    <outline text="AlloCiné" title="AlloCiné" type="rss" xmlUrl="https://feeds.360.audion.fm/-nV23GTsk3gNKJvLwiSsV" htmlUrl="https://podcasts.360.audion.fm/-nV23GTsk3gNKJvLwiSsV" />
+    <outline text="AMONG MEUFS - Le Podcast" title="AMONG MEUFS - Le Podcast" type="rss" xmlUrl="https://audioblog.arteradio.com/blog/189117/rss" htmlUrl="https://audioblog.arteradio.com" />
+    <outline text="Arigatô" title="Arigatô" type="rss" xmlUrl="https://feeds.acast.com/public/shows/64e91bc26ed35e00118963f0" htmlUrl="https://shows.acast.com/arigato" />
+    <outline text="Au Coin Du Checkpoint" title="Au Coin Du Checkpoint" type="rss" xmlUrl="https://feed.ausha.co/OmwpmfxQaRJY" htmlUrl="https://podcast.ausha.co/au-coin-du-checkpoint" />
+    <outline text="Au Poste" title="Au Poste" type="rss" xmlUrl="https://audioblog.arteradio.com/blog/186156/rss" htmlUrl="https://audioblog.arteradio.com" />
+    <outline text="BACKSEAT" title="BACKSEAT" type="rss" xmlUrl="https://anchor.fm/s/63c5f5cc/podcast/rss" htmlUrl="https://www.twitch.tv/jeanmassiet" />
+    <outline text="Benjamin Tranié : moi, ce que j'en dis" title="Benjamin Tranié : moi, ce que j'en dis" type="rss" xmlUrl="https://radiofrance-podcast.net/podcast09/35099478-7c72-4f9e-a6de-1b928400e9e5/rss_23847.xml" htmlUrl="https://www.radiofrance.fr/franceinter/podcasts/la-chronique-de-benjamin-tranie" />
+    <outline text="Bunko!" title="Bunko!" type="rss" xmlUrl="https://anchor.fm/s/55e7f568/podcast/rss" htmlUrl="https://www.bunkopodcast.com" />
+    <outline text="C ce soir" title="C ce soir" type="rss" xmlUrl="https://feeds.audiomeans.fr/feed/885983b1-bf7d-40e8-8898-a870e121ffa3.xml" htmlUrl="https://www.france.tv/france-5/c-ce-soir/" />
+    <outline text="C politique" title="C politique" type="rss" xmlUrl="https://feeds.audiomeans.fr/feed/77752bf4-4aba-41df-8a6e-176992b5489c.xml" htmlUrl="https://www.france.tv/france-5/c-politique/" />
+    <outline text="C'est mon histoire" title="C'est mon histoire" type="rss" xmlUrl="https://api.octopus.saooti.com/rss/emission/982.rss" htmlUrl="https://octopus.saooti.com/main/pub/emission/982" />
+    <outline text="Ca Dit Quoi !?" title="Ca Dit Quoi !?" type="rss" xmlUrl="https://feeds.podcastics.com/podcastics/podcasts/rss/336_8dcbc2e3223e785f376bc191b9c3cb78.rss" htmlUrl="http://www.monparisfm.com/podcasts/ca-dit-quoi-146/1" />
+    <outline text="Chaleur Humaine" title="Chaleur Humaine" type="rss" xmlUrl="https://feeds.360.audion.fm/5upnC-Vw80jZBNBridl-6" htmlUrl="https://podcasts.360.audion.fm/5upnC-Vw80jZBNBridl-6" />
+    <outline text="Cultures monde" title="Cultures monde" type="rss" xmlUrl="https://radiofrance-podcast.net/podcast09/35099478-7c72-4f9e-a6de-1b928400e9e5/rss_11701.xml" htmlUrl="http://www.radiofrance.fr/" />
+    <outline text="Décisives" title="Décisives" type="rss" xmlUrl="https://feeds.acast.com/public/shows/ed02e2fd-8824-4393-a55b-2b99e059129b" htmlUrl="https://podcasts.pe-france.eu/" />
+    <outline text="Entre les lignes" title="Entre les lignes" type="rss" xmlUrl="https://radiofrance-podcast.net/podcast09/35099478-7c72-4f9e-a6de-1b928400e9e5/rss_22546.xml" htmlUrl="https://www.radiofrance.fr/franceinfo/podcasts/entre-les-lignes" />
+    <outline text="Est-ce que c’est normal ?" title="Est-ce que c’est normal ?" type="rss" xmlUrl="https://feeds.acast.com/public/shows/6548f9ef7eaf130012070d10" htmlUrl="https://shows.acast.com/est-ce-que-cest-normal" />
+    <outline text="European Parliament - EPRS Policy podcasts" title="European Parliament - EPRS Policy podcasts" type="rss" xmlUrl="https://www.europarl.europa.eu/rss/podcast/eprs-policy-podcast/or.xml" htmlUrl="https://www.europarl.europa.eu/thinktank/en/audio-podcasts" />
+    <outline text="European Parliament - EPRS Science and Technology podcasts" title="European Parliament - EPRS Science and Technology podcasts" type="rss" xmlUrl="https://www.europarl.europa.eu/rss/podcast/eprs-stoa-podcast/or.xml" htmlUrl="https://www.europarl.europa.eu/thinktank/en/audio-podcasts" />
+    <outline text="Européennes - Femmes d'Europe" title="Européennes - Femmes d'Europe" type="rss" xmlUrl="https://feed.ausha.co/jePldi2vM81Z" htmlUrl="https://podcast.ausha.co/europeennes" />
+    <outline text="EX..." title="EX..." type="rss" xmlUrl="https://feeds.acast.com/public/shows/5e6a404cd22bfc26784b114c" htmlUrl="https://shows.acast.com/ex" />
+    <outline text="Faut trop qu'on en parle" title="Faut trop qu'on en parle" type="rss" xmlUrl="https://feed.ausha.co/yXvgOCKq7E6G" htmlUrl="https://podcast.ausha.co/faut-trop-qu-on-en-parle" />
+    <outline text="Fin Du Game" title="Fin Du Game" type="rss" xmlUrl="https://fin-du-game.lepodcast.fr/rss" htmlUrl="" />
+    <outline text="FloodCast" title="FloodCast" type="rss" xmlUrl="https://feeds.acast.com/public/shows/5ffe3facad3e633276e9ea57" htmlUrl="http://www.florentbernard.com" />
+    <outline text="Frangins Vidéoclub" title="Frangins Vidéoclub" type="rss" xmlUrl="https://feeds.simplecast.com/VdeKemum" htmlUrl="https://franginsvideoclub.fr" />
+    <outline text="Game of Roles" title="Game of Roles" type="rss" xmlUrl="https://feeds.acast.com/public/shows/cabcdc65-9f15-5900-a971-d6d96f16ed31" htmlUrl="https://feed.pippa.io/public/shows/game-of-roles" />
+    <outline text="Géographie à la carte" title="Géographie à la carte" type="rss" xmlUrl="https://radiofrance-podcast.net/podcast09/35099478-7c72-4f9e-a6de-1b928400e9e5/rss_21467.xml" htmlUrl="https://www.radiofrance.fr/franceculture/podcasts/geographie-a-la-carte" />
+    <outline text="Géopolitique" title="Géopolitique" type="rss" xmlUrl="https://radiofrance-podcast.net/podcast09/35099478-7c72-4f9e-a6de-1b928400e9e5/rss_10009.xml" htmlUrl="http://www.franceinter.fr/emission-geopolitique" />
+    <outline text="Hardisk Stories" title="Hardisk Stories" type="rss" xmlUrl="https://feeds.acast.com/public/shows/651d58c208321000109e72ad" htmlUrl="https://podcasters.spotify.com/pod/show/askipodcast" />
+    <outline text="Heure supplémentaire" title="Heure supplémentaire" type="rss" xmlUrl="https://feeds.transistor.fm/heure-supplementaire" htmlUrl="https://www.pieuvre.ca/heure-supplementaire/" />
+    <outline text="Hémisphères · Podcast" title="Hémisphères · Podcast" type="rss" xmlUrl="https://hemispheres.lepodcast.fr/rss" htmlUrl="https://hemispheres.lepodcast.fr/" />
+    <outline text="Internet Exploreuses" title="Internet Exploreuses" type="rss" xmlUrl="https://feeds.acast.com/public/shows/65e32018b8456c0016be8559" htmlUrl="https://www.youtube.com/@origatube" />
+    <outline text="ITT, l'interview thématique de Teesee" title="ITT, l'interview thématique de Teesee" type="rss" xmlUrl="https://feeds.acast.com/public/shows/660feabe431f940016d17772" htmlUrl="https://shows.acast.com/itt-linterview-thematique-de-teesee" />
+    <outline text="JEAN MASSIET INVITATIONAL" title="JEAN MASSIET INVITATIONAL" type="rss" xmlUrl="https://anchor.fm/s/23376ba8/podcast/rss" htmlUrl="https://podcasters.spotify.com/pod/show/jean-massiet" />
+    <outline text="Jean-Marie Le Pen, l'obsession nationale" title="Jean-Marie Le Pen, l'obsession nationale" type="rss" xmlUrl="https://radiofrance-podcast.net/podcast09/35099478-7c72-4f9e-a6de-1b928400e9e5/rss_23891.xml" htmlUrl="https://www.radiofrance.fr" />
+    <outline text="Jon's Miscellany" title="Jon's Miscellany" type="rss" xmlUrl="https://pod.jonhoo.eu/podcast.rss" htmlUrl="https://pod.jonhoo.eu" />
+    <outline text="JV LEGENDS" title="JV LEGENDS" type="rss" xmlUrl="https://feeds.360.audion.fm/dVz7-w59xBvLJTaotKpLY" htmlUrl="https://podcasts.360.audion.fm/dVz7-w59xBvLJTaotKpLY" />
+    <outline text="KtouktouTenCAST" title="KtouktouTenCAST" type="rss" xmlUrl="https://feeds.acast.com/public/shows/630880930bfa460014aca418" htmlUrl="https://shows.acast.com/ktouktoutencast" />
+    <outline text="KUNE" title="KUNE" type="rss" xmlUrl="https://kune.lepodcast.fr/rss" htmlUrl="https://kune.lepodcast.fr/" />
+    <outline text="L' Auberge des Darons" title="L' Auberge des Darons" type="rss" xmlUrl="https://feeds.podcastics.com/podcastics/podcasts/rss/3296_7bceffe4c7b8113de649df9603d18bf4.rss" htmlUrl="https://www.podcastics.com/podcast/l-auberge-des-darons/" />
+    <outline text="La Chanson de Frédéric Fromet" title="La Chanson de Frédéric Fromet" type="rss" xmlUrl="https://radiofrance-podcast.net/podcast09/35099478-7c72-4f9e-a6de-1b928400e9e5/rss_14806.xml" htmlUrl="http://www.franceinter.fr/emission-la-chanson-de-frederic-fromet" />
+    <outline text="La chronique d'Aymeric Lompret" title="La chronique d'Aymeric Lompret" type="rss" xmlUrl="https://radiofrance-podcast.net/podcast09/35099478-7c72-4f9e-a6de-1b928400e9e5/rss_20857.xml" htmlUrl="https://www.radiofrance.fr/franceinter/podcasts/la-chronique-d-aymeric-lompret" />
+    <outline text="La chronique de Waly Dia" title="La chronique de Waly Dia" type="rss" xmlUrl="https://radiofrance-podcast.net/podcast09/35099478-7c72-4f9e-a6de-1b928400e9e5/rss_21776.xml" htmlUrl="https://www.radiofrance.fr/franceinter/podcasts/la-chronique-de-waly-dia" />
+    <outline text="La Conversation scientifique" title="La Conversation scientifique" type="rss" xmlUrl="https://radiofrance-podcast.net/podcast09/35099478-7c72-4f9e-a6de-1b928400e9e5/rss_13957.xml" htmlUrl="http://www.radiofrance.fr/" />
+    <outline text="La gêne occasionnée" title="La gêne occasionnée" type="rss" xmlUrl="https://feeds.soundcloud.com/users/soundcloud:users:710287063/sounds.rss" htmlUrl="https://podcasts.apple.com/fr/podcast/la-g%C3%AAne-occasionn%C3%A9e/id1482640266" />
+    <outline text="La légende de Xantah" title="La légende de Xantah" type="rss" xmlUrl="https://www.capitainegloomy.com/feed/xantah" htmlUrl="https://capitainegloomy.com/" />
+    <outline text="La science, CQFD" title="La science, CQFD" type="rss" xmlUrl="https://radiofrance-podcast.net/podcast09/35099478-7c72-4f9e-a6de-1b928400e9e5/rss_14312.xml" htmlUrl="http://www.radiofrance.fr/" />
+    <outline text="La Veillée" title="La Veillée" type="rss" xmlUrl="https://feeds.acast.com/public/shows/63c0397549871000112bf69e" htmlUrl="http://overlook-events.com/portfolio/la-veillee/" />
+    <outline text="Le Billet de Charline" title="Le Billet de Charline" type="rss" xmlUrl="https://radiofrance-podcast.net/podcast09/35099478-7c72-4f9e-a6de-1b928400e9e5/rss_13129.xml" htmlUrl="https://www.franceinter.fr/emissions/le-billet-de-charline-vanhoenacker" />
+    <outline text="Le billet de Paul Mirabel" title="Le billet de Paul Mirabel" type="rss" xmlUrl="https://radiofrance-podcast.net/podcast09/35099478-7c72-4f9e-a6de-1b928400e9e5/rss_21433.xml" htmlUrl="https://www.radiofrance.fr/franceinter/podcasts/le-billet-de-paul-mirabel" />
+    <outline text="Le Bon Combat" title="Le Bon Combat" type="rss" xmlUrl="https://feeds.soundcloud.com/users/soundcloud:users:145244339/sounds.rss" htmlUrl="http://leboncombat.fr" />
+    <outline text="Le Cinéma est mort" title="Le Cinéma est mort" type="rss" xmlUrl="https://www.canalb.fr/rss/32/rss.xml" htmlUrl="https://www.canalb.fr/lecinemaestmort" />
+    <outline text="Le conseil aux fonds européens" title="Le conseil aux fonds européens" type="rss" xmlUrl="https://anchor.fm/s/34d07e7c/podcast/rss" htmlUrl="https://podcasters.spotify.com/pod/show/fonds-europeens" />
+    <outline text="Le Meilleur des mondes" title="Le Meilleur des mondes" type="rss" xmlUrl="https://radiofrance-podcast.net/podcast09/35099478-7c72-4f9e-a6de-1b928400e9e5/rss_22826.xml" htmlUrl="https://www.radiofrance.fr/franceculture/podcasts/le-meilleur-des-mondes" />
+    <outline text="Le moment Meurice" title="Le moment Meurice" type="rss" xmlUrl="https://radiofrance-podcast.net/podcast09/35099478-7c72-4f9e-a6de-1b928400e9e5/rss_14257.xml" htmlUrl="https://www.franceinter.fr/emissions/le-moment-meurice" />
+    <outline text="Le Pire Podcast Cinéma" title="Le Pire Podcast Cinéma" type="rss" xmlUrl="https://feed.ausha.co/Nj74ZH2rOMa2" htmlUrl="https://podcast.ausha.co/le-pire-podcast-cinema" />
+    <outline text="LEGEND" title="LEGEND" type="rss" xmlUrl="https://feeds.acast.com/public/shows/646cbb0bb160e00011df3980" htmlUrl="https://shows.acast.com/legend" />
+    <outline text="Les actus Mashup par HugoDécrypte" title="Les actus Mashup par HugoDécrypte" type="rss" xmlUrl="https://feeds.acast.com/public/shows/61e549866ceb20001460e646" htmlUrl="https://shows.acast.com/mashup-les-actus" />
+    <outline text="Les Enjeux internationaux" title="Les Enjeux internationaux" type="rss" xmlUrl="https://radiofrance-podcast.net/podcast09/35099478-7c72-4f9e-a6de-1b928400e9e5/rss_13305.xml" htmlUrl="http://www.radiofrance.fr/chaines/france-culture2/emissions/enjeux_inter/index.php" />
+    <outline text="Les Gens Qui Doutent" title="Les Gens Qui Doutent" type="rss" xmlUrl="https://access.acast.com/rss/607d9b352cb1e944565f052c" htmlUrl="http://fannyruwet.com/" />
+    <outline text="Les origines, la chronique histoire et humour de David Castello-Lopes" title="Les origines, la chronique histoire et humour de David Castello-Lopes" type="rss" xmlUrl="https://feeds.audiomeans.fr/feed/847caaa7-2eb8-45dc-bd9a-129345e63516.xml" htmlUrl="https://www.europe1.fr/emissions/les-origines" />
+    <outline text="Les Pieds sur terre" title="Les Pieds sur terre" type="rss" xmlUrl="https://radiofrance-podcast.net/podcast09/35099478-7c72-4f9e-a6de-1b928400e9e5/rss_10078.xml" htmlUrl="https://www.franceculture.fr/emissions/les-pieds-sur-terre" />
+    <outline text="Les rescapés" title="Les rescapés" type="rss" xmlUrl="https://feeds.acast.com/public/shows/64178b7f2dec4d0011029544" htmlUrl="https://feeds.acast.com/public/shows/les-rescapes-1" />
+    <outline text="Là on Discute" title="Là on Discute" type="rss" xmlUrl="https://anchor.fm/s/9b3ec538/podcast/rss" htmlUrl="https://podcasters.spotify.com/pod/show/l-on-discute" />
+    <outline text="Léon Blum, une vie héroïque" title="Léon Blum, une vie héroïque" type="rss" xmlUrl="https://radiofrance-podcast.net/podcast09/35099478-7c72-4f9e-a6de-1b928400e9e5/rss_23712.xml" htmlUrl="https://www.radiofrance.fr" />
+    <outline text="L’Heure du Monde" title="L’Heure du Monde" type="rss" xmlUrl="https://feeds.360.audion.fm/HZrgBsvnXo8yqsqsP7bI7" htmlUrl="https://podcasts.360.audion.fm/HZrgBsvnXo8yqsqsP7bI7" />
+    <outline text="L’interview Mashup par HugoDécrypte" title="L’interview Mashup par HugoDécrypte" type="rss" xmlUrl="https://feeds.acast.com/public/shows/61e549d9ef1b2d00121dc741" htmlUrl="https://shows.acast.com/mashup-linterview" />
+    <outline text="L’invité de 8h20 : le grand entretien" title="L’invité de 8h20 : le grand entretien" type="rss" xmlUrl="https://radiofrance-podcast.net/podcast09/35099478-7c72-4f9e-a6de-1b928400e9e5/rss_10239.xml" htmlUrl="https://www.franceinter.fr/emissions/l-invite" />
+    <outline text="Memento Mori" title="Memento Mori" type="rss" xmlUrl="https://anchor.fm/s/86d37b48/podcast/rss" htmlUrl="https://toutpoursagloire.com/" />
+    <outline text="Message à caractère informatique" title="Message à caractère informatique" type="rss" xmlUrl="https://feed.ausha.co/yJpOltDVvJzN" htmlUrl="https://clever-cloud.com/" />
+    <outline text="NOS PLAISIRS COUPABLES" title="NOS PLAISIRS COUPABLES" type="rss" xmlUrl="https://anchor.fm/s/ddb5015c/podcast/rss" htmlUrl="https://www.youtube.com/channel/UCfsk8wUp7CeYzxvn4vRFaRA" />
+    <outline text="Nota Bene" title="Nota Bene" type="rss" xmlUrl="https://feeds.acast.com/public/shows/notabenemovies" htmlUrl="https://www.youtube.com/channel/UCP46_MXP_WG_auH88FnfS1A" />
+    <outline text="NTSC-" title="NTSC-" type="rss" xmlUrl="https://feeds.buzzsprout.com/2029308.rss" htmlUrl="https://www.buzzsprout.com/2029308" />
+    <outline text="Nuisance Gaming +" title="Nuisance Gaming +" type="rss" xmlUrl="https://access.acast.com/rss/5c743053851dddbe3c88ab02/" htmlUrl="https://www.youtube.com/user/MrOlbius" />
+    <outline text="NéoTail Podcast" title="NéoTail Podcast" type="rss" xmlUrl="https://neotailpodcast.lepodcast.fr/rss" htmlUrl="https://neotailpodcast.lepodcast.fr/" />
+    <outline text="ORIGAMI L'Hebdo" title="ORIGAMI L'Hebdo" type="rss" xmlUrl="https://feeds.acast.com/public/shows/6608022384d38a00165d5a80" htmlUrl="https://www.youtube.com/playlist?list=PLZRiqJjIUlDRkiqFdbUir7_PLjbQByyuj" />
+    <outline text="PARDON LE CINÉMA" title="PARDON LE CINÉMA" type="rss" xmlUrl="https://rss.acast.com/pardon-le-cinema" htmlUrl="https://shows.acast.com/pardon-le-cinema/episodes/pardon-le-palmashow-episode-special-1" />
+    <outline text="Passages : le podcast d’histoires vraies de Louie Media" title="Passages : le podcast d’histoires vraies de Louie Media" type="rss" xmlUrl="https://feeds.acast.com/public/shows/a7277f6f-bb0c-49df-ac44-80cf3167a59b" htmlUrl="http://louiemedia.com/passages" />
+    <outline text="PCF Mangas" title="PCF Mangas" type="rss" xmlUrl="https://feeds.buzzsprout.com/1845110.rss" htmlUrl="https://www.pcfmangas.fr" />
+    <outline text="PEGI 18" title="PEGI 18" type="rss" xmlUrl="https://www.vodio.fr/rssmedias.php?valeur=720&amp;token=audio" htmlUrl="https://www.vodio.fr/vodiotheque/c/720/pegi-18/audio/" />
+    <outline text="Pensez stratégique" title="Pensez stratégique" type="rss" xmlUrl="https://feeds.podcastics.com/podcastics/podcasts/rss/6822_652130ef9e345c3b2395a1cbaa0c12dd.rss" htmlUrl="https://www.podcastics.com/podcast/pensez-strategique/" />
+    <outline text="Pixels et préjugés" title="Pixels et préjugés" type="rss" xmlUrl="https://feeds.transistor.fm/pixels-et-prejuges" htmlUrl="https://www.pieuvre.ca/pixels-et-prejuges/" />
+    <outline text="Plouf et Pseudo" title="Plouf et Pseudo" type="rss" xmlUrl="https://anchor.fm/s/dfe2b28/podcast/rss" htmlUrl="https://podcasters.spotify.com/pod/show/plouf-et-pseudo" />
+    <outline text="Podkassos" title="Podkassos" type="rss" xmlUrl="https://feed.ausha.co/BNJmptzNQmNv" htmlUrl="https://podcast.ausha.co/podkassos" />
+    <outline text="Point'n Think" title="Point'n Think" type="rss" xmlUrl="https://feed.ausha.co/0mPdlfJzZQ26" htmlUrl="https://podcast.ausha.co/point-n-think" />
+    <outline text="Popcorn" title="Popcorn" type="rss" xmlUrl="https://rss.acast.com/popcorn-1" htmlUrl="https://podcasts.360.audion.fm/ExPqeXAbVQDM40hHm6gkf" />
+    <outline text="POPOL" title="POPOL" type="rss" xmlUrl="https://feeds.acast.com/public/shows/44faeea4-0024-4742-addf-a61dec9090ff" htmlUrl="https://play.acast.com/s/popol" />
+    <outline text="Questions politiques" title="Questions politiques" type="rss" xmlUrl="https://radiofrance-podcast.net/podcast09/35099478-7c72-4f9e-a6de-1b928400e9e5/rss_16170.xml" htmlUrl="https://www.franceinter.fr/emissions/questions-politiques" />
+    <outline text="Quête Latérale" title="Quête Latérale" type="rss" xmlUrl="https://feeds.acast.com/public/shows/77a42976-dfd2-4faa-9a08-acd155e3a7d1" htmlUrl="https://play.acast.com/s/quete-laterale" />
+    <outline text="Reflets d'Acide" title="Reflets d'Acide" type="rss" xmlUrl="https://www.refletsdacide.com/feed/podcast" htmlUrl="http://www.refletsdacide.com" />
+    <outline text="Rembobinage" title="Rembobinage" type="rss" xmlUrl="https://feeds.transistor.fm/rembobinage" htmlUrl="https://www.pieuvre.ca/entretiens-journalistiques/" />
+    <outline text="Samuel Etienne Podcast" title="Samuel Etienne Podcast" type="rss" xmlUrl="https://feed.ausha.co/yX3lIp5z39do" htmlUrl="https://podcast.ausha.co/" />
+    <outline text="Seiza No Onna" title="Seiza No Onna" type="rss" xmlUrl="https://anchor.fm/s/e2ad4c00/podcast/rss" htmlUrl="https://podcasters.spotify.com/pod/show/seiza-no-onna" />
+    <outline text="Silence on joue !" title="Silence on joue !" type="rss" xmlUrl="https://feeds.acast.com/public/shows/5b7ac427c6a58e726f576cff" htmlUrl="https://www.liberation.fr/dossier/silence-on-joue/" />
+    <outline text="Silence on Joue ! La chronique jeux de société" title="Silence on Joue ! La chronique jeux de société" type="rss" xmlUrl="https://feeds.acast.com/public/shows/62fe6bc5ff1f0c00134f61a9" htmlUrl="https://shows.acast.com/silence-on-joue-la-chronique-jeux-de-societe" />
+    <outline text="Sip &amp; Gossip" title="Sip &amp; Gossip" type="rss" xmlUrl="https://media.rss.com/sipandgossip/feed.xml" htmlUrl="https://rss.com/podcasts/sipandgossip" />
+    <outline text="Small Talk - Konbini" title="Small Talk - Konbini" type="rss" xmlUrl="https://feeds.audiomeans.fr/feed/f57a29ac-5ce1-423d-8ca2-82369d9ca230.xml" htmlUrl="https://podcasts.audiomeans.fr/small-talk-konbini-82369d9ca230" />
+    <outline text="Soft Power" title="Soft Power" type="rss" xmlUrl="https://radiofrance-podcast.net/podcast09/35099478-7c72-4f9e-a6de-1b928400e9e5/rss_10183.xml" htmlUrl="http://www.radiofrance.fr/" />
+    <outline text="Soluce" title="Soluce" type="rss" xmlUrl="https://feeds.acast.com/public/shows/659ea8017d81c00017b28c6f" htmlUrl="https://shows.acast.com/soluce" />
+    <outline text="Sous les radars" title="Sous les radars" type="rss" xmlUrl="https://radiofrance-podcast.net/podcast09/35099478-7c72-4f9e-a6de-1b928400e9e5/rss_22825.xml" htmlUrl="https://www.radiofrance.fr/franceculture/podcasts/sous-les-radars" />
+    <outline text="Super Vieux Jeux" title="Super Vieux Jeux" type="rss" xmlUrl="https://feeds.acast.com/public/shows/65e31ff5bec0f30016328781" htmlUrl="https://www.youtube.com/playlist?list=PLZRiqJjIUlDQFkhxVPY258nsn7Lj0heBi" />
+    <outline text="SVGA" title="SVGA" type="rss" xmlUrl="https://feeds.transistor.fm/svga" htmlUrl="https://www.pieuvre.ca/svga/" />
+    <outline text="Trash Taste Podcast" title="Trash Taste Podcast" type="rss" xmlUrl="https://feeds.megaphone.fm/trashtaste" htmlUrl="https://trashtaste.com" />
+    <outline text="Un Bon Moment avec Kyan KHOJANDI et NAVO" title="Un Bon Moment avec Kyan KHOJANDI et NAVO" type="rss" xmlUrl="https://feeds.acast.com/public/shows/81a0b207-ecb9-4da6-b08a-64d929b67b6b" htmlUrl="https://www.youtube.com/user/kyankhojandi/" />
+    <outline text="Underscore_" title="Underscore_" type="rss" xmlUrl="https://feeds.acast.com/public/shows/43160adc-fadd-4764-b93f-aa1ca93f22bf" htmlUrl="https://youtube.com/UnderscoreTalk" />
+    <outline text="Une heure et des pixels" title="Une heure et des pixels" type="rss" xmlUrl="https://uhedp.lepodcast.fr/rss" htmlUrl="https://uhedp.lepodcast.fr/" />
+    <outline text="VHS &amp; CANAPÉ" title="VHS &amp; CANAPÉ" type="rss" xmlUrl="https://feed.ausha.co/yvqjfkQe80ro" htmlUrl="http://audioactif.fr/vhs/" />
+    <outline text="VideoClub" title="VideoClub" type="rss" xmlUrl="https://www.vodio.fr/rssmedias.php?valeur=679&amp;token=audio" htmlUrl="https://www.vodio.fr/vodiotheque/c/679/videoclub/audio/" />
+    <outline text="Waveform: The MKBHD Podcast" title="Waveform: The MKBHD Podcast" type="rss" xmlUrl="https://feeds.megaphone.fm/STU4418364045" htmlUrl="https://www.youtube.com/c/Waveform" />
+    <outline text="Y'a quoi d'bien ?" title="Y'a quoi d'bien ?" type="rss" xmlUrl="https://rss.acast.com/allocine-quoi-de-bien" htmlUrl="https://podcasts.360.audion.fm/QUmnBFAftSS5-ewZB3-Uj" />
+    <outline text="Zack en Roue Libre by Zack Nani" title="Zack en Roue Libre by Zack Nani" type="rss" xmlUrl="https://feeds.360.audion.fm/Wmd7d5HyZ8wJGI3zZVaUq" htmlUrl="https://podcasts.360.audion.fm/Wmd7d5HyZ8wJGI3zZVaUq" />
+    <outline text="ZINZIN" title="ZINZIN" type="rss" xmlUrl="https://feeds.megaphone.fm/zinzin" />
+    <outline text="ZQSD.fr" title="ZQSD.fr" type="rss" xmlUrl="https://feeds.soundcloud.com/users/soundcloud:users:42090707/sounds.rss" htmlUrl="http://zqsd.fr" />
+    <outline text="À travers l'Histoire" title="À travers l'Histoire" type="rss" xmlUrl="https://feed.ausha.co/OmAj7iEVO8PK" htmlUrl="https://podcast.ausha.co/a-travers-l-histoire" />
+    <outline text="Ça dit quoi ?" title="Ça dit quoi ?" type="rss" xmlUrl="https://radiofrance-podcast.net/podcast09/35099478-7c72-4f9e-a6de-1b928400e9e5/rss_24230.xml" htmlUrl="https://www.radiofrance.fr/franceinfo/podcasts/ca-dit-quoi" />
+  </body>
+</opml>

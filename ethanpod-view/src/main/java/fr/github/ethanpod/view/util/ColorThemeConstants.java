@@ -1,6 +1,6 @@
 package fr.github.ethanpod.view.util;
 
-import com.podcast.antennapod.logic.config.ConfigProperties;
+import fr.github.ethanpod.logic.config.ConfigProperties;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;

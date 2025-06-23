@@ -113,14 +113,13 @@ public class NavigationBuilder {
     }
 
     private Node createNodeGraphic() {
-        Node graphic;
         if (imageUrl != null) {
             // Create image view
             Image image = ImageCache.getImage(imageUrl);
             ImageView imageView = new ImageView(image);
             imageView.setFitWidth(ICON_SIZE);
             imageView.setFitHeight(ICON_SIZE);
-            graphic = imageView;
+            return imageView;
         } else if (icon != null) {
             // Configure icon
             icon.setIconSize((int) ICON_SIZE);
@@ -131,15 +130,13 @@ public class NavigationBuilder {
                 icon.setIconColor(ColorThemeConstants.getMain950());
             }
 
-            graphic = icon;
-        } else {
-            // Create empty region as fallback
-            Region emptyRegion = new Region();
-            emptyRegion.setMinSize(ICON_SIZE, ICON_SIZE);
-            emptyRegion.setPrefSize(ICON_SIZE, ICON_SIZE);
-            graphic = emptyRegion;
+            return icon;
         }
-        return graphic;
+        // Create empty region as fallback
+        Region emptyRegion = new Region();
+        emptyRegion.setMinSize(ICON_SIZE, ICON_SIZE);
+        emptyRegion.setPrefSize(ICON_SIZE, ICON_SIZE);
+        return emptyRegion;
     }
 
     private Label createBadgeLabel(int count) {
