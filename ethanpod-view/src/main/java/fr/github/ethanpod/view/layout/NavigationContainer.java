@@ -3,7 +3,7 @@ package fr.github.ethanpod.view.layout;
 import fr.github.ethanpod.core.item.ItemManager;
 import fr.github.ethanpod.core.item.NavigationItem;
 import fr.github.ethanpod.view.component.navigation.NavigationComponent;
-import fr.github.ethanpod.view.layout.context.FeedContext;
+import fr.github.ethanpod.view.context.FeedContext;
 import fr.github.ethanpod.view.util.ColorThemeConstants;
 import fr.github.ethanpod.view.util.LayoutType;
 import javafx.geometry.Insets;
@@ -64,10 +64,10 @@ public class NavigationContainer {
         NavigationItem playlistItem = new NavigationItem(MaterialDesignP.PLAYLIST_PLAY.getDescription(), "Queue", true);
         NavigationItem inboxItem = new NavigationItem(MaterialDesignI.INBOX.getDescription(), "Inbox", 120, true);
         NavigationItem episodesItem = new NavigationItem(MaterialDesignR.RSS.getDescription(), "Episodes", true);
-        NavigationItem subscriptionsItem = new NavigationItem(MaterialDesignV.VIEW_GRID_OUTLINE.getDescription(), "Subscription", 120,true);
+        NavigationItem subscriptionsItem = new NavigationItem(MaterialDesignV.VIEW_GRID_OUTLINE.getDescription(), "Subscription", 120, true);
         NavigationItem downloadsItem = new NavigationItem(MaterialDesignD.DOWNLOAD.getDescription(), "Downloads", 123, true);
-        NavigationItem historyItem = new NavigationItem(MaterialDesignH.HISTORY.getDescription(), "Playback history",true);
-        NavigationItem addPodcastItem = new NavigationItem(MaterialDesignP.PLUS.getDescription(), "Add podcast",true);
+        NavigationItem historyItem = new NavigationItem(MaterialDesignH.HISTORY.getDescription(), "Playback history", true);
+        NavigationItem addPodcastItem = new NavigationItem(MaterialDesignP.PLUS.getDescription(), "Add podcast", true);
 
         listNav.add(createNavigationComponent(homeItem, LayoutType.HOME));
         listNav.add(createNavigationComponent(playlistItem, LayoutType.QUEUE));

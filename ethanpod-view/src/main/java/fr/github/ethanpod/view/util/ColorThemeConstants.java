@@ -1,6 +1,6 @@
 package fr.github.ethanpod.view.util;
 
-import fr.github.ethanpod.logic.config.ConfigProperties;
+import fr.github.ethanpod.logic.setting.ConfigProperties;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
@@ -8,17 +8,8 @@ import java.util.List;
 
 public class ColorThemeConstants {
     private static final ConfigProperties configProperties = ConfigProperties.getInstance();
-
-    /**
-     * Interface pour les écouteurs de changement de thème
-     */
-    public interface ThemeChangeListener {
-        void onThemeChanged(ThemeType newTheme);
-    }
-
     // Liste des écouteurs pour le changement de thème
     private static final List<ThemeChangeListener> listeners = new ArrayList<>();
-
     // Thème par défaut
     private static ThemeType currentTheme = ThemeType.LIGHT;
 
@@ -372,5 +363,12 @@ public class ColorThemeConstants {
 
     private static Color getDarkGrey950() {
         return getColor("dark.grey.950");
+    }
+
+    /**
+     * Interface pour les écouteurs de changement de thème
+     */
+    public interface ThemeChangeListener {
+        void onThemeChanged(ThemeType newTheme);
     }
 }

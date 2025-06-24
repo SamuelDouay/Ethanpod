@@ -1,4 +1,4 @@
-package fr.github.ethanpod.logic.config;
+package fr.github.ethanpod.logic.setting;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -7,9 +7,9 @@ import java.io.IOException;
 import java.util.Properties;
 
 public class ConfigProperties {
+    private static final Logger logger = LogManager.getLogger();
     private static ConfigProperties instance;
     private final Properties properties;
-    private static final Logger logger = LogManager.getLogger();
 
     ConfigProperties() {
         this.properties = new Properties();
@@ -25,9 +25,9 @@ public class ConfigProperties {
 
     private void loadFile() {
         try {
-            this.properties.load(getClass().getResourceAsStream("/config/style.properties"));
+            this.properties.load(getClass().getResourceAsStream("/setting/style.properties"));
             logger.info("Load style properties file");
-            this.properties.load(getClass().getResourceAsStream("/config/application.properties"));
+            this.properties.load(getClass().getResourceAsStream("/setting/application.properties"));
             logger.info("Load config properties file");
         } catch (IOException e) {
             logger.error("Error load properties : {}", e.getMessage());

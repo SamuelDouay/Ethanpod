@@ -1,8 +1,8 @@
 package fr.github.ethanpod.view.layout;
 
-import fr.github.ethanpod.view.layout.context.ContextualLayout;
-import fr.github.ethanpod.view.layout.context.FeedContext;
-import fr.github.ethanpod.view.layout.context.LayoutContext;
+import fr.github.ethanpod.view.context.ContextualLayout;
+import fr.github.ethanpod.view.context.FeedContext;
+import fr.github.ethanpod.view.context.LayoutContext;
 import javafx.application.Platform;
 import javafx.scene.layout.VBox;
 
