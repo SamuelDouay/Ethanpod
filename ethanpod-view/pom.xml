@@ -57,5 +57,9 @@
             <groupId>fr.github</groupId>
             <artifactId>ethanpod-logic</artifactId>
         </dependency>
+        <dependency>
+            <groupId>fr.github</groupId>
+            <artifactId>ethanpod-service</artifactId>
+        </dependency>
     </dependencies>
 </project>

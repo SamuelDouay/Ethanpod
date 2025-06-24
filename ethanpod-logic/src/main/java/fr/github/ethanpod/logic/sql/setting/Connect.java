@@ -14,7 +14,7 @@ public class Connect {
 
     private Connect() {
         try {
-            String database = String.valueOf(Connect.class.getResource("/tmp/data_240825.db"));
+            String database = String.valueOf(Connect.class.getResource("/data/data_240825.db"));
             this.connection = DriverManager.getConnection(ConfigProperties.getInstance().getProperty("jdbc.database") + database);
         } catch (Exception e) {
             logger.error("{}: {}", e.getClass().getName(), e.getMessage());

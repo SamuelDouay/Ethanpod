@@ -1,5 +1,7 @@
 package fr.github.ethanpod.view.layout;
 
+import fr.github.ethanpod.core.item.EpisodeItem;
+import fr.github.ethanpod.service.EpisodeService;
 import fr.github.ethanpod.view.component.episode.EpisodeComponent;
 import fr.github.ethanpod.view.component.image.ImageComponent;
 import fr.github.ethanpod.view.component.surprise.SurpriseComponent;
@@ -118,11 +120,11 @@ public class HomeLayout extends Layout implements ContextualLayout {
     private Node getNewsTable() {
         VBox box = new VBox();
 
-//        EpisodeService episodeService = new EpisodeService();
-//
-//        for (EpisodeItem e : episodeService.getNewsTop8()) {
-//            box.getChildren().add(EPISODE_COMPONENT.createInboxEpisode(e));
-//        }
+        EpisodeService episodeService = new EpisodeService();
+
+        for (EpisodeItem e : episodeService.getNewsTop8()) {
+            box.getChildren().add(EPISODE_COMPONENT.createInboxEpisode(e));
+        }
 
         return box;
     }

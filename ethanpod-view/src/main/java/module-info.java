@@ -9,4 +9,5 @@ module ethanpod.view {
     requires ethanpod.core;
     requires ethanpod.util;
     requires ethanpod.logic;
+    requires ethanpod.service;
 }

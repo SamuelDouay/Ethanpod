@@ -2,13 +2,17 @@
 <Configuration status="INFO">
     <Appenders>
         <Console name="console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t/%-5level] : %msg%n" />
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t/%-5level] : %msg%n"/>
         </Console>
     </Appenders>
 
     <Loggers>
         <Root level="trace">
-            <AppenderRef ref="console" />
+            <AppenderRef ref="console"/>
         </Root>
+
+        <Logger name="com.ethanpod" level="debug" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
     </Loggers>
 </Configuration>

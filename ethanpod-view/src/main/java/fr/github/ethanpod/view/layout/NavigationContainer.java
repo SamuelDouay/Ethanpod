@@ -2,6 +2,7 @@ package fr.github.ethanpod.view.layout;
 
 import fr.github.ethanpod.core.item.ItemManager;
 import fr.github.ethanpod.core.item.NavigationItem;
+import fr.github.ethanpod.service.NavigationService;
 import fr.github.ethanpod.view.component.navigation.NavigationComponent;
 import fr.github.ethanpod.view.context.FeedContext;
 import fr.github.ethanpod.view.util.ColorThemeConstants;
@@ -26,13 +27,13 @@ public class NavigationContainer {
 
     private final ItemManager manager;
     private final List<HBox> listNav;
+    private final NavigationService navigationService;
     private LayoutManager layoutManager;
-    //private final NavigationService navigationService;
 
     public NavigationContainer() {
         this.manager = new ItemManager();
         this.listNav = new ArrayList<>();
-        //this.navigationService = new NavigationService();
+        this.navigationService = new NavigationService();
     }
 
     public NavigationContainer(LayoutManager layoutManager) {
@@ -86,10 +87,9 @@ public class NavigationContainer {
     private ScrollPane createScrollList() {
         VBox box = createList();
 
-        /*
         for (NavigationItem navigationItem : navigationService.getList()) {
             box.getChildren().add(createNavigationComponent(navigationItem, LayoutType.FEED));
-        } */
+        }
 
         ScrollPane scrollPane = getScrollPane(box);
         VBox.setVgrow(scrollPane, Priority.ALWAYS);
