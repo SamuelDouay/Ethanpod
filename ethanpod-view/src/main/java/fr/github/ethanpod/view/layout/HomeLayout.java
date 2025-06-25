@@ -166,11 +166,11 @@ public class HomeLayout extends Layout implements ContextualLayout {
         box.setBackground(new Background(new BackgroundFill(ColorThemeConstants.getGrey000(), null, null)));
         HBox.setHgrow(box, Priority.ALWAYS);
 
-//        EpisodeService episodeService = new EpisodeService();
-//
-//        for (EpisodeItem e : episodeService.getTop8Queue()) {
-//            box.getChildren().add(IMAGE_COMPONENT.createImageCard(e.getUrlImage(), e.getName(), e.getDate()));
-//        }
+        EpisodeService episodeService = new EpisodeService();
+
+        for (EpisodeItem e : episodeService.getTop8Queue()) {
+            box.getChildren().add(IMAGE_COMPONENT.createImageCard(e.getUrlImage(), e.getName(), e.getDate()));
+        }
 
         scrollPane.setContent(box);
         return scrollPane;

@@ -268,24 +268,23 @@ public class ButtonBuilder {
     }
 
     private void setMouseHandlers(Button button, Color hoverColor, Color normalColor, Color pressedColor, boolean isCircle) {
-        button.setOnMouseEntered(_ ->
-                button.setBackground(isCircle ? createCircleBackground(hoverColor) : createBackground(hoverColor)));
+        button.setOnMouseEntered(_ -> button.setBackground(changeColor(isCircle, hoverColor)));
 
-        button.setOnMouseExited(_ ->
-                button.setBackground(normalColor == null ? null :
-                        (isCircle ? createCircleBackground(normalColor) : createBackground(normalColor))));
+        button.setOnMouseExited(_ -> button.setBackground(normalColor == null ? null : (changeColor(isCircle, normalColor))));
 
-        button.setOnMousePressed(_ ->
-                button.setBackground(isCircle ? createCircleBackground(pressedColor) : createBackground(pressedColor)));
+        button.setOnMousePressed(_ -> button.setBackground(changeColor(isCircle, pressedColor)));
 
         button.setOnMouseReleased(_ -> {
             if (button.isHover()) {
-                button.setBackground(isCircle ? createCircleBackground(hoverColor) : createBackground(hoverColor));
+                button.setBackground(changeColor(isCircle, hoverColor));
             } else {
-                button.setBackground(normalColor == null ? null :
-                        (isCircle ? createCircleBackground(normalColor) : createBackground(normalColor)));
+                button.setBackground(normalColor == null ? null : (changeColor(isCircle, normalColor)));
             }
         });
+    }
+
+    private Background changeColor(boolean isCircle, Color color) {
+        return isCircle ? createCircleBackground(color) : createBackground(color);
     }
 
     private Background createBackground(Color color) {
