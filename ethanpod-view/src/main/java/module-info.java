@@ -7,7 +7,6 @@ module ethanpod.view {
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.ikonli.materialdesign2;
     requires ethanpod.core;
-    requires ethanpod.util;
-    requires ethanpod.logic;
     requires ethanpod.service;
+    requires ethanpod.util;
 }

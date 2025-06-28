@@ -1,6 +1,6 @@
 package fr.github.ethanpod.logic.sql.setting;
 
-import fr.github.ethanpod.logic.setting.ConfigProperties;
+import fr.github.ethanpod.util.setting.ConfigProperties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

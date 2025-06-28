@@ -1,4 +1,4 @@
-package fr.github.ethanpod.logic.setting;
+package fr.github.ethanpod.util.setting;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
