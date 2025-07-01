@@ -1,5 +1,8 @@
 package fr.github.ethanpod.app;
 
+import fr.github.ethanpod.core.thread.ThreadMessage;
+import fr.github.ethanpod.logic.LogicThread;
+import fr.github.ethanpod.view.ViewThread;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,6 +19,9 @@ public class Main {
     private ExecutorService viewExecutor;
     private CountDownLatch terminationLatch;
 
+    private LogicThread logicThread;
+    private ViewThread viewThread;
+
     public static void main(String[] args) {
         new Main().run(args);
     }
@@ -24,7 +30,7 @@ public class Main {
         LocalDateTime startTime = LocalDateTime.now();
         logStartup(startTime);
 
-        initializeExecutors();
+        initializeSystem();
 
         try {
             startThreads(args);
@@ -38,14 +44,23 @@ public class Main {
 
     private void logStartup(LocalDateTime startTime) {
         String date = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss").format(startTime);
-        logger.info("=== Démarrage de l'application AntennaPod ===");
+        logger.info("=== Démarrage de l'application AntennaPod Multithread ===");
         logger.info("Heure de démarrage: {}", date);
     }
 
-    private void initializeExecutors() {
+    private void initializeSystem() {
+        BlockingQueue<ThreadMessage> messageQueue = new LinkedBlockingQueue<>();
+
+        // Créer les threads
+        logicThread = new LogicThread(messageQueue);
+        viewThread = new ViewThread(messageQueue);
+
+        // Initialiser les executors
         logicExecutor = createExecutor("LogicThread");
         viewExecutor = createExecutor("ViewThread");
         terminationLatch = new CountDownLatch(2);
+
+        logger.info("Système multithread initialisé");
     }
 
     private ExecutorService createExecutor(String threadName) {
@@ -60,18 +75,19 @@ public class Main {
         CompletableFuture<Void> logicFuture = startLogicThread();
         CompletableFuture<Void> viewFuture = startViewThread(args);
 
+        // Monitoring des threads
         CompletableFuture.allOf(logicFuture, viewFuture)
                 .exceptionally(this::handleThreadException);
     }
 
     private CompletableFuture<Void> startLogicThread() {
         return CompletableFuture.runAsync(() -> {
-            logger.info("Démarrage de la logique métier");
+            logger.info("Démarrage du thread de logique métier");
             try {
-                fr.github.ethanpod.logic.Main.start();
-                keepAlive();
+                logicThread.run();
             } catch (Exception e) {
                 logger.error("Erreur dans le thread de logique métier", e);
+                isRunning.set(false);
             } finally {
                 logger.info("Fin du thread de logique métier");
                 terminationLatch.countDown();
@@ -81,34 +97,37 @@ public class Main {
 
     private CompletableFuture<Void> startViewThread(String[] args) {
         return CompletableFuture.runAsync(() -> {
-            logger.info("Démarrage de l'interface utilisateur");
+            logger.info("Démarrage du thread d'interface utilisateur");
             try {
+                // Démarrer le thread de traitement des messages
+                viewThread.run();
+
+                // Démarrer JavaFX séparément
                 fr.github.ethanpod.view.Main.main(args);
+
             } catch (Exception e) {
                 logger.error("Erreur dans le thread d'interface utilisateur", e);
             } finally {
                 logger.info("Fin du thread d'interface utilisateur");
                 terminationLatch.countDown();
-                isRunning.set(false); // Signal logic thread to stop
+                isRunning.set(false);
+
+                // Arrêter le thread de logique
+                if (logicThread != null) {
+                    logicThread.stop();
+                }
             }
         }, viewExecutor);
-    }
-
-    private void keepAlive() {
-        while (isRunning.get()) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException _) {
-                Thread.currentThread().interrupt();
-                logger.info("Thread de logique interrompu");
-                break;
-            }
-        }
     }
 
     private Void handleThreadException(Throwable e) {
         logger.error("Exception dans l'un des threads: {}", e.getMessage());
         isRunning.set(false);
+
+        // Arrêter les threads proprement
+        if (logicThread != null) logicThread.stop();
+        if (viewThread != null) viewThread.stop();
+
         return null;
     }
 
@@ -116,6 +135,9 @@ public class Main {
         boolean terminated = terminationLatch.await(1, TimeUnit.HOURS);
         if (!terminated) {
             logger.warn("Les threads ne se sont pas terminés dans le délai imparti");
+            // Forcer l'arrêt
+            if (logicThread != null) logicThread.stop();
+            if (viewThread != null) viewThread.stop();
         }
     }
 
@@ -132,8 +154,14 @@ public class Main {
     }
 
     private void cleanup(LocalDateTime startTime) {
+        // Arrêter les threads d'abord
+        if (logicThread != null) logicThread.stop();
+        if (viewThread != null) viewThread.stop();
+
+        // Puis les executors
         shutdownExecutor(logicExecutor, "Logique");
         shutdownExecutor(viewExecutor, "Vue");
+
         logShutdown(startTime);
     }
 
@@ -142,7 +170,7 @@ public class Main {
         long duration = endTime.toEpochSecond(java.time.ZoneOffset.UTC) -
                 startTime.toEpochSecond(java.time.ZoneOffset.UTC);
         logger.info("Durée d'exécution: {} secondes", duration);
-        logger.info("=== Fermeture de l'application AntennaPod ===");
+        logger.info("=== Fermeture de l'application AntennaPod Multithread ===");
     }
 
     private void shutdownExecutor(ExecutorService executor, String name) {
@@ -163,6 +191,9 @@ public class Main {
     public void shutdown() {
         logger.info("Demande d'arrêt de l'application reçue");
         isRunning.set(false);
+
+        if (logicThread != null) logicThread.stop();
+        if (viewThread != null) viewThread.stop();
 
         if (logicExecutor != null) shutdownExecutor(logicExecutor, "Logique");
         if (viewExecutor != null) shutdownExecutor(viewExecutor, "Vue");
