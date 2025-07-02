@@ -3,4 +3,5 @@ module ethanpod.app {
     requires ethanpod.logic;
     requires ethanpod.view;
     requires ethanpod.core;
+    requires javafx.graphics;
 }

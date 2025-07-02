@@ -37,20 +37,22 @@ public class LogicThread implements Runnable {
 
             while (running.get()) {
                 try {
-                    // Traiter les tâches en attente
-                    Runnable task = taskQueue.poll(200, TimeUnit.MILLISECONDS);
+                    // CORRECTION 1: Traiter les messages AVANT les tâches pour prioriser les requêtes
+                    processIncomingMessages();
+
+                    // Traiter les tâches en attente avec un timeout plus court
+                    Runnable task = taskQueue.poll(100, TimeUnit.MILLISECONDS);
                     if (task != null) {
+                        logger.debug("🔵 Exécution d'une tâche de la queue");
                         task.run();
                     }
 
-                    // Traiter les messages entrants
-                    processIncomingMessages();
-
                 } catch (InterruptedException e) {
+                    logger.info("🔵 Thread Logique interrompu");
                     Thread.currentThread().interrupt();
                     break;
                 } catch (Exception e) {
-                    logger.error("Erreur dans le thread de logique", e);
+                    logger.error("🔵 Erreur dans le thread de logique", e);
                 }
             }
         } finally {
@@ -66,36 +68,60 @@ public class LogicThread implements Runnable {
                 refreshNavigationData();
             }
         }, 5, 30, TimeUnit.SECONDS);
-
-        // Tâche de maintenance
-        scheduler.scheduleAtFixedRate(() -> {
-            if (running.get()) {
-                performMaintenance();
-            }
-        }, 10, 60, TimeUnit.SECONDS);
     }
 
     private void processIncomingMessages() {
         ThreadMessage message = messageQueue.poll();
-        if (message != null && "ViewThread".equals(message.getReceiver())) {
-            logger.info("🔵 Logique reçu: {}", message);
 
-            switch (message.getType()) {
-                case REQUEST -> handleRequest(message);
-                case NOTIFICATION -> handleNotification(message);
-                default -> logger.warn("Type de message non géré: {}", message.getType());
+        if (message != null) {
+            logger.info("🔵 Message trouvé dans la queue - De: {}, Pour: {}, Type: {}, Contenu: {}",
+                    message.getSender(), message.getReceiver(), message.getType(), message.getContent());
+
+            // CORRECTION PRINCIPALE: Vérifier le bon destinataire
+            if ("LogicThread".equals(message.getReceiver())) {
+                logger.info("🔵 Logique reçu: {}", message);
+
+                switch (message.getType()) {
+                    case REQUEST -> {
+                        logger.info("🔵 Traitement REQUEST: {}", message.getContent());
+                        handleRequest(message);
+                    }
+                    case NOTIFICATION -> {
+                        logger.info("🔵 Traitement NOTIFICATION: {}", message.getContent());
+                        handleNotification(message);
+                    }
+                    default -> logger.warn("🔵 Type de message non géré: {}", message.getType());
+                }
+            } else {
+                logger.debug("🔵 Message ignoré (destinataire: {})", message.getReceiver());
             }
         }
     }
 
     private void handleRequest(ThreadMessage message) {
         String content = message.getContent();
+        String requestId = message.getRequestId();
+
+        logger.info("🔵 Traitement requête: '{}' avec ID: {}", content, requestId);
 
         switch (content) {
-            case "GET_NAVIGATION_LIST" -> getNavigationListAsync(message.getRequestId());
-            case "GET_INBOX_COUNT" -> getInboxCountAsync(message.getRequestId());
-            case "REFRESH_DATA" -> refreshNavigationData();
-            default -> logger.warn("Requête non reconnue: {}", content);
+            case "GET_NAVIGATION_LIST" -> {
+                logger.info("🔵 Démarrage GET_NAVIGATION_LIST pour ID: {}", requestId);
+                getNavigationListAsync(requestId);
+            }
+            case "GET_INBOX_COUNT" -> {
+                logger.info("🔵 Démarrage GET_INBOX_COUNT pour ID: {}", requestId);
+                getInboxCountAsync(requestId);
+            }
+            case "REFRESH_DATA" -> {
+                logger.info("🔵 Démarrage REFRESH_DATA");
+                refreshNavigationData();
+            }
+            default -> {
+                logger.warn("🔵 Requête non reconnue: '{}'", content);
+                // Envoyer une erreur en retour
+                sendMessage("ERROR: Unknown request: " + content, MessageType.ERROR, null, requestId);
+            }
         }
     }
 
@@ -128,6 +154,7 @@ public class LogicThread implements Runnable {
         taskQueue.offer(() -> {
             try {
                 logger.info("🔵 Logique [{}]: Récupération liste navigation", opId);
+                logger.info("🔵 Logique : requete id {}", requestId);
 
                 List<NavigationItem> navigationList = navigationDao.getList();
 
@@ -200,23 +227,6 @@ public class LogicThread implements Runnable {
 
             } catch (Exception e) {
                 logger.error("Erreur lors du rafraîchissement des données", e);
-            }
-        });
-    }
-
-    private void performMaintenance() {
-        logger.info("🔵 Logique: Maintenance automatique");
-
-        taskQueue.offer(() -> {
-            try {
-                // Simulation de tâches de maintenance
-                Thread.sleep(200);
-
-                sendMessage("MAINTENANCE_COMPLETED", MessageType.NOTIFICATION,
-                        "Maintenance terminée avec succès", null);
-
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
             }
         });
     }

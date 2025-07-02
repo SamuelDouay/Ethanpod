@@ -15,7 +15,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ViewThread implements Runnable {
     private static final Logger logger = LogManager.getLogger(ViewThread.class);
-
+    // Instance statique pour accès depuis Main JavaFX
+    private static ViewThread instance;
     private final BlockingQueue<ThreadMessage> messageQueue;
     private final AtomicBoolean running = new AtomicBoolean(true);
     private final AsyncNavigationService navigationService;
@@ -24,6 +25,11 @@ public class ViewThread implements Runnable {
     public ViewThread(BlockingQueue<ThreadMessage> messageQueue) {
         this.messageQueue = messageQueue;
         this.navigationService = new AsyncNavigationService(messageQueue);
+        instance = this;
+    }
+
+    public static ViewThread getInstance() {
+        return instance;
     }
 
     @Override
@@ -40,6 +46,13 @@ public class ViewThread implements Runnable {
 
                 Thread.sleep(100); // Éviter une boucle trop intensive
 
+                // Vérifier si le thread principal demande l'arrêt
+                if (Thread.currentThread().isInterrupted()) {
+                    logger.info("🟢 Thread View interrompu volontermement");
+                    break;
+                }
+            } catch (InterruptedException _) {
+                logger.info("🟢 Thread View interrompu");
                 Thread.currentThread().interrupt();
                 break;
             } catch (Exception e) {
@@ -83,7 +96,7 @@ public class ViewThread implements Runnable {
                 Integer count = (Integer) message.getData();
                 updateInboxCount(count);
             }
-            default -> throw new IllegalStateException("Unexpected value: " + content);
+            default -> logger.warn("Contenu de mise à jour non géré: {}", content);
         }
     }
 
@@ -100,10 +113,17 @@ public class ViewThread implements Runnable {
         logger.error("🔴 Erreur reçue du thread de logique: {}", message.getContent());
 
         // Mettre à jour l'interface pour afficher l'erreur
-        Platform.runLater(() -> {
-            // Ici, vous pourriez afficher une notification d'erreur à l'utilisateur
-            logger.error("Affichage de l'erreur à l'utilisateur: {}", message.getContent());
-        });
+        if (Platform.isFxApplicationThread()) {
+            showErrorToUser(message.getContent());
+        } else {
+            Platform.runLater(() -> showErrorToUser(message.getContent()));
+        }
+    }
+
+    private void showErrorToUser(String errorMessage) {
+        // Ici, vous pourriez afficher une notification d'erreur à l'utilisateur
+        logger.error("Affichage de l'erreur à l'utilisateur: {}", errorMessage);
+        // Exemple: Alert, Notification, etc.
     }
 
     // ================================
@@ -149,31 +169,50 @@ public class ViewThread implements Runnable {
 
     private void updateNavigationUI(List<NavigationItem> navigationList) {
         // Mettre à jour l'interface sur le thread JavaFX
-        Platform.runLater(() -> {
-            try {
-                if (navigationContainer != null) {
-                    // Ici, vous mettriez à jour votre NavigationContainer
-                    logger.info("🟢 Interface mise à jour avec {} éléments", navigationList.size());
-                }
-            } catch (Exception e) {
-                logger.error("Erreur lors de la mise à jour de l'interface", e);
+        if (Platform.isFxApplicationThread()) {
+            doUpdateNavigationUI(navigationList);
+        } else {
+            Platform.runLater(() -> doUpdateNavigationUI(navigationList));
+        }
+    }
+
+    private void doUpdateNavigationUI(List<NavigationItem> navigationList) {
+        try {
+            if (navigationContainer != null) {
+                // Ici, vous mettriez à jour votre NavigationContainer
+                logger.info("🟢 Interface mise à jour avec {} éléments", navigationList.size());
+                //navigationContainer.updateItems(navigationList);
+            } else {
+                logger.warn("NavigationContainer n'est pas encore initialisé");
             }
-        });
+        } catch (Exception e) {
+            logger.error("Erreur lors de la mise à jour de l'interface", e);
+        }
     }
 
     private void updateInboxCount(Integer count) {
-        Platform.runLater(() -> {
-            try {
-                // Mettre à jour le compteur d'inbox dans l'interface
-                logger.info("🟢 Compteur inbox mis à jour: {}", count);
-            } catch (Exception e) {
-                logger.error("Erreur lors de la mise à jour du compteur inbox", e);
+        if (Platform.isFxApplicationThread()) {
+            doUpdateInboxCount(count);
+        } else {
+            Platform.runLater(() -> doUpdateInboxCount(count));
+        }
+    }
+
+    private void doUpdateInboxCount(Integer count) {
+        try {
+            // Mettre à jour le compteur d'inbox dans l'interface
+            logger.info("🟢 Compteur inbox mis à jour: {}", count);
+            if (navigationContainer != null) {
+                //navigationContainer.updateInboxCount(count);
             }
-        });
+        } catch (Exception e) {
+            logger.error("Erreur lors de la mise à jour du compteur inbox", e);
+        }
     }
 
     public void setNavigationContainer(NavigationContainer navigationContainer) {
         this.navigationContainer = navigationContainer;
+        logger.info("🟢 NavigationContainer configuré dans ViewThread");
     }
 
     private void sendNotification(String content) {
@@ -181,6 +220,7 @@ public class ViewThread implements Runnable {
             ThreadMessage message = new ThreadMessage(content, "ViewThread", "LogicThread",
                     MessageType.NOTIFICATION, null, null);
             messageQueue.put(message);
+            logger.debug("🟢 Notification envoyée: {}", content);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             logger.error("Erreur lors de l'envoi de la notification", e);
@@ -190,5 +230,20 @@ public class ViewThread implements Runnable {
     public void stop() {
         logger.info("🟢 Arrêt du thread d'interface demandé");
         running.set(false);
+    }
+
+    // Méthodes pour l'intégration avec JavaFX
+    public void onJavaFXReady() {
+        logger.info("🟢 JavaFX est prêt - Interface utilisateur disponible");
+        // Vous pouvez maintenant initialiser l'UI si ce n'est pas déjà fait
+        if (navigationContainer == null) {
+            logger.info("🟢 Initialisation différée de l'interface utilisateur");
+            // Tentative de récupération du NavigationContainer depuis MainLayout
+            // Cette partie dépend de votre implémentation de MainLayout
+        }
+    }
+
+    public AsyncNavigationService getNavigationService() {
+        return navigationService;
     }
 }

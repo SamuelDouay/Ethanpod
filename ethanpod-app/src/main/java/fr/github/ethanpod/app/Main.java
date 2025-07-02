@@ -3,6 +3,7 @@ package fr.github.ethanpod.app;
 import fr.github.ethanpod.core.thread.ThreadMessage;
 import fr.github.ethanpod.logic.LogicThread;
 import fr.github.ethanpod.view.ViewThread;
+import javafx.application.Platform;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,11 +15,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class Main {
     private static final Logger logger = LogManager.getLogger(Main.class);
     private static final AtomicBoolean isRunning = new AtomicBoolean(true);
-
+    // Référence statique pour permettre l'accès depuis ViewThread
     private ExecutorService logicExecutor;
     private ExecutorService viewExecutor;
     private CountDownLatch terminationLatch;
-
     private LogicThread logicThread;
     private ViewThread viewThread;
 
@@ -44,7 +44,7 @@ public class Main {
 
     private void logStartup(LocalDateTime startTime) {
         String date = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss").format(startTime);
-        logger.info("=== Démarrage de l'application AntennaPod Multithread ===");
+        logger.info("=== Démarrage de l'application AntennaPod ===");
         logger.info("Heure de démarrage: {}", date);
     }
 
@@ -99,13 +99,27 @@ public class Main {
         return CompletableFuture.runAsync(() -> {
             logger.info("Démarrage du thread d'interface utilisateur");
             try {
-                // Démarrer le thread de traitement des messages
-                viewThread.run();
+                // Démarrer le thread de traitement des messages en arrière-plan
+                Thread messageProcessingThread = new Thread(() -> viewThread.run());
+                messageProcessingThread.setDaemon(true);
+                messageProcessingThread.start();
 
-                // Démarrer JavaFX séparément
-                fr.github.ethanpod.view.Main.main(args);
+                // Attendre un peu pour que le ViewThread soit initialisé
+                Thread.sleep(500);
 
-            } catch (Exception e) {
+                // Démarrer JavaFX sur le thread principal JavaFX
+                try {
+                    fr.github.ethanpod.view.Main.main(args);
+                } catch (Exception e) {
+                    logger.error("Erreur lors du démarrage de JavaFX", e);
+                }
+                
+                // Attendre que JavaFX se termine
+                while (isRunning.get() && !Thread.currentThread().isInterrupted()) {
+                    Thread.sleep(1000);
+                }
+
+            } catch (InterruptedException e) {
                 logger.error("Erreur dans le thread d'interface utilisateur", e);
             } finally {
                 logger.info("Fin du thread d'interface utilisateur");
@@ -154,6 +168,13 @@ public class Main {
     }
 
     private void cleanup(LocalDateTime startTime) {
+        // Arrêter JavaFX Platform
+        try {
+            Platform.exit();
+        } catch (Exception e) {
+            logger.warn("Erreur lors de l'arrêt de JavaFX", e);
+        }
+
         // Arrêter les threads d'abord
         if (logicThread != null) logicThread.stop();
         if (viewThread != null) viewThread.stop();
@@ -199,5 +220,18 @@ public class Main {
         if (viewExecutor != null) shutdownExecutor(viewExecutor, "Vue");
 
         logger.info("Tous les threads ont été arrêtés");
+    }
+
+    // Getters pour accéder aux threads depuis d'autres classes
+    public LogicThread getLogicThread() {
+        return logicThread;
+    }
+
+    public ViewThread getViewThread() {
+        return viewThread;
+    }
+
+    public boolean isRunning() {
+        return isRunning.get();
     }
 }

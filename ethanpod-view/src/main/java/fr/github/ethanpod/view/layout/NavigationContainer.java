@@ -2,11 +2,15 @@ package fr.github.ethanpod.view.layout;
 
 import fr.github.ethanpod.core.item.ItemManager;
 import fr.github.ethanpod.core.item.NavigationItem;
+import fr.github.ethanpod.service.AsyncNavigationService;
 import fr.github.ethanpod.service.NavigationService;
+import fr.github.ethanpod.view.ViewThread;
 import fr.github.ethanpod.view.component.navigation.NavigationComponent;
 import fr.github.ethanpod.view.context.FeedContext;
 import fr.github.ethanpod.view.util.ColorThemeConstants;
 import fr.github.ethanpod.view.util.LayoutType;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -16,14 +20,18 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign2.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class NavigationContainer {
     private static final String FONT = "Inter";
+    private static final Logger log = LogManager.getLogger(NavigationContainer.class);
 
     private final ItemManager manager;
     private final List<HBox> listNav;
@@ -38,6 +46,7 @@ public class NavigationContainer {
 
     public NavigationContainer(LayoutManager layoutManager) {
         this();
+        log.info("INIT NavContainer");
         this.layoutManager = layoutManager;
     }
 
@@ -84,17 +93,80 @@ public class NavigationContainer {
         return box;
     }
 
+
     private ScrollPane createScrollList() {
         VBox box = createList();
+        log.info("=== DEBUT createScrollList ===");
 
-        for (NavigationItem navigationItem : navigationService.getList()) {
-            box.getChildren().add(createNavigationComponent(navigationItem, LayoutType.FEED));
+        try {
+            ViewThread viewThread = ViewThread.getInstance();
+            log.info("ViewThread récupéré: {}", viewThread != null ? "OK" : "NULL");
+            assert viewThread != null;
+
+            viewThread.setNavigationContainer(this);
+            AsyncNavigationService navService = viewThread.getNavigationService();
+            log.info("NavigationService récupéré: {}", navService != null ? "OK" : "NULL");
+
+            // Créer une Task pour encapsuler l'appel asynchrone
+            Task<List<NavigationItem>> fetchItemsTask = new Task<>() {
+                @Override
+                protected List<NavigationItem> call() throws Exception {
+                    log.info("Appel getListAsync dans la Task...");
+                    CompletableFuture<List<NavigationItem>> future = navService.getListAsync();
+                    log.info("Future créé: {}", future != null ? "OK" : "NULL");
+                    return future.get(); // Bloquant jusqu'à ce que le résultat soit disponible
+                }
+            };
+
+            // Définir ce qui se passe lorsque la Task réussit
+            fetchItemsTask.setOnSucceeded(_ -> {
+                List<NavigationItem> items = fetchItemsTask.getValue();
+                log.info("=== TASK SUCCEEDED ===");
+                log.info("Items reçus: {}", items != null ? items.size() + " éléments" : "NULL");
+
+                if (items != null) {
+                    for (NavigationItem item : items) {
+                        log.info("Item: {}", item);
+                    }
+                }
+
+                Platform.runLater(() -> {
+                    log.info("=== PLATFORM.RUNLATER EXECUTE ===");
+                    if (items != null) {
+                        for (NavigationItem navigationItem : items) {
+                            try {
+                                Node component = createNavigationComponent(navigationItem, LayoutType.FEED);
+                                box.getChildren().add(component);
+                                log.info("Composant ajouté pour: {}", navigationItem);
+                            } catch (Exception e) {
+                                log.error("Erreur création composant pour {}", navigationItem, e);
+                            }
+                        }
+                    }
+                    log.info("=== FIN PLATFORM.RUNLATER ===");
+                });
+            });
+
+            // Définir ce qui se passe en cas d'échec de la Task
+            fetchItemsTask.setOnFailed(event -> {
+                log.error("=== TASK FAILED ===");
+                log.error("Exception dans la Task", fetchItemsTask.getException());
+            });
+
+            // Démarrer la Task dans un nouveau Thread
+            new Thread(fetchItemsTask).start();
+            log.info("Task démarrée, attente callback...");
+
+        } catch (Exception e) {
+            log.error("=== EXCEPTION GENERALE ===", e);
         }
 
         ScrollPane scrollPane = getScrollPane(box);
         VBox.setVgrow(scrollPane, Priority.ALWAYS);
+        log.info("=== FIN createScrollList ===");
         return scrollPane;
     }
+
 
     private ScrollPane getScrollPane(VBox box) {
         ScrollPane scrollPane = new ScrollPane(box);

@@ -32,9 +32,6 @@ public class HomeLayout extends Layout implements ContextualLayout {
 
     // Constants for example data
     public static final String TITLE_EXAMPLE = "Lil Nas X, une icône noire, et gay et flamboyante [REDIF]";
-    public static final String TIME_EXAMPLE = "00:20:40";
-    public static final String DATE_EXAMPLE = "28/10/2024";
-    public static final String MO_EXAMPLE = "18 Mo";
 
     private VBox mainContainer;
 
