@@ -2,6 +2,7 @@ package fr.github.ethanpod.view.layout;
 
 import fr.github.ethanpod.core.item.ItemManager;
 import fr.github.ethanpod.core.item.NavigationItem;
+import fr.github.ethanpod.core.thread.MessageRouter;
 import fr.github.ethanpod.service.AsyncNavigationService;
 import fr.github.ethanpod.service.NavigationService;
 import fr.github.ethanpod.view.ViewThread;
@@ -104,7 +105,7 @@ public class NavigationContainer {
             assert viewThread != null;
 
             viewThread.setNavigationContainer(this);
-            AsyncNavigationService navService = viewThread.getNavigationService();
+            AsyncNavigationService navService = new AsyncNavigationService(MessageRouter.getInstance());
             log.info("NavigationService récupéré: {}", navService != null ? "OK" : "NULL");
 
             // Créer une Task pour encapsuler l'appel asynchrone

@@ -1,6 +1,7 @@
 package fr.github.ethanpod.view;
 
 import fr.github.ethanpod.core.item.NavigationItem;
+import fr.github.ethanpod.core.thread.MessageRouter;
 import fr.github.ethanpod.core.thread.MessageType;
 import fr.github.ethanpod.core.thread.ThreadMessage;
 import fr.github.ethanpod.service.AsyncNavigationService;
@@ -18,11 +19,14 @@ public class ViewThread implements Runnable {
     // Instance statique pour accès depuis Main JavaFX
     private static ViewThread instance;
     private final BlockingQueue<ThreadMessage> messageQueue;
+    private final MessageRouter messageRouter;
     private final AtomicBoolean running = new AtomicBoolean(true);
     private final AsyncNavigationService navigationService;
     private NavigationContainer navigationContainer;
 
     public ViewThread(BlockingQueue<ThreadMessage> messageQueue) {
+        this.messageRouter = MessageRouter.getInstance();
+        this.messageRouter.registerThread("ViewThread");
         this.messageQueue = messageQueue;
         this.navigationService = new AsyncNavigationService(messageQueue);
         instance = this;
@@ -41,7 +45,7 @@ public class ViewThread implements Runnable {
 
         while (running.get()) {
             try {
-                // Traiter les messages entrants du thread de logique
+
                 processIncomingMessages();
 
                 Thread.sleep(100); // Éviter une boucle trop intensive
@@ -65,7 +69,8 @@ public class ViewThread implements Runnable {
 
     private void processIncomingMessages() {
         ThreadMessage message = messageQueue.poll();
-        if (message != null && "ViewThread".equals(message.getReceiver())) {
+
+        if (message != null) {
             logger.info("🟢 View reçu: {}", message);
 
             switch (message.getType()) {
@@ -216,14 +221,14 @@ public class ViewThread implements Runnable {
     }
 
     private void sendNotification(String content) {
-        try {
-            ThreadMessage message = new ThreadMessage(content, "ViewThread", "LogicThread",
-                    MessageType.NOTIFICATION, null, null);
-            messageQueue.put(message);
+        ThreadMessage message = new ThreadMessage(content, "ViewThread", "LogicThread",
+                MessageType.NOTIFICATION, null, null);
+
+        boolean success = messageRouter.routeMessage(message);
+        if (success) {
             logger.debug("🟢 Notification envoyée: {}", content);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            logger.error("Erreur lors de l'envoi de la notification", e);
+        } else {
+            logger.error("🟢 Échec envoi notification: {}", content);
         }
     }
 

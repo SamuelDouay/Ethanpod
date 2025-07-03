@@ -1,6 +1,7 @@
 package fr.github.ethanpod.logic;
 
 import fr.github.ethanpod.core.item.NavigationItem;
+import fr.github.ethanpod.core.thread.MessageRouter;
 import fr.github.ethanpod.core.thread.MessageType;
 import fr.github.ethanpod.core.thread.ThreadMessage;
 import fr.github.ethanpod.logic.sql.dao.NavigationDao;
@@ -17,13 +18,16 @@ public class LogicThread implements Runnable {
     private final Logger logger = LogManager.getLogger(LogicThread.class);
 
     private final BlockingQueue<Runnable> taskQueue = new LinkedBlockingQueue<>();
-    private final BlockingQueue<ThreadMessage> messageQueue;
+    private final BlockingQueue<ThreadMessage> messageQueue; // SA PROPRE QUEUE
+    private final MessageRouter messageRouter; // ROUTEUR POUR ENVOYER DES MESSAGES
     private final AtomicBoolean running = new AtomicBoolean(true);
     private final AtomicInteger requestCounter = new AtomicInteger(0);
     private final NavigationDao navigationDao;
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
 
     public LogicThread(BlockingQueue<ThreadMessage> messageQueue) {
+        this.messageRouter = MessageRouter.getInstance();
+        this.messageRouter.registerThread("LogicThread");
         this.messageQueue = messageQueue;
         this.navigationDao = new NavigationDao();
     }
@@ -37,10 +41,9 @@ public class LogicThread implements Runnable {
 
             while (running.get()) {
                 try {
-                    // CORRECTION 1: Traiter les messages AVANT les tâches pour prioriser les requêtes
+
                     processIncomingMessages();
 
-                    // Traiter les tâches en attente avec un timeout plus court
                     Runnable task = taskQueue.poll(100, TimeUnit.MILLISECONDS);
                     if (task != null) {
                         logger.debug("🔵 Exécution d'une tâche de la queue");
@@ -74,26 +77,21 @@ public class LogicThread implements Runnable {
         ThreadMessage message = messageQueue.poll();
 
         if (message != null) {
-            logger.info("🔵 Message trouvé dans la queue - De: {}, Pour: {}, Type: {}, Contenu: {}",
-                    message.getSender(), message.getReceiver(), message.getType(), message.getContent());
+            logger.info("🔵 Message reçu: De: {}, Type: {}, Contenu: {}",
+                    message.getSender(), message.getType(), message.getContent());
 
-            // CORRECTION PRINCIPALE: Vérifier le bon destinataire
-            if ("LogicThread".equals(message.getReceiver())) {
-                logger.info("🔵 Logique reçu: {}", message);
-
-                switch (message.getType()) {
-                    case REQUEST -> {
-                        logger.info("🔵 Traitement REQUEST: {}", message.getContent());
-                        handleRequest(message);
-                    }
-                    case NOTIFICATION -> {
-                        logger.info("🔵 Traitement NOTIFICATION: {}", message.getContent());
-                        handleNotification(message);
-                    }
-                    default -> logger.warn("🔵 Type de message non géré: {}", message.getType());
+            // PLUS BESOIN de vérifier le destinataire car cette queue ne contient
+            // QUE les messages pour LogicThread
+            switch (message.getType()) {
+                case REQUEST -> {
+                    logger.info("🔵 Traitement REQUEST: {}", message.getContent());
+                    handleRequest(message);
                 }
-            } else {
-                logger.debug("🔵 Message ignoré (destinataire: {})", message.getReceiver());
+                case NOTIFICATION -> {
+                    logger.info("🔵 Traitement NOTIFICATION: {}", message.getContent());
+                    handleNotification(message);
+                }
+                default -> logger.warn("🔵 Type de message non géré: {}", message.getType());
             }
         }
     }
@@ -232,13 +230,13 @@ public class LogicThread implements Runnable {
     }
 
     private void sendMessage(String content, MessageType type, Object data, String requestId) {
-        try {
-            ThreadMessage message = new ThreadMessage(content, "LogicThread", "ViewThread",
-                    type, data, requestId);
-            messageQueue.put(message);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            logger.error("Erreur lors de l'envoi du message", e);
+        ThreadMessage message = new ThreadMessage(content, "LogicThread", "ViewThread",
+                type, data, requestId);
+        boolean success = messageRouter.routeMessage(message);
+        if (!success) {
+            logger.error("🔵 Échec de l'envoi du message vers ViewThread: {}", content);
+        } else {
+            logger.info("🔵 Message envoyé avec succès vers ViewThread: {}", content);
         }
     }
 }

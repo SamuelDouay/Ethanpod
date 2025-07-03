@@ -1,6 +1,7 @@
 package fr.github.ethanpod.service;
 
 import fr.github.ethanpod.core.item.NavigationItem;
+import fr.github.ethanpod.core.thread.MessageRouter;
 import fr.github.ethanpod.core.thread.MessageType;
 import fr.github.ethanpod.core.thread.ThreadMessage;
 import org.apache.logging.log4j.LogManager;
@@ -17,11 +18,20 @@ public class AsyncNavigationService {
     private static final Logger logger = LogManager.getLogger(AsyncNavigationService.class);
     private final ConcurrentHashMap<String, CompletableFuture<?>> pendingRequests;
     private final BlockingQueue<ThreadMessage> messageQueue;
+    private final MessageRouter messageRouter;
 
     public AsyncNavigationService(BlockingQueue<ThreadMessage> messageQueue) {
         this.messageQueue = messageQueue;
         this.pendingRequests = new ConcurrentHashMap<>();
+        this.messageRouter = null;
     }
+
+    public AsyncNavigationService(MessageRouter messageRouter) {
+        this.messageRouter = messageRouter;
+        this.pendingRequests = new ConcurrentHashMap<>();
+        this.messageQueue = null;
+    }
+
 
     public CompletableFuture<List<NavigationItem>> getListAsync() {
         String requestId = UUID.randomUUID().toString();
@@ -51,10 +61,7 @@ public class AsyncNavigationService {
         String requestId = UUID.randomUUID().toString();
         CompletableFuture<Integer> future = new CompletableFuture<>();
 
-        // Enregistrer la requête en attente
         pendingRequests.put(requestId, future);
-
-        // Envoyer la requête au thread de logique
         sendRequestToLogic("GET_INBOX_COUNT", requestId);
 
         return future;
@@ -65,26 +72,19 @@ public class AsyncNavigationService {
     }
 
     private void sendRequestToLogic(String request, String requestId) {
-        try {
-            ThreadMessage message = new ThreadMessage(request, "ViewThread", "LogicThread",
-                    MessageType.REQUEST, null, requestId);
+        ThreadMessage message = new ThreadMessage(request, "ViewThread", "LogicThread",
+                MessageType.REQUEST, null, requestId);
 
-            logger.info("🟢 Service: Envoi message - De: {}, Pour: {}, Type: {}, Contenu: {}, ID: {}",
-                    message.getSender(), message.getReceiver(), message.getType(),
-                    message.getContent(), message.getRequestId());
+        logger.info("🟢 Service: Envoi message - De: {}, Pour: {}, Type: {}, Contenu: {}, ID: {}",
+                message.getSender(), message.getReceiver(), message.getType(),
+                message.getContent(), message.getRequestId());
 
-            boolean success = messageQueue.offer(message);
-            if (success) {
-                logger.info("🟢 Service: Message ajouté à la queue avec succès");
-            } else {
-                logger.error("🔴 Service: Échec ajout message à la queue");
-            }
-
-            // Alternative: utiliser put() au lieu de offer() pour garantir l'ajout
-            // messageQueue.put(message);
-
-        } catch (Exception e) {
-            logger.error("🔴 Service: Erreur lors de l'envoi de la requête", e);
+        // CORRECTION: Utiliser le routeur au lieu d'une queue directe
+        boolean success = messageRouter.routeMessage(message);
+        if (success) {
+            logger.info("🟢 Service: Message routé avec succès vers LogicThread");
+        } else {
+            logger.error("🔴 Service: Échec du routage du message vers LogicThread");
         }
     }
 
