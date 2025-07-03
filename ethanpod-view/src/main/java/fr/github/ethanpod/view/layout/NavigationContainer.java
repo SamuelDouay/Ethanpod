@@ -112,6 +112,8 @@ public class NavigationContainer {
             Task<List<NavigationItem>> fetchItemsTask = new Task<>() {
                 @Override
                 protected List<NavigationItem> call() throws Exception {
+                    String threadName = Thread.currentThread().getName();
+                    MessageRouter.getInstance().registerThread(threadName);
                     log.info("Appel getListAsync dans la Task...");
                     CompletableFuture<List<NavigationItem>> future = navService.getListAsync();
                     log.info("Future créé: {}", future != null ? "OK" : "NULL");
