@@ -9,7 +9,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class MessageRouter {
     private static final Logger logger = LogManager.getLogger(MessageRouter.class);
-    private static MessageRouter instance;
     private final ConcurrentHashMap<String, BlockingQueue<ThreadMessage>> threadQueues;
     private final ConcurrentHashMap<String, String> requestSenders;
 

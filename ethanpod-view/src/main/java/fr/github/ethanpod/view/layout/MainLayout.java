@@ -1,6 +1,5 @@
 package fr.github.ethanpod.view.layout;
 
-import fr.github.ethanpod.view.ViewThread;
 import fr.github.ethanpod.view.component.SearchComponent;
 import fr.github.ethanpod.view.util.ColorThemeConstants;
 import fr.github.ethanpod.view.util.LayoutType;
@@ -9,12 +8,10 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 
 public class MainLayout {
-    private final ViewThread viewThread;
     private LayoutManager layoutManager;
 
     public MainLayout() {
         // no parameters
-        this.viewThread = ViewThread.getInstance();
     }
 
     public AnchorPane createInterface() {

@@ -11,7 +11,6 @@ import org.apache.logging.log4j.Logger;
 
 public class Main extends Application {
     public static final Logger logger = LogManager.getLogger(Main.class);
-    private MainLayout mainLayout;
 
     public static void main(String[] args) {
         logger.info("Initialisation de l'interface utilisateur principale (Main)");
@@ -35,8 +34,7 @@ public class Main extends Application {
             logger.info("Démarrage de l'interface utilisateur JavaFX");
 
             // Créer le layout principal
-            mainLayout = new MainLayout();
-            AnchorPane root = mainLayout.createInterface();
+            AnchorPane root = new MainLayout().createInterface();
 
             // Créer la scène
             Scene scene = new Scene(root, 320, 240);
@@ -59,9 +57,6 @@ public class Main extends Application {
             // Notifier le ViewThread que JavaFX est prêt
             notifyViewThreadReady();
 
-            // Connecter le NavigationContainer au ViewThread si disponible
-            connectToViewThread();
-
         } catch (Exception e) {
             logger.error("Erreur lors de l'initialisation de l'interface", e);
             handleApplicationShutdown();
@@ -83,37 +78,9 @@ public class Main extends Application {
         }
     }
 
-    private void connectToViewThread() {
-        try {
-            ViewThread viewThread = ViewThread.getInstance();
-            if (viewThread != null && mainLayout != null) {
-                // Connecter le NavigationContainer au ViewThread
-                /*var navigationContainer = mainLayout.getNavigationContainer();
-                 if (navigationContainer != null) {
-                    viewThread.setNavigationContainer(navigationContainer);
-                    logger.info("NavigationContainer connecté au ViewThread");
-                } else {
-                    logger.warn("NavigationContainer non disponible dans MainLayout");
-                } */
-            }
-        } catch (Exception e) {
-            logger.error("Erreur lors de la connexion au ViewThread", e);
-        }
-    }
-
     private void handleApplicationShutdown() {
         try {
             logger.info("Début de l'arrêt de l'application JavaFX");
-
-            // Arrêter le système multithread si disponible
-            /*fr.github.ethanpod.app.Main mainApp = fr.github.ethanpod.app.Main.getInstance();
-            if (mainApp != null) {
-                mainApp.shutdown();
-            }
-
-             */
-
-            // Fermer JavaFX
             Platform.exit();
 
         } catch (Exception e) {
@@ -125,15 +92,5 @@ public class Main extends Application {
     public void stop() throws Exception {
         logger.info("Méthode stop() de JavaFX appelée");
         super.stop();
-
-        // Cleanup supplémentaire si nécessaire
-        if (mainLayout != null) {
-            // mainLayout.cleanup();
-        }
-    }
-
-    // Getters pour accéder aux composants
-    public MainLayout getMainLayout() {
-        return mainLayout;
     }
 }

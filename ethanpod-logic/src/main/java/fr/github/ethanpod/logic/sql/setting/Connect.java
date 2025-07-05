@@ -9,7 +9,6 @@ import java.sql.DriverManager;
 
 public class Connect {
     private static final Logger logger = LogManager.getLogger();
-    private static Connect instance;
     private Connection connection;
 
     private Connect() {
@@ -25,13 +24,14 @@ public class Connect {
     }
 
     public static Connect getInstance() {
-        if (instance == null) {
-            instance = new Connect();
-        }
-        return instance;
+        return Holder.INSTANCE;
     }
 
     public Connection getConnection() {
         return connection;
+    }
+
+    private static class Holder {
+        private static final Connect INSTANCE = new Connect();
     }
 }

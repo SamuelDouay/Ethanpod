@@ -48,7 +48,7 @@ public class LogicThread implements Runnable {
                         task.run();
                     }
 
-                } catch (InterruptedException e) {
+                } catch (InterruptedException _) {
                     logger.info("🔵 Thread Logique interrompu");
                     Thread.currentThread().interrupt();
                     break;
@@ -157,7 +157,7 @@ public class LogicThread implements Runnable {
                 sendMessage("NAVIGATION_LIST_RESULT", MessageType.RESPONSE,
                         navigationList, requestId);
 
-            } catch (Exception e) {
+            } catch (InterruptedException e) {
                 logger.error("Erreur lors de la récupération de la liste de navigation", e);
                 sendMessage("ERROR: " + e.getMessage(), MessageType.ERROR,
                         null, requestId);

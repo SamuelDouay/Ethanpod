@@ -22,7 +22,6 @@ public class ViewThread implements Runnable {
     private final MessageRouter messageRouter;
     private final AtomicBoolean running = new AtomicBoolean(true);
     private final AsyncNavigationService navigationService;
-    private NavigationContainer navigationContainer;
     private UIUpdateCallback uiUpdateCallback;
 
     public ViewThread() {
@@ -126,9 +125,7 @@ public class ViewThread implements Runnable {
     }
 
     private void showErrorToUser(String errorMessage) {
-        // Ici, vous pourriez afficher une notification d'erreur à l'utilisateur
         logger.error("Affichage de l'erreur à l'utilisateur: {}", errorMessage);
-        // Exemple: Alert, Notification, etc.
     }
 
     // ================================
@@ -186,8 +183,6 @@ public class ViewThread implements Runnable {
             if (uiUpdateCallback != null) {
                 // Ici, vous mettriez à jour votre NavigationContainer
                 logger.info("🟢 Interface mise à jour avec {} éléments", navigationList.size());
-                //navigationContainer.updateItems(navigationList);
-
                 this.uiUpdateCallback.updateNavigationList(navigationList);
 
             } else {
@@ -210,9 +205,6 @@ public class ViewThread implements Runnable {
         try {
             // Mettre à jour le compteur d'inbox dans l'interface
             logger.info("🟢 Compteur inbox mis à jour: {}", count);
-            if (navigationContainer != null) {
-                //navigationContainer.updateInboxCount(count);
-            }
         } catch (Exception e) {
             logger.error("Erreur lors de la mise à jour du compteur inbox", e);
         }
@@ -243,12 +235,6 @@ public class ViewThread implements Runnable {
     // Méthodes pour l'intégration avec JavaFX
     public void onJavaFXReady() {
         logger.info("🟢 JavaFX est prêt - Interface utilisateur disponible");
-        // Vous pouvez maintenant initialiser l'UI si ce n'est pas déjà fait
-        if (navigationContainer == null) {
-            logger.info("🟢 Initialisation différée de l'interface utilisateur");
-            // Tentative de récupération du NavigationContainer depuis MainLayout
-            // Cette partie dépend de votre implémentation de MainLayout
-        }
     }
 
     public AsyncNavigationService getNavigationService() {
