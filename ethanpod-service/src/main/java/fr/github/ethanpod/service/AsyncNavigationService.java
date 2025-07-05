@@ -9,7 +9,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -17,23 +16,14 @@ import java.util.concurrent.TimeUnit;
 public class AsyncNavigationService {
     private static final Logger logger = LogManager.getLogger(AsyncNavigationService.class);
     private final ConcurrentHashMap<String, CompletableFuture<?>> pendingRequests;
-    private final BlockingQueue<ThreadMessage> messageQueue;
     private final MessageRouter messageRouter;
 
-    public AsyncNavigationService(BlockingQueue<ThreadMessage> messageQueue) {
-        this.messageQueue = messageQueue;
+    public AsyncNavigationService() {
         this.pendingRequests = new ConcurrentHashMap<>();
-        this.messageRouter = null;
+        this.messageRouter = MessageRouter.getInstance();
     }
 
-    public AsyncNavigationService(MessageRouter messageRouter) {
-        this.messageRouter = messageRouter;
-        this.pendingRequests = new ConcurrentHashMap<>();
-        this.messageQueue = null;
-    }
-
-
-    public CompletableFuture<List<NavigationItem>> getListAsync() {
+    public CompletableFuture<List<NavigationItem>> getListAsync(String sender) {
         String requestId = UUID.randomUUID().toString();
         CompletableFuture<List<NavigationItem>> future = new CompletableFuture<>();
 
@@ -52,7 +42,7 @@ public class AsyncNavigationService {
                 });
 
         // Envoyer la requête au thread de logique
-        sendRequestToLogic("GET_NAVIGATION_LIST", requestId);
+        sendRequestToLogic("GET_NAVIGATION_LIST", sender, requestId);
 
         return future;
     }
@@ -62,17 +52,17 @@ public class AsyncNavigationService {
         CompletableFuture<Integer> future = new CompletableFuture<>();
 
         pendingRequests.put(requestId, future);
-        sendRequestToLogic("GET_INBOX_COUNT", requestId);
+        sendRequestToLogic("GET_INBOX_COUNT", "ViewThread", requestId);
 
         return future;
     }
 
     public void refreshData() {
-        sendRequestToLogic("REFRESH_DATA", null);
+        sendRequestToLogic("REFRESH_DATA", "ViewThread", null);
     }
 
-    private void sendRequestToLogic(String request, String requestId) {
-        ThreadMessage message = new ThreadMessage(request, "ViewThread", "LogicThread",
+    private void sendRequestToLogic(String request, String sender, String requestId) {
+        ThreadMessage message = new ThreadMessage(request, sender, "LogicThread",
                 MessageType.REQUEST, null, requestId);
 
         logger.info("🟢 Service: Envoi message - De: {}, Pour: {}, Type: {}, Contenu: {}, ID: {}",

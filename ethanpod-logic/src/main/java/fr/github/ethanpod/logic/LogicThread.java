@@ -16,19 +16,17 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class LogicThread implements Runnable {
     private final Logger logger = LogManager.getLogger(LogicThread.class);
-
     private final BlockingQueue<Runnable> taskQueue = new LinkedBlockingQueue<>();
-    private final BlockingQueue<ThreadMessage> messageQueue; // SA PROPRE QUEUE
-    private final MessageRouter messageRouter; // ROUTEUR POUR ENVOYER DES MESSAGES
+    private final BlockingQueue<ThreadMessage> messageQueue;
+    private final MessageRouter messageRouter;
     private final AtomicBoolean running = new AtomicBoolean(true);
     private final AtomicInteger requestCounter = new AtomicInteger(0);
     private final NavigationDao navigationDao;
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
 
-    public LogicThread(BlockingQueue<ThreadMessage> messageQueue) {
+    public LogicThread() {
         this.messageRouter = MessageRouter.getInstance();
-        this.messageRouter.registerThread("LogicThread");
-        this.messageQueue = messageQueue;
+        this.messageQueue = this.messageRouter.registerThread("LogicThread");
         this.navigationDao = new NavigationDao();
     }
 
@@ -65,12 +63,11 @@ public class LogicThread implements Runnable {
     }
 
     private void startPeriodicTasks() {
-        // Tâche de rafraîchissement automatique des données
         scheduler.scheduleAtFixedRate(() -> {
             if (running.get()) {
                 refreshNavigationData();
             }
-        }, 5, 30, TimeUnit.SECONDS);
+        }, 5, 1, TimeUnit.HOURS);
     }
 
     private void processIncomingMessages() {
@@ -80,8 +77,6 @@ public class LogicThread implements Runnable {
             logger.info("🔵 Message reçu: De: {}, Type: {}, Contenu: {}",
                     message.getSender(), message.getType(), message.getContent());
 
-            // PLUS BESOIN de vérifier le destinataire car cette queue ne contient
-            // QUE les messages pour LogicThread
             switch (message.getType()) {
                 case REQUEST -> {
                     logger.info("🔵 Traitement REQUEST: {}", message.getContent());
@@ -126,10 +121,8 @@ public class LogicThread implements Runnable {
     private void handleNotification(ThreadMessage message) {
         logger.info("🔵 Notification reçue: {}", message.getContent());
 
-        // Répondre aux notifications importantes
         if ("UI_READY".equals(message.getContent())) {
             sendMessage("LOGIC_READY", MessageType.NOTIFICATION, null, null);
-            // Envoyer les données initiales
             getNavigationListAsync(UUID.randomUUID().toString());
         }
     }
@@ -145,8 +138,7 @@ public class LogicThread implements Runnable {
     // Fonctions Asynchrones de Logique
     // ================================
 
-    public CompletableFuture<List<NavigationItem>> getNavigationListAsync(String requestId) {
-        CompletableFuture<List<NavigationItem>> future = new CompletableFuture<>();
+    public void getNavigationListAsync(String requestId) {
         int opId = requestCounter.incrementAndGet();
 
         taskQueue.offer(() -> {
@@ -165,21 +157,15 @@ public class LogicThread implements Runnable {
                 sendMessage("NAVIGATION_LIST_RESULT", MessageType.RESPONSE,
                         navigationList, requestId);
 
-                future.complete(navigationList);
-
             } catch (Exception e) {
                 logger.error("Erreur lors de la récupération de la liste de navigation", e);
                 sendMessage("ERROR: " + e.getMessage(), MessageType.ERROR,
                         null, requestId);
-                future.completeExceptionally(e);
             }
         });
-
-        return future;
     }
 
-    public CompletableFuture<Integer> getInboxCountAsync(String requestId) {
-        CompletableFuture<Integer> future = new CompletableFuture<>();
+    public void getInboxCountAsync(String requestId) {
         int opId = requestCounter.incrementAndGet();
 
         taskQueue.offer(() -> {
@@ -193,17 +179,12 @@ public class LogicThread implements Runnable {
                 sendMessage("INBOX_COUNT_RESULT", MessageType.RESPONSE,
                         count, requestId);
 
-                future.complete(count);
-
             } catch (Exception e) {
                 logger.error("Erreur lors de la récupération du nombre d'inbox", e);
                 sendMessage("ERROR: " + e.getMessage(), MessageType.ERROR,
                         null, requestId);
-                future.completeExceptionally(e);
             }
         });
-
-        return future;
     }
 
     private void refreshNavigationData() {

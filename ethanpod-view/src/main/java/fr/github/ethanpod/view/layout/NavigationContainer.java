@@ -2,16 +2,12 @@ package fr.github.ethanpod.view.layout;
 
 import fr.github.ethanpod.core.item.ItemManager;
 import fr.github.ethanpod.core.item.NavigationItem;
-import fr.github.ethanpod.core.thread.MessageRouter;
-import fr.github.ethanpod.service.AsyncNavigationService;
-import fr.github.ethanpod.service.NavigationService;
+import fr.github.ethanpod.view.UIUpdateCallback;
 import fr.github.ethanpod.view.ViewThread;
 import fr.github.ethanpod.view.component.navigation.NavigationComponent;
 import fr.github.ethanpod.view.context.FeedContext;
 import fr.github.ethanpod.view.util.ColorThemeConstants;
 import fr.github.ethanpod.view.util.LayoutType;
-import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -28,26 +24,24 @@ import org.kordamp.ikonli.materialdesign2.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
-public class NavigationContainer {
+public class NavigationContainer implements UIUpdateCallback {
     private static final String FONT = "Inter";
     private static final Logger log = LogManager.getLogger(NavigationContainer.class);
 
     private final ItemManager manager;
     private final List<HBox> listNav;
-    private final NavigationService navigationService;
     private LayoutManager layoutManager;
+    private VBox scrollBox;
 
     public NavigationContainer() {
         this.manager = new ItemManager();
         this.listNav = new ArrayList<>();
-        this.navigationService = new NavigationService();
+        ViewThread.getInstance().setNavigationContainer(this);
     }
 
     public NavigationContainer(LayoutManager layoutManager) {
         this();
-        log.info("INIT NavContainer");
         this.layoutManager = layoutManager;
     }
 
@@ -97,6 +91,9 @@ public class NavigationContainer {
 
     private ScrollPane createScrollList() {
         VBox box = createList();
+        box.setId("#scrollListNavigationBar");
+        this.scrollBox = box;
+        /*
         log.info("=== DEBUT createScrollList ===");
 
         try {
@@ -106,7 +103,7 @@ public class NavigationContainer {
 
             viewThread.setNavigationContainer(this);
             AsyncNavigationService navService = new AsyncNavigationService(MessageRouter.getInstance());
-            log.info("NavigationService récupéré: {}", navService != null ? "OK" : "NULL");
+            log.info("NavigationService récupéré: {}", "OK");
 
             // Créer une Task pour encapsuler l'appel asynchrone
             Task<List<NavigationItem>> fetchItemsTask = new Task<>() {
@@ -115,8 +112,9 @@ public class NavigationContainer {
                     String threadName = Thread.currentThread().getName();
                     MessageRouter.getInstance().registerThread(threadName);
                     log.info("Appel getListAsync dans la Task...");
-                    CompletableFuture<List<NavigationItem>> future = navService.getListAsync();
+                    CompletableFuture<List<NavigationItem>> future = navService.getListAsync(threadName);
                     log.info("Future créé: {}", future != null ? "OK" : "NULL");
+                    assert future != null;
                     return future.get(); // Bloquant jusqu'à ce que le résultat soit disponible
                 }
             };
@@ -163,10 +161,12 @@ public class NavigationContainer {
         } catch (Exception e) {
             log.error("=== EXCEPTION GENERALE ===", e);
         }
+        log.info("=== FIN createScrollList ===");
+
+         */
 
         ScrollPane scrollPane = getScrollPane(box);
         VBox.setVgrow(scrollPane, Priority.ALWAYS);
-        log.info("=== FIN createScrollList ===");
         return scrollPane;
     }
 
@@ -231,5 +231,34 @@ public class NavigationContainer {
             }
             ((FontIcon) icon).setIconColor(ColorThemeConstants.getGrey800());
         }
+    }
+
+    @Override
+    public void updateNavigationList(List<NavigationItem> navigationList) {
+        scrollBox.getChildren().clear();
+        log.info("Get UpdateNavigationList");
+        for (NavigationItem navigationItem : navigationList) {
+            try {
+                Node component = createNavigationComponent(navigationItem, LayoutType.FEED);
+                scrollBox.getChildren().add(component);
+            } catch (Exception e) {
+                log.error("Erreur création composant pour {}", navigationItem, e);
+            }
+        }
+    }
+
+    @Override
+    public void updateInboxCount(Integer count) {
+
+    }
+
+    @Override
+    public void showError(String errorMessage) {
+
+    }
+
+    @Override
+    public void showNotification(String notification) {
+
     }
 }

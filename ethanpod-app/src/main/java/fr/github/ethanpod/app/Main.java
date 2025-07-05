@@ -1,6 +1,5 @@
 package fr.github.ethanpod.app;
 
-import fr.github.ethanpod.core.thread.ThreadMessage;
 import fr.github.ethanpod.logic.LogicThread;
 import fr.github.ethanpod.view.ViewThread;
 import javafx.application.Platform;
@@ -15,7 +14,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class Main {
     private static final Logger logger = LogManager.getLogger(Main.class);
     private static final AtomicBoolean isRunning = new AtomicBoolean(true);
-    // Référence statique pour permettre l'accès depuis ViewThread
     private ExecutorService logicExecutor;
     private ExecutorService viewExecutor;
     private CountDownLatch terminationLatch;
@@ -49,11 +47,9 @@ public class Main {
     }
 
     private void initializeSystem() {
-        BlockingQueue<ThreadMessage> messageQueue = new LinkedBlockingQueue<>();
-
         // Créer les threads
-        logicThread = new LogicThread(messageQueue);
-        viewThread = new ViewThread(messageQueue);
+        logicThread = new LogicThread();
+        viewThread = new ViewThread();
 
         // Initialiser les executors
         logicExecutor = createExecutor("LogicThread");
@@ -99,28 +95,54 @@ public class Main {
         return CompletableFuture.runAsync(() -> {
             logger.info("Démarrage du thread d'interface utilisateur");
             try {
-                // Démarrer le thread de traitement des messages en arrière-plan
-                Thread messageProcessingThread = new Thread(() -> viewThread.run());
-                messageProcessingThread.setDaemon(true);
+
+                Thread messageProcessingThread = new Thread(() -> {
+                    try {
+                        viewThread.run();
+                    } catch (Exception e) {
+                        logger.error("Erreur dans le ViewThread", e);
+                    }
+                }, "ViewThread");
+                messageProcessingThread.setDaemon(false);
                 messageProcessingThread.start();
 
-                // Attendre un peu pour que le ViewThread soit initialisé
+
                 Thread.sleep(500);
 
-                // Démarrer JavaFX sur le thread principal JavaFX
-                try {
-                    fr.github.ethanpod.view.Main.main(args);
-                } catch (Exception e) {
-                    logger.error("Erreur lors du démarrage de JavaFX", e);
-                }
-                
-                // Attendre que JavaFX se termine
+
+                Thread javafxThread = new Thread(() -> {
+                    try {
+                        fr.github.ethanpod.view.Main.main(args);
+                    } catch (Exception e) {
+                        logger.error("Erreur lors du démarrage de JavaFX", e);
+                        isRunning.set(false);
+                    }
+                });
+                javafxThread.setDaemon(false);
+                javafxThread.start();
+
+                // Attendre que JavaFX se termine ou que l'application s'arrête
                 while (isRunning.get() && !Thread.currentThread().isInterrupted()) {
                     Thread.sleep(1000);
+
+                    // Vérifier si JavaFX s'est terminé
+                    if (!javafxThread.isAlive()) {
+                        logger.info("JavaFX s'est terminé");
+                        break;
+                    }
+                }
+
+                // Attendre que les threads se terminent proprement
+                if (messageProcessingThread.isAlive()) {
+                    messageProcessingThread.join(5000); // Attendre 5 secondes max
+                }
+                if (javafxThread.isAlive()) {
+                    javafxThread.join(5000); // Attendre 5 secondes max
                 }
 
             } catch (InterruptedException e) {
                 logger.error("Erreur dans le thread d'interface utilisateur", e);
+                Thread.currentThread().interrupt();
             } finally {
                 logger.info("Fin du thread d'interface utilisateur");
                 terminationLatch.countDown();

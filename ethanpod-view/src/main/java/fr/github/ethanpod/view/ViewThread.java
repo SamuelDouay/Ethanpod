@@ -23,12 +23,12 @@ public class ViewThread implements Runnable {
     private final AtomicBoolean running = new AtomicBoolean(true);
     private final AsyncNavigationService navigationService;
     private NavigationContainer navigationContainer;
+    private UIUpdateCallback uiUpdateCallback;
 
-    public ViewThread(BlockingQueue<ThreadMessage> messageQueue) {
+    public ViewThread() {
         this.messageRouter = MessageRouter.getInstance();
-        this.messageRouter.registerThread("ViewThread");
-        this.messageQueue = messageQueue;
-        this.navigationService = new AsyncNavigationService(messageQueue);
+        this.messageQueue = this.messageRouter.registerThread("ViewThread");
+        this.navigationService = new AsyncNavigationService();
         instance = this;
     }
 
@@ -146,7 +146,7 @@ public class ViewThread implements Runnable {
     public void loadNavigationData() {
         logger.info("🟢 View: Chargement des données de navigation");
 
-        navigationService.getListAsync().thenAccept(navigationList -> {
+        navigationService.getListAsync("ViewThread").thenAccept(navigationList -> {
             logger.info("🟢 View: {} éléments de navigation reçus", navigationList.size());
             updateNavigationUI(navigationList);
         }).exceptionally(throwable -> {
@@ -183,10 +183,13 @@ public class ViewThread implements Runnable {
 
     private void doUpdateNavigationUI(List<NavigationItem> navigationList) {
         try {
-            if (navigationContainer != null) {
+            if (uiUpdateCallback != null) {
                 // Ici, vous mettriez à jour votre NavigationContainer
                 logger.info("🟢 Interface mise à jour avec {} éléments", navigationList.size());
                 //navigationContainer.updateItems(navigationList);
+
+                this.uiUpdateCallback.updateNavigationList(navigationList);
+
             } else {
                 logger.warn("NavigationContainer n'est pas encore initialisé");
             }
@@ -216,7 +219,7 @@ public class ViewThread implements Runnable {
     }
 
     public void setNavigationContainer(NavigationContainer navigationContainer) {
-        this.navigationContainer = navigationContainer;
+        this.uiUpdateCallback = navigationContainer;
         logger.info("🟢 NavigationContainer configuré dans ViewThread");
     }
 
