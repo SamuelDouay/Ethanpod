@@ -40,31 +40,27 @@ public class MessageRouter {
                     message.getRequestId(), message.getSender());
         }
 
-        String receiver = message.getReceiver();
         if (message.getType() == MessageType.RESPONSE && message.getRequestId() != null) {
-            String originalSender = requestSenders.get(message.getRequestId());
-            if (originalSender != null) {
-                receiver = originalSender;
-                logger.debug("📬 Réponse reroutée vers l'expéditeur original - ID: {}, Vers: {}",
-                        message.getRequestId(), receiver);
-                requestSenders.remove(message.getRequestId());
-            }
+            logger.debug("📬 Réponse reroutée vers l'expéditeur original - ID: {}, Vers: {}",
+                    message.getRequestId(), message.getReceiver());
+            requestSenders.remove(message.getRequestId());
+
         }
 
-        BlockingQueue<ThreadMessage> targetQueue = threadQueues.get(receiver);
+        BlockingQueue<ThreadMessage> targetQueue = threadQueues.get(message.getReceiver());
 
         if (targetQueue == null) {
-            logger.error("📬 Thread destinataire {} non trouvé pour le message: {}", receiver, message);
+            logger.error("📬 Thread destinataire {} non trouvé pour le message: {}", message.getReceiver(), message);
             return false;
         }
 
         try {
             targetQueue.put(message);
-            logger.debug("📬 Message de {} routé vers {}: {}", message.getSender(), receiver, message.getContent());
+            logger.debug("📬 Message de {} routé vers {}: {}", message.getSender(), message.getReceiver(), message.getContent());
             return true;
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            logger.error("📬 Erreur lors du routage du message vers {}", receiver, e);
+            logger.error("📬 Erreur lors du routage du message vers {}", message.getReceiver(), e);
             return false;
         }
     }
