@@ -141,34 +141,35 @@ public class LogicThread implements Runnable {
     public void getNavigationListAsync(String requestId) {
         int opId = requestCounter.incrementAndGet();
 
-        taskQueue.offer(() -> {
+        submitTask(() -> {
             try {
                 logger.info("🔵 Logique [{}]: Récupération liste navigation", opId);
                 logger.info("🔵 Logique : requete id {}", requestId);
 
                 List<NavigationItem> navigationList = navigationDao.getList();
-
-                // Simulation de traitement
-                Thread.sleep(500);
+                Thread.sleep(500); // remove 
 
                 logger.info("🔵 Logique [{}]: {} éléments récupérés", opId, navigationList.size());
-
-                // Envoyer le résultat au thread View
                 sendMessage("NAVIGATION_LIST_RESULT", MessageType.RESPONSE,
                         navigationList, requestId);
 
             } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                logger.error("Erreur lors de la récupération de la liste de navigation", e);
+                sendMessage("ERROR: " + e.getMessage(), MessageType.ERROR,
+                        null, requestId);
+            } catch (Exception e) {
                 logger.error("Erreur lors de la récupération de la liste de navigation", e);
                 sendMessage("ERROR: " + e.getMessage(), MessageType.ERROR,
                         null, requestId);
             }
-        });
+        }, requestId);
     }
 
     public void getInboxCountAsync(String requestId) {
         int opId = requestCounter.incrementAndGet();
 
-        taskQueue.offer(() -> {
+        submitTask(() -> {
             try {
                 logger.info("🔵 Logique [{}]: Récupération nombre inbox", opId);
 
@@ -184,13 +185,13 @@ public class LogicThread implements Runnable {
                 sendMessage("ERROR: " + e.getMessage(), MessageType.ERROR,
                         null, requestId);
             }
-        });
+        }, requestId);
     }
 
     private void refreshNavigationData() {
         logger.info("🔵 Logique: Rafraîchissement automatique des données");
 
-        taskQueue.offer(() -> {
+        submitTask(() -> {
             try {
                 List<NavigationItem> updatedList = navigationDao.getList();
                 int inboxCount = navigationDao.getNumberOfInbox();
@@ -207,7 +208,19 @@ public class LogicThread implements Runnable {
             } catch (Exception e) {
                 logger.error("Erreur lors du rafraîchissement des données", e);
             }
-        });
+        }, null);
+    }
+
+    private void submitTask(Runnable task, String requestId) {
+        try {
+            taskQueue.put(task);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            logger.error("🔵 Interruption lors de l'ajout de la tâche à la queue", e);
+            if (requestId != null) {
+                sendMessage("ERROR: Task submission interrupted", MessageType.ERROR, null, requestId);
+            }
+        }
     }
 
     private void sendMessage(String content, MessageType type, Object data, String requestId) {

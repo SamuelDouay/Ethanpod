@@ -177,16 +177,6 @@ public class NavigationContainer implements UIUpdateCallback {
 
     @Override
     public void updateInboxCount(Integer count) {
-
-    }
-
-    @Override
-    public void showError(String errorMessage) {
-
-    }
-
-    @Override
-    public void showNotification(String notification) {
-
+        // no
     }
 }

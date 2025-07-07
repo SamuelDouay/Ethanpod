@@ -16,6 +16,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ViewThread implements Runnable {
     private static final Logger logger = LogManager.getLogger(ViewThread.class);
+    private static final String THREAD_NAME = "ViewThread";
     // Instance statique pour accès depuis Main JavaFX
     private static ViewThread instance;
     private final BlockingQueue<ThreadMessage> messageQueue;
@@ -26,7 +27,7 @@ public class ViewThread implements Runnable {
 
     public ViewThread() {
         this.messageRouter = MessageRouter.getInstance();
-        this.messageQueue = this.messageRouter.registerThread("ViewThread");
+        this.messageQueue = this.messageRouter.registerThread(THREAD_NAME);
         this.navigationService = new AsyncNavigationService();
         instance = this;
     }
@@ -143,7 +144,7 @@ public class ViewThread implements Runnable {
     public void loadNavigationData() {
         logger.info("🟢 View: Chargement des données de navigation");
 
-        navigationService.getListAsync("ViewThread").thenAccept(navigationList -> {
+        navigationService.getListAsync(THREAD_NAME).thenAccept(navigationList -> {
             logger.info("🟢 View: {} éléments de navigation reçus", navigationList.size());
             updateNavigationUI(navigationList);
         }).exceptionally(throwable -> {
@@ -212,11 +213,11 @@ public class ViewThread implements Runnable {
 
     public void setNavigationContainer(NavigationContainer navigationContainer) {
         this.uiUpdateCallback = navigationContainer;
-        logger.info("🟢 NavigationContainer configuré dans ViewThread");
+        logger.info("🟢 NavigationContainer configuré dans {}", THREAD_NAME);
     }
 
     private void sendNotification(String content) {
-        ThreadMessage message = new ThreadMessage(content, "ViewThread", "LogicThread",
+        ThreadMessage message = new ThreadMessage(content, THREAD_NAME, "LogicThread",
                 MessageType.NOTIFICATION, null, null);
 
         boolean success = messageRouter.routeMessage(message);
