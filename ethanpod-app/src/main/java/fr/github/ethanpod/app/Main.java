@@ -94,66 +94,113 @@ public class Main {
     private CompletableFuture<Void> startViewThread(String[] args) {
         return CompletableFuture.runAsync(() -> {
             logger.info("Démarrage du thread d'interface utilisateur");
+
+            Thread messageProcessingThread = null;
+            Thread javafxThread = null;
+
             try {
-
-                Thread messageProcessingThread = new Thread(() -> {
-                    try {
-                        viewThread.run();
-                    } catch (Exception e) {
-                        logger.error("Erreur dans le ViewThread", e);
-                    }
-                }, "ViewThread");
-                messageProcessingThread.setDaemon(false);
-                messageProcessingThread.start();
-
-
+                messageProcessingThread = startMessageProcessingThread();
                 Thread.sleep(500);
-
-
-                Thread javafxThread = new Thread(() -> {
-                    try {
-                        fr.github.ethanpod.view.Main.main(args);
-                    } catch (Exception e) {
-                        logger.error("Erreur lors du démarrage de JavaFX", e);
-                        isRunning.set(false);
-                    }
-                });
-                javafxThread.setDaemon(false);
-                javafxThread.start();
-
-                // Attendre que JavaFX se termine ou que l'application s'arrête
-                while (isRunning.get() && !Thread.currentThread().isInterrupted()) {
-                    Thread.sleep(1000);
-
-                    // Vérifier si JavaFX s'est terminé
-                    if (!javafxThread.isAlive()) {
-                        logger.info("JavaFX s'est terminé");
-                        break;
-                    }
-                }
-
-                // Attendre que les threads se terminent proprement
-                if (messageProcessingThread.isAlive()) {
-                    messageProcessingThread.join(5000); // Attendre 5 secondes max
-                }
-                if (javafxThread.isAlive()) {
-                    javafxThread.join(5000); // Attendre 5 secondes max
-                }
+                javafxThread = startJavaFXThread(args);
+                monitorThreads(javafxThread);
+                waitForThreadsCompletion(messageProcessingThread, javafxThread);
 
             } catch (InterruptedException e) {
-                logger.error("Erreur dans le thread d'interface utilisateur", e);
+                logger.error("Interruption du thread d'interface utilisateur", e);
                 Thread.currentThread().interrupt();
+            } catch (Exception e) {
+                logger.error("Erreur dans le thread d'interface utilisateur", e);
             } finally {
-                logger.info("Fin du thread d'interface utilisateur");
-                terminationLatch.countDown();
-                isRunning.set(false);
-
-                // Arrêter le thread de logique
-                if (logicThread != null) {
-                    logicThread.stop();
-                }
+                cleanupViewThread();
             }
         }, viewExecutor);
+    }
+
+    private Thread startMessageProcessingThread() {
+        Thread messageProcessingThread = new Thread(() -> {
+            try {
+                viewThread.run();
+            } catch (Exception e) {
+                logger.error("Erreur dans le ViewThread", e);
+                isRunning.set(false);
+            }
+        }, "ViewThread");
+
+        messageProcessingThread.setDaemon(false);
+        messageProcessingThread.start();
+        logger.info("Thread de traitement des messages démarré");
+
+        return messageProcessingThread;
+    }
+
+    private Thread startJavaFXThread(String[] args) {
+        Thread javafxThread = new Thread(() -> {
+            try {
+                fr.github.ethanpod.view.Main.main(args);
+            } catch (Exception e) {
+                logger.error("Erreur lors du démarrage de JavaFX", e);
+                isRunning.set(false);
+            }
+        }, "JavaFX-Thread");
+
+        javafxThread.setDaemon(false);
+        javafxThread.start();
+        logger.info("Thread JavaFX démarré");
+
+        return javafxThread;
+    }
+
+    private void monitorThreads(Thread javafxThread) throws InterruptedException {
+        logger.info("Surveillance des threads de l'interface utilisateur");
+
+        while (isRunning.get() && !Thread.currentThread().isInterrupted()) {
+            Thread.sleep(1000);
+
+            // Vérifier si JavaFX s'est terminé
+            if (!javafxThread.isAlive()) {
+                logger.info("JavaFX s'est terminé naturellement");
+                break;
+            }
+        }
+    }
+
+    private void waitForThreadsCompletion(Thread messageProcessingThread, Thread javafxThread)
+            throws InterruptedException {
+        
+        if (messageProcessingThread != null && messageProcessingThread.isAlive()) {
+            logger.info("Attente de la fin du thread de traitement des messages...");
+            messageProcessingThread.join(5000);
+
+            if (messageProcessingThread.isAlive()) {
+                logger.warn("Le thread de traitement des messages ne s'est pas terminé dans les temps");
+            }
+        }
+
+        if (javafxThread != null && javafxThread.isAlive()) {
+            logger.info("Attente de la fin du thread JavaFX...");
+            javafxThread.join(5000);
+
+            if (javafxThread.isAlive()) {
+                logger.warn("Le thread JavaFX ne s'est pas terminé dans les temps");
+            }
+        }
+    }
+
+    private void cleanupViewThread() {
+        logger.info("Nettoyage du thread d'interface utilisateur");
+
+        // Marquer l'application comme arrêtée
+        isRunning.set(false);
+
+        // Arrêter le thread de logique métier
+        if (logicThread != null) {
+            logicThread.stop();
+        }
+
+        // Signaler la fin du thread view
+        terminationLatch.countDown();
+
+        logger.info("Fin du thread d'interface utilisateur");
     }
 
     private Void handleThreadException(Throwable e) {
@@ -229,31 +276,5 @@ public class Main {
             logger.warn("Interruption lors de l'arrêt du thread {}", name);
             executor.shutdownNow();
         }
-    }
-
-    public void shutdown() {
-        logger.info("Demande d'arrêt de l'application reçue");
-        isRunning.set(false);
-
-        if (logicThread != null) logicThread.stop();
-        if (viewThread != null) viewThread.stop();
-
-        if (logicExecutor != null) shutdownExecutor(logicExecutor, "Logique");
-        if (viewExecutor != null) shutdownExecutor(viewExecutor, "Vue");
-
-        logger.info("Tous les threads ont été arrêtés");
-    }
-
-    // Getters pour accéder aux threads depuis d'autres classes
-    public LogicThread getLogicThread() {
-        return logicThread;
-    }
-
-    public ViewThread getViewThread() {
-        return viewThread;
-    }
-
-    public boolean isRunning() {
-        return isRunning.get();
     }
 }
