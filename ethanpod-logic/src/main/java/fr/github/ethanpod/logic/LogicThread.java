@@ -110,6 +110,10 @@ public class LogicThread implements Runnable {
                 logger.info("🔵 Démarrage REFRESH_DATA");
                 refreshNavigationData();
             }
+            case "INBOX_COUNT_REQUEST" -> {
+                logger.info("🔵 Démarrage INBOX_COUNT_REQUEST pour ID: {}", requestId);
+                getInboxCountAsync(requestId);
+            }
             default -> {
                 logger.warn("🔵 Requête non reconnue: '{}'", content);
                 // Envoyer une erreur en retour
@@ -177,7 +181,7 @@ public class LogicThread implements Runnable {
 
                 logger.info("🔵 Logique [{}]: {} éléments dans inbox", opId, count);
 
-                sendMessage("INBOX_COUNT_RESULT", MessageType.RESPONSE,
+                sendMessage("INBOX_COUNT_RESPONSE", MessageType.RESPONSE,
                         count, requestId);
 
             } catch (Exception e) {

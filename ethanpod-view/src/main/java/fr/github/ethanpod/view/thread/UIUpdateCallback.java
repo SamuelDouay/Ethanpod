@@ -1,4 +1,4 @@
-package fr.github.ethanpod.view;
+package fr.github.ethanpod.view.thread;
 
 import fr.github.ethanpod.core.item.NavigationItem;
 

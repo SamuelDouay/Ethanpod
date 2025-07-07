@@ -2,10 +2,10 @@ package fr.github.ethanpod.view.layout;
 
 import fr.github.ethanpod.core.item.ItemManager;
 import fr.github.ethanpod.core.item.NavigationItem;
-import fr.github.ethanpod.view.UIUpdateCallback;
-import fr.github.ethanpod.view.ViewThread;
 import fr.github.ethanpod.view.component.navigation.NavigationComponent;
 import fr.github.ethanpod.view.context.FeedContext;
+import fr.github.ethanpod.view.thread.UIUpdateCallback;
+import fr.github.ethanpod.view.thread.ViewThread;
 import fr.github.ethanpod.view.util.ColorThemeConstants;
 import fr.github.ethanpod.view.util.LayoutType;
 import javafx.geometry.Insets;

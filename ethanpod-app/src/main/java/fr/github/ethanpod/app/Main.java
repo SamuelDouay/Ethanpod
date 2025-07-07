@@ -1,7 +1,7 @@
 package fr.github.ethanpod.app;
 
 import fr.github.ethanpod.logic.LogicThread;
-import fr.github.ethanpod.view.ViewThread;
+import fr.github.ethanpod.view.thread.ViewThread;
 import javafx.application.Platform;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -166,7 +166,7 @@ public class Main {
 
     private void waitForThreadsCompletion(Thread messageProcessingThread, Thread javafxThread)
             throws InterruptedException {
-        
+
         if (messageProcessingThread != null && messageProcessingThread.isAlive()) {
             logger.info("Attente de la fin du thread de traitement des messages...");
             messageProcessingThread.join(5000);

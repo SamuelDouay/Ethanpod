@@ -13,7 +13,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-public class AsyncNavigationService {
+public class AsyncNavigationService implements AsyncService {
     private static final Logger logger = LogManager.getLogger(AsyncNavigationService.class);
     private final ConcurrentHashMap<String, CompletableFuture<?>> pendingRequests;
     private final MessageRouter messageRouter;
@@ -61,6 +61,21 @@ public class AsyncNavigationService {
         sendRequestToLogic("REFRESH_DATA", "ViewThread", null);
     }
 
+    @Override
+    public void stop() {
+
+    }
+
+    @Override
+    public String getServiceId() {
+        return "";
+    }
+
+    @Override
+    public boolean isActive() {
+        return false;
+    }
+
     private void sendRequestToLogic(String request, String sender, String requestId) {
         ThreadMessage message = new ThreadMessage(request, sender, "LogicThread",
                 MessageType.REQUEST, null, requestId);
@@ -69,7 +84,6 @@ public class AsyncNavigationService {
                 message.getSender(), message.getReceiver(), message.getType(),
                 message.getContent(), message.getRequestId());
 
-        // CORRECTION: Utiliser le routeur au lieu d'une queue directe
         boolean success = messageRouter.routeMessage(message);
         if (success) {
             logger.info("🟢 Service: Message routé avec succès vers LogicThread");
@@ -78,6 +92,12 @@ public class AsyncNavigationService {
         }
     }
 
+    @Override
+    public void initialize() {
+
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public void handleResponse(ThreadMessage message) {
         String requestId = message.getRequestId();

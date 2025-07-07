@@ -1,10 +1,10 @@
-package fr.github.ethanpod.view;
+package fr.github.ethanpod.view.thread;
 
 import fr.github.ethanpod.core.item.NavigationItem;
 import fr.github.ethanpod.core.thread.MessageRouter;
 import fr.github.ethanpod.core.thread.MessageType;
 import fr.github.ethanpod.core.thread.ThreadMessage;
-import fr.github.ethanpod.service.AsyncNavigationService;
+import fr.github.ethanpod.service.ServiceManager;
 import fr.github.ethanpod.view.layout.NavigationContainer;
 import javafx.application.Platform;
 import org.apache.logging.log4j.LogManager;
@@ -17,18 +17,20 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ViewThread implements Runnable {
     private static final Logger logger = LogManager.getLogger(ViewThread.class);
     private static final String THREAD_NAME = "ViewThread";
+
     // Instance statique pour accès depuis Main JavaFX
     private static ViewThread instance;
+
     private final BlockingQueue<ThreadMessage> messageQueue;
     private final MessageRouter messageRouter;
     private final AtomicBoolean running = new AtomicBoolean(true);
-    private final AsyncNavigationService navigationService;
+    private final ServiceManager serviceManager;
     private UIUpdateCallback uiUpdateCallback;
 
     public ViewThread() {
         this.messageRouter = MessageRouter.getInstance();
         this.messageQueue = this.messageRouter.registerThread(THREAD_NAME);
-        this.navigationService = new AsyncNavigationService();
+        this.serviceManager = new ServiceManager();
         instance = this;
     }
 
@@ -43,16 +45,17 @@ public class ViewThread implements Runnable {
         // Notifier que l'interface est prête
         sendNotification("UI_READY");
 
+        // Initialiser tous les services
+        serviceManager.initializeAllServices();
+
         while (running.get()) {
             try {
-
                 processIncomingMessages();
-
                 Thread.sleep(100); // Éviter une boucle trop intensive
 
                 // Vérifier si le thread principal demande l'arrêt
                 if (Thread.currentThread().isInterrupted()) {
-                    logger.info("🟢 Thread View interrompu volontermement");
+                    logger.info("🟢 Thread View interrompu volontairement");
                     break;
                 }
             } catch (InterruptedException _) {
@@ -84,8 +87,8 @@ public class ViewThread implements Runnable {
     }
 
     private void handleResponse(ThreadMessage message) {
-        // Déléguer au service pour gérer les réponses asynchrones
-        navigationService.handleResponse(message);
+        // Déléguer au ServiceManager pour router vers le bon service
+        serviceManager.handleResponse(message);
     }
 
     private void handleDataUpdate(ThreadMessage message) {
@@ -136,7 +139,7 @@ public class ViewThread implements Runnable {
     public void initializeUI() {
         logger.info("🟢 View: Initialisation de l'interface utilisateur");
 
-        // Charger les données de navigation de manière asynchrone
+        // Charger les données via les services
         loadNavigationData();
         loadInboxCount();
     }
@@ -144,48 +147,69 @@ public class ViewThread implements Runnable {
     public void loadNavigationData() {
         logger.info("🟢 View: Chargement des données de navigation");
 
-        navigationService.getListAsync(THREAD_NAME).thenAccept(navigationList -> {
-            logger.info("🟢 View: {} éléments de navigation reçus", navigationList.size());
-            updateNavigationUI(navigationList);
-        }).exceptionally(throwable -> {
-            logger.error("🔴 Erreur lors du chargement de la navigation", throwable);
-            return null;
-        });
+        serviceManager.getNavigationService().getListAsync(THREAD_NAME)
+                .thenAccept(navigationList -> {
+                    logger.info("🟢 View: {} éléments de navigation reçus", navigationList.size());
+                    updateNavigationUI(navigationList);
+                })
+                .exceptionally(throwable -> {
+                    logger.error("🔴 Erreur lors du chargement de la navigation", throwable);
+                    return null;
+                });
     }
 
     public void loadInboxCount() {
         logger.info("🟢 View: Chargement du nombre d'éléments inbox");
 
-        navigationService.getInboxCountAsync().thenAccept(count -> {
-            logger.info("🟢 View: {} éléments dans l'inbox", count);
-            updateInboxCount(count);
-        }).exceptionally(throwable -> {
-            logger.error("🔴 Erreur lors du chargement du compte inbox", throwable);
-            return null;
-        });
+        serviceManager.getInboxService().getInboxCountAsync()
+                .thenAccept(count -> {
+                    logger.info("🟢 View: {} éléments dans l'inbox", count);
+                    updateInboxCount(count);
+                })
+                .exceptionally(throwable -> {
+                    logger.error("🔴 Erreur lors du chargement du compte inbox", throwable);
+                    return null;
+                });
     }
 
     public void refreshAllData() {
         logger.info("🟢 View: Rafraîchissement de toutes les données");
-        navigationService.refreshData();
+        serviceManager.refreshAllData();
+    }
+
+    /**
+     * Marque un élément de l'inbox comme lu
+     */
+    public void markInboxItemAsRead(String itemId) {
+        serviceManager.getInboxService().markAsReadAsync(itemId)
+                .thenAccept(success -> {
+                    if (success) {
+                        logger.info("🟢 Élément {} marqué comme lu", itemId);
+                        // Recharger le count
+                        loadInboxCount();
+                    } else {
+                        logger.warn("🟡 Échec du marquage comme lu pour {}", itemId);
+                    }
+                })
+                .exceptionally(throwable -> {
+                    logger.error("🔴 Erreur lors du marquage comme lu", throwable);
+                    return null;
+                });
     }
 
     private void updateNavigationUI(List<NavigationItem> navigationList) {
-        // Mettre à jour l'interface sur le thread JavaFX
-        if (Platform.isFxApplicationThread()) {
-            doUpdateNavigationUI(navigationList);
-        } else {
-            Platform.runLater(() -> doUpdateNavigationUI(navigationList));
-        }
+        Platform.runLater(() -> doUpdateNavigationUI(navigationList));
+    }
+
+    private void updateInboxCount(Integer count) {
+        Platform.runLater(() -> doUpdateInboxCount(count));
     }
 
     private void doUpdateNavigationUI(List<NavigationItem> navigationList) {
         try {
             if (uiUpdateCallback != null) {
-                // Ici, vous mettriez à jour votre NavigationContainer
                 logger.info("🟢 Interface mise à jour avec {} éléments", navigationList.size());
                 this.uiUpdateCallback.updateNavigationList(navigationList);
-
             } else {
                 logger.warn("NavigationContainer n'est pas encore initialisé");
             }
@@ -194,18 +218,14 @@ public class ViewThread implements Runnable {
         }
     }
 
-    private void updateInboxCount(Integer count) {
-        if (Platform.isFxApplicationThread()) {
-            doUpdateInboxCount(count);
-        } else {
-            Platform.runLater(() -> doUpdateInboxCount(count));
-        }
-    }
-
     private void doUpdateInboxCount(Integer count) {
         try {
-            // Mettre à jour le compteur d'inbox dans l'interface
-            logger.info("🟢 Compteur inbox mis à jour: {}", count);
+            if (uiUpdateCallback != null) {
+                logger.info("🟢 Compteur inbox mis à jour: {}", count);
+                this.uiUpdateCallback.updateInboxCount(count);
+            } else {
+                logger.warn("NavigationContainer n'est pas encore initialisé");
+            }
         } catch (Exception e) {
             logger.error("Erreur lors de la mise à jour du compteur inbox", e);
         }
@@ -231,14 +251,12 @@ public class ViewThread implements Runnable {
     public void stop() {
         logger.info("🟢 Arrêt du thread d'interface demandé");
         running.set(false);
+
+        // Arrêter tous les services
+        serviceManager.stopAllServices();
     }
 
-    // Méthodes pour l'intégration avec JavaFX
     public void onJavaFXReady() {
         logger.info("🟢 JavaFX est prêt - Interface utilisateur disponible");
-    }
-
-    public AsyncNavigationService getNavigationService() {
-        return navigationService;
     }
 }

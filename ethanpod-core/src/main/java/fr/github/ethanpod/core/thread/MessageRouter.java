@@ -23,7 +23,7 @@ public class MessageRouter {
 
     public void registerThread(String threadName, BlockingQueue<ThreadMessage> queue) {
         threadQueues.put(threadName, queue);
-        logger.info("📬 Thread '{}' enregistré avec sa queue dédiée", threadName);
+        logger.info("📬 Thread {} enregistré avec sa queue dédiée", threadName);
     }
 
     public BlockingQueue<ThreadMessage> registerThread(String threadName) {
@@ -54,23 +54,19 @@ public class MessageRouter {
         BlockingQueue<ThreadMessage> targetQueue = threadQueues.get(receiver);
 
         if (targetQueue == null) {
-            logger.error("📬 Thread destinataire '{}' non trouvé pour le message: {}", receiver, message);
+            logger.error("📬 Thread destinataire {} non trouvé pour le message: {}", receiver, message);
             return false;
         }
 
         try {
             targetQueue.put(message);
-            logger.debug("📬 Message de {} routé vers '{}': {}", message.getSender(), receiver, message.getContent());
+            logger.debug("📬 Message de {} routé vers {}: {}", message.getSender(), receiver, message.getContent());
             return true;
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            logger.error("📬 Erreur lors du routage du message vers '{}'", receiver, e);
+            logger.error("📬 Erreur lors du routage du message vers {}", receiver, e);
             return false;
         }
-    }
-
-    public BlockingQueue<ThreadMessage> getQueueForThread(String threadName) {
-        return threadQueues.get(threadName);
     }
 
     private static class Holder {

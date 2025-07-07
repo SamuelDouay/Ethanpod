@@ -1,6 +1,7 @@
 package fr.github.ethanpod.view;
 
 import fr.github.ethanpod.view.layout.MainLayout;
+import fr.github.ethanpod.view.thread.ViewThread;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
