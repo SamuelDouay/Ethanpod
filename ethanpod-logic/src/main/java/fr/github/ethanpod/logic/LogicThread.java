@@ -9,20 +9,31 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class LogicThread implements Runnable {
     private final Logger logger = LogManager.getLogger(LogicThread.class);
-    private final BlockingQueue<Runnable> taskQueue = new LinkedBlockingQueue<>();
     private final BlockingQueue<ThreadMessage> messageQueue;
     private final MessageRouter messageRouter;
     private final AtomicBoolean running = new AtomicBoolean(true);
     private final AtomicInteger requestCounter = new AtomicInteger(0);
     private final NavigationDao navigationDao;
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
+    private final ExecutorService asyncExecutor = Executors.newCachedThreadPool(
+            new ThreadFactory() {
+                private final AtomicInteger threadNumber = new AtomicInteger(1);
+
+                @Override
+                public Thread newThread(Runnable r) {
+                    Thread thread = new Thread(r);
+                    thread.setName("LogicThread-" + threadNumber.getAndIncrement());
+                    thread.setDaemon(true);
+                    return thread;
+                }
+            }
+    );
 
     public LogicThread() {
         this.messageRouter = MessageRouter.getInstance();
@@ -39,15 +50,8 @@ public class LogicThread implements Runnable {
 
             while (running.get()) {
                 try {
-
                     processIncomingMessages();
-
-                    Runnable task = taskQueue.poll(100, TimeUnit.MILLISECONDS);
-                    if (task != null) {
-                        logger.debug("🔵 Exécution d'une tâche de la queue");
-                        task.run();
-                    }
-
+                    Thread.sleep(100); // Petite pause pour éviter la surcharge CPU
                 } catch (InterruptedException _) {
                     logger.info("🔵 Thread Logique interrompu");
                     Thread.currentThread().interrupt();
@@ -58,6 +62,7 @@ public class LogicThread implements Runnable {
             }
         } finally {
             scheduler.shutdown();
+            asyncExecutor.shutdown();
             logger.info("🔵 Thread Logique terminé");
         }
     }
@@ -65,9 +70,9 @@ public class LogicThread implements Runnable {
     private void startPeriodicTasks() {
         scheduler.scheduleAtFixedRate(() -> {
             if (running.get()) {
-                refreshNavigationData();
+                refreshNavigationDataAsync();
             }
-        }, 5, 1, TimeUnit.HOURS);
+        }, 1, 1, TimeUnit.HOURS);
     }
 
     private void processIncomingMessages() {
@@ -102,21 +107,16 @@ public class LogicThread implements Runnable {
                 logger.info("🔵 Démarrage GET_NAVIGATION_LIST pour ID: {}", requestId);
                 getNavigationListAsync(requestId);
             }
-            case "GET_INBOX_COUNT" -> {
+            case "GET_INBOX_COUNT", "INBOX_COUNT_REQUEST" -> {
                 logger.info("🔵 Démarrage GET_INBOX_COUNT pour ID: {}", requestId);
                 getInboxCountAsync(requestId);
             }
             case "REFRESH_DATA" -> {
                 logger.info("🔵 Démarrage REFRESH_DATA");
-                refreshNavigationData();
-            }
-            case "INBOX_COUNT_REQUEST" -> {
-                logger.info("🔵 Démarrage INBOX_COUNT_REQUEST pour ID: {}", requestId);
-                getInboxCountAsync(requestId);
+                refreshNavigationDataAsync();
             }
             default -> {
                 logger.warn("🔵 Requête non reconnue: {}", content);
-                // Envoyer une erreur en retour
                 sendMessage("ERROR: Unknown request: " + content, MessageType.ERROR, null, requestId);
             }
         }
@@ -127,7 +127,6 @@ public class LogicThread implements Runnable {
 
         if ("UI_READY".equals(message.getContent())) {
             sendMessage("LOGIC_READY", MessageType.NOTIFICATION, null, null);
-            getNavigationListAsync(UUID.randomUUID().toString());
         }
     }
 
@@ -135,96 +134,94 @@ public class LogicThread implements Runnable {
         logger.info("🔵 Arrêt du thread de logique demandé");
         running.set(false);
         scheduler.shutdown();
+        asyncExecutor.shutdown();
     }
 
-
     // ================================
-    // Fonctions Asynchrones de Logique
+    // Fonctions Asynchrones avec CompletableFuture
     // ================================
 
     public void getNavigationListAsync(String requestId) {
         int opId = requestCounter.incrementAndGet();
 
-        submitTask(() -> {
-            try {
-                logger.info("🔵 Logique [{}]: Récupération liste navigation", opId);
-                logger.info("🔵 Logique : requete id {}", requestId);
+        CompletableFuture
+                .supplyAsync(() -> {
+                    try {
+                        logger.info("🔵 Logique [{}]: Récupération liste navigation", opId);
+                        logger.info("🔵 Logique : requete id {}", requestId);
 
-                List<NavigationItem> navigationList = navigationDao.getList();
-                Thread.sleep(500); // remove 
+                        List<NavigationItem> navigationList = navigationDao.getList();
+                        Thread.sleep(500); // remove
 
-                logger.info("🔵 Logique [{}]: {} éléments récupérés", opId, navigationList.size());
-                sendMessage("NAVIGATION_LIST_RESULT", MessageType.RESPONSE,
-                        navigationList, requestId);
+                        logger.info("🔵 Logique [{}]: {} éléments récupérés", opId, navigationList.size());
+                        return navigationList;
 
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                logger.error("Erreur lors de la récupération de la liste de navigation", e);
-                sendMessage("ERROR: " + e.getMessage(), MessageType.ERROR,
-                        null, requestId);
-            } catch (Exception e) {
-                logger.error("Erreur lors de la récupération de la liste de navigation", e);
-                sendMessage("ERROR: " + e.getMessage(), MessageType.ERROR,
-                        null, requestId);
-            }
-        }, requestId);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        throw new RuntimeException("Interrupted while getting navigation list", e);
+                    } catch (Exception e) {
+                        throw new RuntimeException("Error getting navigation list", e);
+                    }
+                }, asyncExecutor)
+                .whenComplete((result, throwable) -> {
+                    if (throwable != null) {
+                        logger.error("Erreur lors de la récupération de la liste de navigation", throwable);
+                        sendMessage("ERROR: " + throwable.getMessage(), MessageType.ERROR, null, requestId);
+                    } else {
+                        sendMessage("NAVIGATION_LIST_RESULT", MessageType.RESPONSE, result, requestId);
+                    }
+                });
     }
 
     public void getInboxCountAsync(String requestId) {
         int opId = requestCounter.incrementAndGet();
 
-        submitTask(() -> {
-            try {
-                logger.info("🔵 Logique [{}]: Récupération nombre inbox", opId);
-
-                int count = navigationDao.getNumberOfInbox();
-
-                logger.info("🔵 Logique [{}]: {} éléments dans inbox", opId, count);
-
-                sendMessage("INBOX_COUNT_RESPONSE", MessageType.RESPONSE,
-                        count, requestId);
-
-            } catch (Exception e) {
-                logger.error("Erreur lors de la récupération du nombre d'inbox", e);
-                sendMessage("ERROR: " + e.getMessage(), MessageType.ERROR,
-                        null, requestId);
-            }
-        }, requestId);
+        CompletableFuture
+                .supplyAsync(() -> {
+                    try {
+                        logger.info("🔵 Logique [{}]: Récupération nombre inbox", opId);
+                        int count = navigationDao.getNumberOfInbox();
+                        logger.info("🔵 Logique [{}]: {} éléments dans inbox", opId, count);
+                        return count;
+                    } catch (Exception e) {
+                        throw new RuntimeException("Error getting inbox count", e);
+                    }
+                }, asyncExecutor)
+                .whenComplete((result, throwable) -> {
+                    if (throwable != null) {
+                        logger.error("Erreur lors de la récupération du nombre d'inbox", throwable);
+                        sendMessage("ERROR: " + throwable.getMessage(), MessageType.ERROR, null, requestId);
+                    } else {
+                        sendMessage("INBOX_COUNT_RESPONSE", MessageType.RESPONSE, result, requestId);
+                    }
+                });
     }
 
-    private void refreshNavigationData() {
+    private void refreshNavigationDataAsync() {
         logger.info("🔵 Logique: Rafraîchissement automatique des données");
 
-        submitTask(() -> {
-            try {
-                List<NavigationItem> updatedList = navigationDao.getList();
-                int inboxCount = navigationDao.getNumberOfInbox();
+        CompletableFuture<List<NavigationItem>> navigationFuture =
+                CompletableFuture.supplyAsync(() -> navigationDao.getList(), asyncExecutor);
 
-                // Notifier l'interface des nouvelles données
-                sendMessage("DATA_REFRESHED", MessageType.DATA_UPDATE,
-                        updatedList, null);
-                sendMessage("INBOX_UPDATED", MessageType.DATA_UPDATE,
-                        inboxCount, null);
+        CompletableFuture<Integer> inboxCountFuture =
+                CompletableFuture.supplyAsync(() -> navigationDao.getNumberOfInbox(), asyncExecutor);
 
-                logger.info("🔵 Logique: Données rafraîchies - {} éléments, {} inbox",
-                        updatedList.size(), inboxCount);
+        CompletableFuture.allOf(navigationFuture, inboxCountFuture)
+                .thenRun(() -> {
+                    try {
+                        List<NavigationItem> updatedList = navigationFuture.get();
+                        int inboxCount = inboxCountFuture.get();
 
-            } catch (Exception e) {
-                logger.error("Erreur lors du rafraîchissement des données", e);
-            }
-        }, null);
-    }
+                        // Notifier l'interface des nouvelles données
+                        sendMessage("DATA_REFRESHED", MessageType.DATA_UPDATE, updatedList, null);
+                        sendMessage("INBOX_UPDATED", MessageType.DATA_UPDATE, inboxCount, null);
 
-    private void submitTask(Runnable task, String requestId) {
-        try {
-            taskQueue.put(task);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            logger.error("🔵 Interruption lors de l'ajout de la tâche à la queue", e);
-            if (requestId != null) {
-                sendMessage("ERROR: Task submission interrupted", MessageType.ERROR, null, requestId);
-            }
-        }
+                        logger.info("🔵 Logique: Données rafraîchies - {} éléments, {} inbox",
+                                updatedList.size(), inboxCount);
+                    } catch (Exception e) {
+                        logger.error("Erreur lors du rafraîchissement des données", e);
+                    }
+                });
     }
 
     private void sendMessage(String content, MessageType type, Object data, String requestId) {

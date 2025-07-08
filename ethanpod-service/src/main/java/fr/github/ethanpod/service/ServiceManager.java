@@ -6,6 +6,8 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ServiceManager {
     private static final Logger logger = LogManager.getLogger(ServiceManager.class);
@@ -47,13 +49,13 @@ public class ServiceManager {
 
     private String extractServiceId(ThreadMessage message) {
         String requestId = message.getRequestId();
-        if (requestId != null && requestId.startsWith("[")) {
-            int endIndex = requestId.indexOf("]");
-            if (endIndex > 1) {
-                return requestId.substring(1, endIndex).toLowerCase();
+        if (requestId != null) {
+            Matcher matcher = Pattern.compile("\\[([^\\]]+)\\]").matcher(requestId);
+            if (matcher.find()) {
+                return matcher.group(1).toLowerCase();
             }
         }
-        return "unknown";
+        throw new IllegalArgumentException("Invalid requestId format: " + requestId);
     }
 
     public void refreshAllData() {

@@ -37,10 +37,6 @@ public abstract class AsyncService {
         active.set(true);
     }
 
-    private boolean routeMessage(ThreadMessage message) {
-        return this.messageRouter.routeMessage(message);
-    }
-
     public void refreshData() {
         sendRequestToLogic("REFRESH_DATA", null);
     }
@@ -56,20 +52,28 @@ public abstract class AsyncService {
         return "[" + serviceId + "]" + UUID.randomUUID();
     }
 
-    private void sendRequestToLogic(String request, String requestId) {
-        ThreadMessage message = new ThreadMessage(request, "ViewThread", "LogicThread",
+    private void sendRequest(String request, String requestId, String sender, String receiver) {
+        ThreadMessage message = new ThreadMessage(request, sender, receiver,
                 MessageType.REQUEST, null, requestId);
 
         logger.info("🟢 Service: Envoi message - De: {}, Pour: {}, Type: {}, Contenu: {}, ID: {}",
                 message.getSender(), message.getReceiver(), message.getType(),
                 message.getContent(), message.getRequestId());
 
-        boolean success = routeMessage(message);
+        boolean success = messageRouter.routeMessage(message);
         if (success) {
-            logger.info("🟢 Service: Message routé avec succès vers LogicThread");
+            logger.info("🟢 Service: Message routé avec succès vers {}", receiver);
         } else {
-            logger.error("🔴 Service: Échec du routage du message vers LogicThread");
+            logger.error("🔴 Service: Échec du routage du message vers {}", receiver);
         }
+    }
+
+    private void sendRequestToLogic(String request, String requestId) {
+        sendRequest(request, requestId, "ViewThread", "LogicThread");
+    }
+
+    private void sendRequestToView(String request, String requestId) {
+        sendRequest(request, requestId, "LogicThread", "ViewThread");
     }
 
     public void handleResponse(ThreadMessage message) {
@@ -78,7 +82,7 @@ public abstract class AsyncService {
                 requestId, message.getType());
 
         if (requestId == null) {
-            logger.warn("🟡 Service: Message sans requestId reçu");
+            logger.warn("Message sans requestId, impossible de router");
             return;
         }
 
@@ -105,7 +109,7 @@ public abstract class AsyncService {
     private void futureTimeOut(CompletableFuture<?> future, String requestId) {
         logger.info("🟢 Service: Requête enregistrée, total en attente: {}", pendingRequests.size());
         future.orTimeout(this.timeoutSeconds, TimeUnit.SECONDS)
-                .exceptionally(throwable -> {
+                .exceptionally(_ -> {
                     logger.error("🔴 Service: Timeout pour requête ID: {}", requestId);
                     pendingRequests.remove(requestId);
                     return null;
