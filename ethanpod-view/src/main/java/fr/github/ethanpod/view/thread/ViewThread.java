@@ -147,7 +147,7 @@ public class ViewThread implements Runnable {
     public void loadNavigationData() {
         logger.info("🟢 View: Chargement des données de navigation");
 
-        serviceManager.getNavigationService().getListAsync(THREAD_NAME)
+        serviceManager.getNavigationService().getListAsync()
                 .thenAccept(navigationList -> {
                     logger.info("🟢 View: {} éléments de navigation reçus", navigationList.size());
                     updateNavigationUI(navigationList);
@@ -181,7 +181,7 @@ public class ViewThread implements Runnable {
      * Marque un élément de l'inbox comme lu
      */
     public void markInboxItemAsRead(String itemId) {
-        serviceManager.getInboxService().markAsReadAsync(itemId)
+        serviceManager.getInboxService().markAsReadAsync()
                 .thenAccept(success -> {
                     if (success) {
                         logger.info("🟢 Élément {} marqué comme lu", itemId);

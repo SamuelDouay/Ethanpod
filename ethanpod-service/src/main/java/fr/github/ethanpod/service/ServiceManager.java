@@ -24,18 +24,11 @@ public class ServiceManager {
         // Enregistrer les services disponibles
         registerService("navigation", new AsyncNavigationService());
         registerService("inbox", new AsyncInboxService());
-        // Ajouter d'autres services ici facilement
-        // registerService("user", new AsyncUserService());
-        // registerService("settings", new AsyncSettingsService());
     }
 
     public void registerService(String serviceId, AsyncService service) {
         services.put(serviceId, service);
         logger.info("Service '{}' enregistré", serviceId);
-    }
-
-    public AsyncService getService(String serviceId) {
-        return services.get(serviceId);
     }
 
     public AsyncNavigationService getNavigationService() {
@@ -58,15 +51,13 @@ public class ServiceManager {
     }
 
     private String extractServiceId(ThreadMessage message) {
-        String content = message.getContent();
-
-        // Logique pour déterminer quel service doit traiter le message
-        if (content.startsWith("NAV_") || content.contains("NAVIGATION")) {
-            return "navigation";
-        } else if (content.startsWith("INBOX_") || content.contains("INBOX")) {
-            return "inbox";
+        String requestId = message.getRequestId();
+        if (requestId != null && requestId.startsWith("[")) {
+            int endIndex = requestId.indexOf("]");
+            if (endIndex > 1) {
+                return requestId.substring(1, endIndex).toLowerCase();
+            }
         }
-
         return "unknown";
     }
 

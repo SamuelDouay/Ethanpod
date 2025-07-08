@@ -95,7 +95,7 @@ public class LogicThread implements Runnable {
         String content = message.getContent();
         String requestId = message.getRequestId();
 
-        logger.info("🔵 Traitement requête: '{}' avec ID: {}", content, requestId);
+        logger.info("🔵 Traitement requête: {} avec ID: {}", content, requestId);
 
         switch (content) {
             case "GET_NAVIGATION_LIST" -> {
@@ -115,7 +115,7 @@ public class LogicThread implements Runnable {
                 getInboxCountAsync(requestId);
             }
             default -> {
-                logger.warn("🔵 Requête non reconnue: '{}'", content);
+                logger.warn("🔵 Requête non reconnue: {}", content);
                 // Envoyer une erreur en retour
                 sendMessage("ERROR: Unknown request: " + content, MessageType.ERROR, null, requestId);
             }
