@@ -12,6 +12,6 @@ public class AsyncNavigationService extends AsyncService {
     }
 
     public CompletableFuture<List<NavigationItem>> getListAsync() {
-        return createRequestFuture("GET_NAVIGATION_LIST", generateRequestId());
+        return createRequestFuture("GET_NAVIGATION_LIST");
     }
 }

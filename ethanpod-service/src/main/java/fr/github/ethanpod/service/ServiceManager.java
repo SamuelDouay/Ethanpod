@@ -7,13 +7,8 @@ import org.apache.logging.log4j.Logger;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Gestionnaire central des services asynchrones
- * Permet d'ajouter et de gérer différents types de services
- */
 public class ServiceManager {
     private static final Logger logger = LogManager.getLogger(ServiceManager.class);
-
     private final Map<String, AsyncService> services = new HashMap<>();
 
     public ServiceManager() {

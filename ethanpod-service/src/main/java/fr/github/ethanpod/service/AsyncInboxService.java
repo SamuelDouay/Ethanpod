@@ -9,10 +9,10 @@ public class AsyncInboxService extends AsyncService {
     }
 
     public CompletableFuture<Integer> getInboxCountAsync() {
-        return createRequestFuture("INBOX_COUNT_REQUEST", generateRequestId());
+        return createRequestFuture("INBOX_COUNT_REQUEST");
     }
 
     public CompletableFuture<Boolean> markAsReadAsync() {
-        return createRequestFuture("INBOX_MARK_READ_REQUEST", generateRequestId());
+        return createRequestFuture("INBOX_MARK_READ_REQUEST");
     }
 }

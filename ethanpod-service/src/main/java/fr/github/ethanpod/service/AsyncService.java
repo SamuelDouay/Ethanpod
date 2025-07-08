@@ -52,7 +52,7 @@ public abstract class AsyncService {
     }
 
 
-    protected String generateRequestId() {
+    private String generateRequestId() {
         return "[" + serviceId + "]" + UUID.randomUUID();
     }
 
@@ -112,8 +112,9 @@ public abstract class AsyncService {
                 });
     }
 
-    protected <T> CompletableFuture<T> createRequestFuture(String requestType, String requestId) {
+    protected <T> CompletableFuture<T> createRequestFuture(String requestType) {
         CompletableFuture<T> future = new CompletableFuture<>();
+        String requestId = generateRequestId();
         logger.info("🟢 Service: Création requête {} avec ID: {}", requestType, requestId);
         pendingRequests.put(requestId, future);
         futureTimeOut(future, requestId);
