@@ -38,7 +38,7 @@ public abstract class AsyncService {
     }
 
     public void refreshData() {
-        sendRequestToLogic("REFRESH_DATA", null);
+        messageRouter.sendRequestToLogic("REFRESH_DATA", generateRequestId(), null);
     }
 
     public void stop() {
@@ -52,29 +52,6 @@ public abstract class AsyncService {
         return "[" + serviceId + "]" + UUID.randomUUID();
     }
 
-    private void sendRequest(String request, String requestId, String sender, String receiver) {
-        ThreadMessage message = new ThreadMessage(request, sender, receiver,
-                MessageType.REQUEST, null, requestId);
-
-        logger.info("🟢 Service: Envoi message - De: {}, Pour: {}, Type: {}, Contenu: {}, ID: {}",
-                message.getSender(), message.getReceiver(), message.getType(),
-                message.getContent(), message.getRequestId());
-
-        boolean success = messageRouter.routeMessage(message);
-        if (success) {
-            logger.info("🟢 Service: Message routé avec succès vers {}", receiver);
-        } else {
-            logger.error("🔴 Service: Échec du routage du message vers {}", receiver);
-        }
-    }
-
-    private void sendRequestToLogic(String request, String requestId) {
-        sendRequest(request, requestId, "ViewThread", "LogicThread");
-    }
-
-    private void sendRequestToView(String request, String requestId) {
-        sendRequest(request, requestId, "LogicThread", "ViewThread");
-    }
 
     public void handleResponse(ThreadMessage message) {
         String requestId = message.getRequestId();
@@ -116,13 +93,21 @@ public abstract class AsyncService {
                 });
     }
 
-    protected <T> CompletableFuture<T> createRequestFuture(String requestType) {
+    private <T> CompletableFuture<T> createFuture(String requestType, Object data) {
         CompletableFuture<T> future = new CompletableFuture<>();
         String requestId = generateRequestId();
         logger.info("🟢 Service: Création requête {} avec ID: {}", requestType, requestId);
         pendingRequests.put(requestId, future);
         futureTimeOut(future, requestId);
-        sendRequestToLogic(requestType, requestId);
+        messageRouter.sendRequestToLogic(requestType, requestId, data);
         return future;
+    }
+
+    protected <T> CompletableFuture<T> createRequestFuture(String requestType) {
+        return createFuture(requestType, null);
+    }
+
+    protected <T> CompletableFuture<T> createRequestFuture(String requestType, Object data) {
+        return createFuture(requestType, data);
     }
 }

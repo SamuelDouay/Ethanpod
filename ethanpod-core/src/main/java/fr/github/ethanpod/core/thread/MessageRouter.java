@@ -65,6 +65,30 @@ public class MessageRouter {
         }
     }
 
+    private void sendRequest(String request, String requestId, String sender, String receiver, Object data) {
+        ThreadMessage message = new ThreadMessage(request, sender, receiver,
+                MessageType.REQUEST, data, requestId);
+
+        logger.info("🟢 Service: Envoi message - De: {}, Pour: {}, Type: {}, Contenu: {}, ID: {}",
+                message.getSender(), message.getReceiver(), message.getType(),
+                message.getContent(), message.getRequestId());
+
+        boolean success = routeMessage(message);
+        if (success) {
+            logger.info("🟢 Service: Message routé avec succès vers {}", receiver);
+        } else {
+            logger.error("🔴 Service: Échec du routage du message vers {}", receiver);
+        }
+    }
+
+    public void sendRequestToLogic(String request, String requestId, Object data) {
+        sendRequest(request, requestId, "ViewThread", "LogicThread", data);
+    }
+
+    public void sendRequestToView(String request, String requestId, Object data) {
+        sendRequest(request, requestId, "LogicThread", "ViewThread", data);
+    }
+
     private static class Holder {
         private static final MessageRouter INSTANCE = new MessageRouter();
     }
