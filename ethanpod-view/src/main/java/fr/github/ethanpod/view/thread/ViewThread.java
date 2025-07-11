@@ -113,7 +113,8 @@ public class ViewThread implements Runnable {
 
         if ("LOGIC_READY".equals(message.getContent())) {
             serviceManager.initializeAllServices();
-            initializeUI();
+            logger.info("🟢 Services initialisés, en attente de JavaFX");
+            //initializeUI();
         }
     }
 
@@ -151,7 +152,7 @@ public class ViewThread implements Runnable {
                     updateNavigationUI(navigationList);
                 })
                 .exceptionally(throwable -> {
-                    logger.error("🔴 Erreur lors du chargement de la navigation", throwable);
+                    logger.error("🔴 Erreur lors du chargement de la navigation : {}", throwable.getMessage());
                     return null;
                 });
     }
@@ -256,5 +257,6 @@ public class ViewThread implements Runnable {
 
     public void onJavaFXReady() {
         logger.info("🟢 JavaFX est prêt - Interface utilisateur disponible");
+        initializeUI();
     }
 }
