@@ -1,7 +1,6 @@
 package fr.github.ethanpod.core.thread;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class ThreadMessage {
     private final String content;
@@ -53,8 +52,6 @@ public class ThreadMessage {
 
     @Override
     public String toString() {
-        return String.format("[%s] %s -> %s (%s): %s",
-                timestamp.format(DateTimeFormatter.ofPattern("HH:mm:ss.SSS")),
-                sender, receiver, type, content);
+        return String.format("%s -> %s (%s): %s", sender, receiver, type, content);
     }
 }

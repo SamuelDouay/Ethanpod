@@ -164,7 +164,6 @@ public class NavigationContainer implements UIUpdateCallback {
     @Override
     public void updateNavigationList(List<NavigationItem> navigationList) {
         scrollBox.getChildren().clear();
-        log.info("Get UpdateNavigationList");
         for (NavigationItem navigationItem : navigationList) {
             try {
                 Node component = createNavigationComponent(navigationItem, LayoutType.FEED);

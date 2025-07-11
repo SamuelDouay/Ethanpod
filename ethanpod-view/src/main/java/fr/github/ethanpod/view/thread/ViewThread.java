@@ -46,7 +46,7 @@ public class ViewThread implements Runnable {
         sendNotification("UI_READY");
 
         // Initialiser tous les services
-        serviceManager.initializeAllServices();
+
 
         while (running.get()) {
             try {
@@ -74,7 +74,7 @@ public class ViewThread implements Runnable {
         ThreadMessage message = messageQueue.poll();
 
         if (message != null) {
-            logger.info("🟢 View reçu: {}", message);
+            logger.info("🟢 {}", message);
 
             switch (message.getType()) {
                 case RESPONSE -> handleResponse(message);
@@ -112,7 +112,7 @@ public class ViewThread implements Runnable {
         logger.info("🟢 Notification reçue: {}", message.getContent());
 
         if ("LOGIC_READY".equals(message.getContent())) {
-            // La logique est prête, on peut commencer à faire des requêtes
+            serviceManager.initializeAllServices();
             initializeUI();
         }
     }
@@ -137,19 +137,17 @@ public class ViewThread implements Runnable {
     // ================================
 
     public void initializeUI() {
-        logger.info("🟢 View: Initialisation de l'interface utilisateur");
-
-        // Charger les données via les services
+        logger.info("🟢 Initialisation de l'interface utilisateur");
         loadNavigationData();
-        loadInboxCount();
+        //loadInboxCount();
     }
 
     public void loadNavigationData() {
-        logger.info("🟢 View: Chargement des données de navigation");
+        logger.info("🟢 Chargement des données de navigation");
 
         serviceManager.getNavigationService().getListAsync()
                 .thenAccept(navigationList -> {
-                    logger.info("🟢 View: {} éléments de navigation reçus", navigationList.size());
+                    logger.info("🟢 {} éléments de navigation reçus", navigationList.size());
                     updateNavigationUI(navigationList);
                 })
                 .exceptionally(throwable -> {
@@ -159,11 +157,11 @@ public class ViewThread implements Runnable {
     }
 
     public void loadInboxCount() {
-        logger.info("🟢 View: Chargement du nombre d'éléments inbox");
+        logger.info("🟢 Chargement du nombre d'éléments inbox");
 
         serviceManager.getInboxService().getInboxCountAsync()
                 .thenAccept(count -> {
-                    logger.info("🟢 View: {} éléments dans l'inbox", count);
+                    logger.info("🟢 {} éléments dans l'inbox", count);
                     updateInboxCount(count);
                 })
                 .exceptionally(throwable -> {
@@ -173,7 +171,7 @@ public class ViewThread implements Runnable {
     }
 
     public void refreshAllData() {
-        logger.info("🟢 View: Rafraîchissement de toutes les données");
+        logger.info("🟢 Rafraîchissement de toutes les données");
         serviceManager.refreshAllData();
     }
 

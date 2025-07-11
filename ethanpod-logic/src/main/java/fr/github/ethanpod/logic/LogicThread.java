@@ -79,18 +79,11 @@ public class LogicThread implements Runnable {
         ThreadMessage message = messageQueue.poll();
 
         if (message != null) {
-            logger.info("🔵 Message reçu: De: {}, Type: {}, Contenu: {}",
-                    message.getSender(), message.getType(), message.getContent());
+            logger.info("🔵 {}", message);
 
             switch (message.getType()) {
-                case REQUEST -> {
-                    logger.info("🔵 Traitement REQUEST: {}", message.getContent());
-                    handleRequest(message);
-                }
-                case NOTIFICATION -> {
-                    logger.info("🔵 Traitement NOTIFICATION: {}", message.getContent());
-                    handleNotification(message);
-                }
+                case REQUEST -> handleRequest(message);
+                case NOTIFICATION -> handleNotification(message);
                 default -> logger.warn("🔵 Type de message non géré: {}", message.getType());
             }
         }
