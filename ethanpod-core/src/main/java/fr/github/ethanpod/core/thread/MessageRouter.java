@@ -65,9 +65,9 @@ public class MessageRouter {
         }
     }
 
-    private void sendRequest(String request, String requestId, String sender, String receiver, Object data) {
+    private void sendRequest(String request, String requestId, String sender, String receiver, MessageType messageType, Object data) {
         ThreadMessage message = new ThreadMessage(request, sender, receiver,
-                MessageType.REQUEST, data, requestId);
+                messageType, data, requestId);
 
         logger.info("🟢 Service: Envoi message - De: {}, Pour: {}, Type: {}, Contenu: {}, ID: {}",
                 message.getSender(), message.getReceiver(), message.getType(),
@@ -81,12 +81,12 @@ public class MessageRouter {
         }
     }
 
-    public void sendRequestToLogic(String request, String requestId, Object data) {
-        sendRequest(request, requestId, "ViewThread", "LogicThread", data);
+    public void sendRequestToLogic(String request, String requestId, MessageType messageType, Object data) {
+        sendRequest(request, requestId, "ViewThread", "LogicThread", messageType, data);
     }
 
-    public void sendRequestToView(String request, String requestId, Object data) {
-        sendRequest(request, requestId, "LogicThread", "ViewThread", data);
+    public void sendRequestToView(String request, String requestId, MessageType messageType, Object data) {
+        sendRequest(request, requestId, "LogicThread", "ViewThread", messageType, data);
     }
 
     private static class Holder {

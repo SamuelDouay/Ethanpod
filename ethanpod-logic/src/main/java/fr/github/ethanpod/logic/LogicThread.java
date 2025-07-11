@@ -100,7 +100,7 @@ public class LogicThread implements Runnable {
                 logger.info("🔵 Démarrage GET_NAVIGATION_LIST pour ID: {}", requestId);
                 getNavigationListAsync(requestId);
             }
-            case "GET_INBOX_COUNT", "INBOX_COUNT_REQUEST" -> {
+            case "GET_INBOX_COUNT" -> {
                 logger.info("🔵 Démarrage GET_INBOX_COUNT pour ID: {}", requestId);
                 getInboxCountAsync(requestId);
             }
