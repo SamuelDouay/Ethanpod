@@ -2,8 +2,6 @@ package fr.github.ethanpod.logic;
 
 import fr.github.ethanpod.core.thread.MessageRouter;
 import fr.github.ethanpod.core.thread.ThreadMessage;
-import fr.github.ethanpod.logic.services.LogicDataService;
-import fr.github.ethanpod.logic.sql.dao.NavigationDao;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,7 +31,7 @@ public class LogicThread implements Runnable {
     public LogicThread() {
         MessageRouter messageRouter = MessageRouter.getInstance();
         BlockingQueue<ThreadMessage> messageQueue = messageRouter.registerThread("LogicThread");
-        this.logicHandler = new LogicHandler(new LogicDataService(new NavigationDao(), asyncExecutor), messageQueue);
+        this.logicHandler = new LogicHandler(messageQueue, asyncExecutor);
     }
 
     @Override

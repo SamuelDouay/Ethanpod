@@ -9,11 +9,11 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ServiceManager {
-    private static final Logger logger = LogManager.getLogger(ServiceManager.class);
+public class AsyncServiceManager {
+    private static final Logger logger = LogManager.getLogger(AsyncServiceManager.class);
     private final Map<String, AsyncService> services = new HashMap<>();
 
-    public ServiceManager() {
+    public AsyncServiceManager() {
         initializeServices();
     }
 

@@ -4,7 +4,7 @@ import fr.github.ethanpod.core.item.NavigationItem;
 import fr.github.ethanpod.core.thread.MessageRouter;
 import fr.github.ethanpod.core.thread.MessageType;
 import fr.github.ethanpod.core.thread.ThreadMessage;
-import fr.github.ethanpod.service.ServiceManager;
+import fr.github.ethanpod.service.AsyncServiceManager;
 import fr.github.ethanpod.view.layout.NavigationContainer;
 import javafx.application.Platform;
 import org.apache.logging.log4j.LogManager;
@@ -24,13 +24,13 @@ public class ViewThread implements Runnable {
     private final BlockingQueue<ThreadMessage> messageQueue;
     private final MessageRouter messageRouter;
     private final AtomicBoolean running = new AtomicBoolean(true);
-    private final ServiceManager serviceManager;
+    private final AsyncServiceManager asyncServiceManager;
     private UIUpdateCallback uiUpdateCallback;
 
     public ViewThread() {
         this.messageRouter = MessageRouter.getInstance();
         this.messageQueue = this.messageRouter.registerThread(THREAD_NAME);
-        this.serviceManager = new ServiceManager();
+        this.asyncServiceManager = new AsyncServiceManager();
         instance = this;
     }
 
@@ -88,7 +88,7 @@ public class ViewThread implements Runnable {
 
     private void handleResponse(ThreadMessage message) {
         // Déléguer au ServiceManager pour router vers le bon service
-        serviceManager.handleResponse(message);
+        asyncServiceManager.handleResponse(message);
     }
 
     private void handleDataUpdate(ThreadMessage message) {
@@ -112,7 +112,7 @@ public class ViewThread implements Runnable {
         logger.info("🟢 Notification reçue: {}", message.getContent());
 
         if ("LOGIC_READY".equals(message.getContent())) {
-            serviceManager.initializeAllServices();
+            asyncServiceManager.initializeAllServices();
             logger.info("🟢 Services initialisés, en attente de JavaFX");
             //initializeUI();
         }
@@ -146,7 +146,7 @@ public class ViewThread implements Runnable {
     public void loadNavigationData() {
         logger.info("🟢 Chargement des données de navigation");
 
-        serviceManager.getNavigationService().getListAsync()
+        asyncServiceManager.getNavigationService().getListAsync()
                 .thenAccept(navigationList -> {
                     logger.info("🟢 {} éléments de navigation reçus", navigationList.size());
                     updateNavigationUI(navigationList);
@@ -160,7 +160,7 @@ public class ViewThread implements Runnable {
     public void loadInboxCount() {
         logger.info("🟢 Chargement du nombre d'éléments inbox");
 
-        serviceManager.getInboxService().getInboxCountAsync()
+        asyncServiceManager.getInboxService().getInboxCountAsync()
                 .thenAccept(count -> {
                     logger.info("🟢 {} éléments dans l'inbox", count);
                     updateInboxCount(count);
@@ -173,14 +173,14 @@ public class ViewThread implements Runnable {
 
     public void refreshAllData() {
         logger.info("🟢 Rafraîchissement de toutes les données");
-        serviceManager.refreshAllData();
+        asyncServiceManager.refreshAllData();
     }
 
     /**
      * Marque un élément de l'inbox comme lu
      */
     public void markInboxItemAsRead(String itemId) {
-        serviceManager.getInboxService().markAsReadAsync()
+        asyncServiceManager.getInboxService().markAsReadAsync()
                 .thenAccept(success -> {
                     if (success) {
                         logger.info("🟢 Élément {} marqué comme lu", itemId);
@@ -252,7 +252,7 @@ public class ViewThread implements Runnable {
         running.set(false);
 
         // Arrêter tous les services
-        serviceManager.stopAllServices();
+        asyncServiceManager.stopAllServices();
     }
 
     public void onJavaFXReady() {
