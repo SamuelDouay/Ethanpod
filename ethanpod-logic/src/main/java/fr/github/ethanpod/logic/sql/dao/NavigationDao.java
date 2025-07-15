@@ -1,48 +1,36 @@
 package fr.github.ethanpod.logic.sql.dao;
 
 import fr.github.ethanpod.core.item.NavigationItem;
-import fr.github.ethanpod.logic.sql.setting.Connect;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NavigationDao {
-    private static final Logger logger = LogManager.getLogger(NavigationDao.class);
+public class NavigationDao extends BaseDao {
+    private static final String UNREAD_CONDITION = "CASE WHEN items.read = -1 THEN 1 END";
+    private static final String FEED_ITEMS_JOIN = "FROM Feeds AS feed INNER JOIN FeedItems AS items ON items.feed = feed.id";
 
     public NavigationDao() {
         // no parameter
     }
 
     public List<NavigationItem> getList() {
-        String sql = "SELECT feed.title as title, " +
-                "feed.image_url as image_url, " +
-                "COUNT(CASE WHEN items.read = -1 THEN 1 END) as unread_count " +
-                "FROM Feeds AS feed " +
-                "INNER JOIN FeedItems AS items ON items.feed = feed.id " +
+        String sql = "SELECT feed.title as title, feed.image_url as image_url, " +
+                "COUNT(" + UNREAD_CONDITION + ") as unread_count " +
+                FEED_ITEMS_JOIN + " " +
                 "GROUP BY feed.id, feed.title, feed.image_url " +
                 "ORDER BY unread_count DESC, feed.title ASC";
 
-
-        List<NavigationItem> res = new ArrayList<>();
-
-        try (PreparedStatement stmt = Connect.getInstance().getConnection().prepareStatement(sql);
-             ResultSet resultSet = stmt.executeQuery()) {
-            // Parcours direct sans essayer de se déplacer dans le ResultSet
-            while (resultSet.next()) {
-                String title = resultSet.getString("title");
-                String imgUrl = resultSet.getString("image_url");
-                int unreadCount = resultSet.getInt("unread_count");
-                res.add(new NavigationItem(imgUrl, title, unreadCount, false));
+        return executeQuery(sql, rs -> {
+            List<NavigationItem> result = new ArrayList<>();
+            while (rs.next()) {
+                result.add(new NavigationItem(
+                        rs.getString("image_url"),
+                        rs.getString("title"),
+                        rs.getInt("unread_count"),
+                        false
+                ));
             }
-
-        } catch (SQLException e) {
-            logger.error("Erreur lors de l'exécution de la requête getList: {}", e.getMessage(), e);
-        }
-        return res;
+            return result;
+        }, new ArrayList<>());
     }
 }

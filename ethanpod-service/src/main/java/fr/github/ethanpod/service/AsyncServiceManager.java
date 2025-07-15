@@ -25,7 +25,6 @@ public class AsyncServiceManager {
 
     public void registerService(String serviceId, AsyncService service) {
         services.put(serviceId, service);
-        logger.info("Service '{}' enregistré", serviceId);
     }
 
     public AsyncNavigationService getNavigationService() {

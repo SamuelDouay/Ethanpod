@@ -25,7 +25,6 @@ public class DataServiceManager {
 
     public void registerService(String serviceId, DataService service) {
         services.put(serviceId, service);
-        logger.info("Service '{}' enregistré", serviceId);
     }
 
     public DataNavigationService getNavigationService() {
