@@ -42,11 +42,7 @@ public class ViewThread implements Runnable {
     public void run() {
         logger.info("🟢 Thread View démarré - Interface utilisateur");
 
-        // Notifier que l'interface est prête
-        sendNotification("UI_READY");
-
-        // Initialiser tous les services
-
+        messageRouter.sendRequestToLogic("UI_READY", null, MessageType.NOTIFICATION, null);
 
         while (running.get()) {
             try {
@@ -235,23 +231,9 @@ public class ViewThread implements Runnable {
         logger.info("🟢 NavigationContainer configuré dans {}", THREAD_NAME);
     }
 
-    private void sendNotification(String content) {
-        ThreadMessage message = new ThreadMessage(content, THREAD_NAME, "LogicThread",
-                MessageType.NOTIFICATION, null, null);
-
-        boolean success = messageRouter.routeMessage(message);
-        if (success) {
-            logger.debug("🟢 Notification envoyée: {}", content);
-        } else {
-            logger.error("🟢 Échec envoi notification: {}", content);
-        }
-    }
-
     public void stop() {
         logger.info("🟢 Arrêt du thread d'interface demandé");
         running.set(false);
-
-        // Arrêter tous les services
         asyncServiceManager.stopAllServices();
     }
 

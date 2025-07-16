@@ -1,19 +1,15 @@
 package fr.github.ethanpod.logic.sql.dao;
 
 import fr.github.ethanpod.core.item.EpisodeItem;
-import fr.github.ethanpod.logic.sql.setting.Connect;
 import fr.github.ethanpod.util.Converter;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EpisodeDao {
-    private static final Logger logger = LogManager.getLogger(EpisodeDao.class);
+public class EpisodeDao extends BaseDao {
+    private static final String QUEUE_ITEMS_JOIN = "FROM Feeds AS feed INNER JOIN Queue queue ON queue.feeditem = feed.id";
+    private static final String NEWS_ITEMS_JOIN = "FROM FeedItems feed INNER JOIN FeedMedia fm ON fm.feeditem = feed.id";
+    private static final String LIMIT_8 = "LIMIT 8";
 
     public EpisodeDao() {
         // no parameter
@@ -21,52 +17,43 @@ public class EpisodeDao {
 
     public List<EpisodeItem> getTop8InQueue() {
         String sql = "SELECT feed.title as title, feed.pubDate as date, feed.image_url as image_url " +
-                "FROM FeedItems feed " +
-                "INNER JOIN Queue queue ON queue.feeditem = feed.id " +
-                "LIMIT 8";
+                QUEUE_ITEMS_JOIN +
+                LIMIT_8;
 
-        List<EpisodeItem> res = new ArrayList<>();
-
-        try (PreparedStatement stmt = Connect.getInstance().getConnection().prepareStatement(sql);
-             ResultSet resultSet = stmt.executeQuery()) {
-            // Parcours direct sans essayer de se déplacer dans le ResultSet
-            while (resultSet.next()) {
-                String title = resultSet.getString("title");
-                String date = resultSet.getString("date");
-                String imgUrl = resultSet.getString("image_url");
-                res.add(new EpisodeItem(imgUrl, false, title, null, date, null, false));
+        return executeQuery(sql, rs -> {
+            List<EpisodeItem> result = new ArrayList<>();
+            while (rs.next()) {
+                result.add(new EpisodeItem(
+                        rs.getString("image_url"),
+                        false,
+                        rs.getString("title"),
+                        null,
+                        rs.getString("date"),
+                        null,
+                        false
+                ));
             }
-
-        } catch (SQLException e) {
-            logger.error("Erreur lors de l'exécution de la requête getTop8InQueue: {}", e.getMessage(), e);
-        }
-        return res;
+            return result;
+        }, new ArrayList<>());
     }
 
     public List<EpisodeItem> getNewsTop8() {
         String sql = "SELECT feed.title as title, feed.pubDate as date, feed.image_url as image_url, fm.filesize as size " +
-                "FROM FeedItems feed " +
-                "INNER JOIN FeedMedia fm ON fm.feeditem = feed.id " +
+                NEWS_ITEMS_JOIN + " " +
                 "WHERE feed.read = -1 " +
                 "ORDER BY feed.pubDate DESC " +
-                "LIMIT 8";
+                LIMIT_8;
 
-        List<EpisodeItem> res = new ArrayList<>();
-
-        try (PreparedStatement stmt = Connect.getInstance().getConnection().prepareStatement(sql);
-             ResultSet resultSet = stmt.executeQuery()) {
-            // Parcours direct sans essayer de se déplacer dans le ResultSet
-            while (resultSet.next()) {
-                String title = resultSet.getString("title");
-                String date = Converter.timestampToDate(resultSet.getLong("date"));
-                String imgUrl = resultSet.getString("image_url");
-                String size = Converter.getSize(resultSet.getLong("size"));
-                res.add(new EpisodeItem(imgUrl, false, title, null, date, size, false));
+        return executeQuery(sql, rs -> {
+            List<EpisodeItem> result = new ArrayList<>();
+            while (rs.next()) {
+                String title = rs.getString("title");
+                String date = Converter.timestampToDate(rs.getLong("date"));
+                String imgUrl = rs.getString("image_url");
+                String size = Converter.getSize(rs.getLong("size"));
+                result.add(new EpisodeItem(imgUrl, false, title, null, date, size, false));
             }
-
-        } catch (SQLException e) {
-            logger.error("Erreur lors de l'exécution de la requête getTop8InQueue: {}", e.getMessage(), e);
-        }
-        return res;
+            return result;
+        }, new ArrayList<>());
     }
 }
