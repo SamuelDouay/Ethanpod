@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class LogicThread implements Runnable {
     private final Logger logger = LogManager.getLogger(LogicThread.class);
     private final AtomicBoolean running = new AtomicBoolean(true);
-    private final LogicHandler logicHandler;
+    private final LogicHandle logicHandler;
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
     private final ExecutorService asyncExecutor = Executors.newCachedThreadPool(
             new ThreadFactory() {
@@ -31,7 +31,7 @@ public class LogicThread implements Runnable {
     public LogicThread() {
         MessageRouter messageRouter = MessageRouter.getInstance();
         BlockingQueue<ThreadMessage> messageQueue = messageRouter.registerThread("LogicThread");
-        this.logicHandler = new LogicHandler(messageQueue, asyncExecutor);
+        this.logicHandler = new LogicHandle(messageQueue, asyncExecutor);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class LogicThread implements Runnable {
             while (running.get()) {
                 try {
                     logicHandler.processIncomingMessages();
-                    Thread.sleep(100); // Petite pause pour éviter la surcharge CPU
+
                 } catch (InterruptedException _) {
                     logger.info("🔵 Thread Logique interrompu");
                     Thread.currentThread().interrupt();

@@ -88,7 +88,6 @@ public class NavigationContainer implements UIUpdateCallback {
         return box;
     }
 
-
     private ScrollPane createScrollList() {
         VBox box = createList();
         box.setId("#scrollListNavigationBar");
@@ -97,7 +96,6 @@ public class NavigationContainer implements UIUpdateCallback {
         VBox.setVgrow(scrollPane, Priority.ALWAYS);
         return scrollPane;
     }
-
 
     private ScrollPane getScrollPane(VBox box) {
         ScrollPane scrollPane = new ScrollPane(box);
@@ -176,11 +174,12 @@ public class NavigationContainer implements UIUpdateCallback {
 
     @Override
     public void updateInboxCount(Integer count) {
+        System.out.println(count);
         // no
     }
 
     @Override
-    public void showNotification(String message, NotificationType type) {
+    public void showNotification(String message) {
         // no
     }
 

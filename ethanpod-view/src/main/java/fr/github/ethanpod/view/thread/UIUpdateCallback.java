@@ -10,16 +10,9 @@ public interface UIUpdateCallback {
 
     void updateInboxCount(Integer count);
 
-    void showNotification(String message, NotificationType type);
+    void showNotification(String message);
 
     void showError(String errorMessage);
 
     void updateLoadingState(boolean isLoading);
-
-    enum NotificationType {
-        INFO,
-        SUCCESS,
-        WARNING,
-        ERROR
-    }
 }

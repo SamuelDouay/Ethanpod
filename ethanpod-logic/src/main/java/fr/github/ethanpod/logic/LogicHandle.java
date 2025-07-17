@@ -9,20 +9,21 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 
-public class LogicHandler {
-    private static final Logger logger = LogManager.getLogger(LogicHandler.class);
+public class LogicHandle {
+    private static final Logger logger = LogManager.getLogger(LogicHandle.class);
     private final MessageRouter messageRouter = MessageRouter.getInstance();
     private final BlockingQueue<ThreadMessage> messageQueue;
     private final DataServiceManager serviceManager;
 
-    public LogicHandler(BlockingQueue<ThreadMessage> messageQueue, ExecutorService service) {
+    public LogicHandle(BlockingQueue<ThreadMessage> messageQueue, ExecutorService service) {
         this.messageQueue = messageQueue;
         this.serviceManager = new DataServiceManager(service);
     }
 
-    public void processIncomingMessages() {
-        ThreadMessage message = messageQueue.poll();
+    public void processIncomingMessages() throws InterruptedException {
+        ThreadMessage message = messageQueue.poll(500, TimeUnit.MILLISECONDS);
 
         if (message != null) {
             logger.info("🔵 {}", message);

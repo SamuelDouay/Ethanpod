@@ -47,11 +47,9 @@ public class Main {
     }
 
     private void initializeSystem() {
-        // Créer les threads
         logicThread = new LogicThread();
         viewThread = new ViewThread();
 
-        // Initialiser les executors
         logicExecutor = createExecutor("LogicThread");
         viewExecutor = createExecutor("ViewThread");
         terminationLatch = new CountDownLatch(2);
@@ -95,13 +93,10 @@ public class Main {
         return CompletableFuture.runAsync(() -> {
             logger.info("Démarrage du thread d'interface utilisateur");
 
-            Thread messageProcessingThread = null;
-            Thread javafxThread = null;
-
             try {
-                messageProcessingThread = startMessageProcessingThread();
-                Thread.sleep(500);
-                javafxThread = startJavaFXThread(args);
+                Thread messageProcessingThread = startMessageProcessingThread();
+                //Thread.sleep(500);
+                Thread javafxThread = startJavaFXThread(args);
                 monitorThreads(javafxThread);
                 waitForThreadsCompletion(messageProcessingThread, javafxThread);
 
@@ -150,12 +145,10 @@ public class Main {
         return javafxThread;
     }
 
-    private void monitorThreads(Thread javafxThread) throws InterruptedException {
+    private void monitorThreads(Thread javafxThread) {
         logger.info("Surveillance des threads de l'interface utilisateur");
 
         while (isRunning.get() && !Thread.currentThread().isInterrupted()) {
-            Thread.sleep(1000);
-
             // Vérifier si JavaFX s'est terminé
             if (!javafxThread.isAlive()) {
                 logger.info("JavaFX s'est terminé naturellement");
@@ -188,26 +181,19 @@ public class Main {
 
     private void cleanupViewThread() {
         logger.info("Nettoyage du thread d'interface utilisateur");
-
-        // Marquer l'application comme arrêtée
         isRunning.set(false);
 
-        // Arrêter le thread de logique métier
         if (logicThread != null) {
             logicThread.stop();
         }
 
-        // Signaler la fin du thread view
         terminationLatch.countDown();
-
         logger.info("Fin du thread d'interface utilisateur");
     }
 
     private Void handleThreadException(Throwable e) {
         logger.error("Exception dans l'un des threads: {}", e.getMessage());
         isRunning.set(false);
-
-        // Arrêter les threads proprement
         if (logicThread != null) logicThread.stop();
         if (viewThread != null) viewThread.stop();
 
@@ -218,7 +204,6 @@ public class Main {
         boolean terminated = terminationLatch.await(1, TimeUnit.HOURS);
         if (!terminated) {
             logger.warn("Les threads ne se sont pas terminés dans le délai imparti");
-            // Forcer l'arrêt
             if (logicThread != null) logicThread.stop();
             if (viewThread != null) viewThread.stop();
         }
@@ -237,18 +222,15 @@ public class Main {
     }
 
     private void cleanup(LocalDateTime startTime) {
-        // Arrêter JavaFX Platform
         try {
             Platform.exit();
         } catch (Exception e) {
             logger.warn("Erreur lors de l'arrêt de JavaFX", e);
         }
 
-        // Arrêter les threads d'abord
         if (logicThread != null) logicThread.stop();
         if (viewThread != null) viewThread.stop();
 
-        // Puis les executors
         shutdownExecutor(logicExecutor, "Logique");
         shutdownExecutor(viewExecutor, "Vue");
 
