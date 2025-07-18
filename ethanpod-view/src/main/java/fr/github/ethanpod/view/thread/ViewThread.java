@@ -10,8 +10,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ViewThread implements Runnable {
     private static final Logger logger = LogManager.getLogger(ViewThread.class);
-
-    // Instance statique pour accès depuis Main JavaFX
     private static ViewThread instance;
     private final MessageRouter messageRouter;
     private final AtomicBoolean running = new AtomicBoolean(true);
@@ -32,7 +30,6 @@ public class ViewThread implements Runnable {
         logger.info("🟢 Thread View démarré - Interface utilisateur");
 
         messageRouter.sendRequestToLogic("UI_READY", null, MessageType.NOTIFICATION, null);
-
         while (running.get()) {
             try {
                 viewHandle.processIncomingMessages();
@@ -60,7 +57,7 @@ public class ViewThread implements Runnable {
 
     public void onJavaFXReady() {
         logger.info("🟢 JavaFX est prêt - Interface utilisateur disponible");
-        viewHandle.initializeUI();
+        messageRouter.sendRequestToView("JAVAFX_READY", null, MessageType.NOTIFICATION, null);
     }
 
     public void setNavigationContainer(NavigationContainer navigationContainer) {

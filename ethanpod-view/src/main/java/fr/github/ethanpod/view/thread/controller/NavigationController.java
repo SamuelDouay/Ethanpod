@@ -1,12 +1,16 @@
 package fr.github.ethanpod.view.thread.controller;
 
 import fr.github.ethanpod.core.item.NavigationItem;
+import fr.github.ethanpod.service.AsyncServiceManager;
 import javafx.application.Platform;
 
 import java.util.List;
 
 public class NavigationController extends Controller {
 
+    public NavigationController(AsyncServiceManager asyncServiceManager) {
+        super(asyncServiceManager);
+    }
 
     public void loadNavigationData() {
         logger.info("🟢 Chargement des données de navigation");

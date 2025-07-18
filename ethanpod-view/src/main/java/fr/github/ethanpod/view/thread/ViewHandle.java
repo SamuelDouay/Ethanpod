@@ -18,12 +18,11 @@ public class ViewHandle {
     private final AsyncServiceManager asyncServiceManager;
     private final BlockingQueue<ThreadMessage> messageQueue;
     private final ControllerManager controllerManager;
-    private UIUpdateCallback uiUpdateCallback;
 
     public ViewHandle() {
         this.asyncServiceManager = new AsyncServiceManager();
         this.messageQueue = MessageRouter.getInstance().registerThread("ViewThread");
-        this.controllerManager = new ControllerManager();
+        this.controllerManager = new ControllerManager(asyncServiceManager);
     }
 
     public ControllerManager getControllerManager() {
@@ -78,6 +77,9 @@ public class ViewHandle {
             asyncServiceManager.initializeAllServices();
             logger.info("🟢 Services initialisés, en attente de JavaFX");
         }
+        if ("JAVAFX_READY".equals(message.getContent())) {
+            controllerManager.initializeAllServices();
+        }
     }
 
     private void handleError(ThreadMessage message) {
@@ -94,11 +96,5 @@ public class ViewHandle {
     private void showErrorToUser(String errorMessage) {
         logger.error("Affichage de l'erreur à l'utilisateur: {}", errorMessage);
     }
-
-    public void initializeUI() {
-        logger.info("🟢 Initialisation de l'interface utilisateur");
-        controllerManager.initializeAllServices();
-    }
-
 
 }

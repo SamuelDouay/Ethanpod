@@ -11,8 +11,8 @@ public abstract class Controller {
     protected UIUpdateCallback uiUpdateCallback;
     protected AsyncServiceManager asyncServiceManager;
 
-    public Controller() {
-        this.asyncServiceManager = new AsyncServiceManager();
+    public Controller(AsyncServiceManager asyncServiceManager) {
+        this.asyncServiceManager = asyncServiceManager;
     }
 
     public void setNavigationContainer(NavigationContainer navigationContainer) {

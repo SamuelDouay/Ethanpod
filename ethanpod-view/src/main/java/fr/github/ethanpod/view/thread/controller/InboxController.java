@@ -1,8 +1,13 @@
 package fr.github.ethanpod.view.thread.controller;
 
+import fr.github.ethanpod.service.AsyncServiceManager;
 import javafx.application.Platform;
 
 public class InboxController extends Controller {
+
+    public InboxController(AsyncServiceManager asyncServiceManager) {
+        super(asyncServiceManager);
+    }
 
     public void loadInboxCount() {
         logger.info("🟢 Chargement du nombre d'éléments inbox");
