@@ -55,11 +55,6 @@ public class ViewThread implements Runnable {
         viewHandle.stopAllService();
     }
 
-    public void onJavaFXReady() {
-        logger.info("🟢 JavaFX est prêt - Interface utilisateur disponible");
-        messageRouter.sendRequestToView("JAVAFX_READY", null, MessageType.NOTIFICATION, null);
-    }
-
     public void setNavigationContainer(NavigationContainer navigationContainer) {
         this.viewHandle.getControllerManager().setNavigationContainer(navigationContainer);
         logger.info("🟢 NavigationContainer configuré dans ViewThread");

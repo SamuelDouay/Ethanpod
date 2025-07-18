@@ -1,7 +1,8 @@
 package fr.github.ethanpod.view;
 
+import fr.github.ethanpod.core.thread.MessageRouter;
+import fr.github.ethanpod.core.thread.MessageType;
 import fr.github.ethanpod.view.layout.MainLayout;
-import fr.github.ethanpod.view.thread.ViewThread;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -66,17 +67,7 @@ public class Main extends Application {
     }
 
     private void notifyViewThreadReady() {
-        try {
-            ViewThread viewThread = ViewThread.getInstance();
-            if (viewThread != null) {
-                viewThread.onJavaFXReady();
-                logger.info("ViewThread notifié que JavaFX est prêt");
-            } else {
-                logger.warn("ViewThread non disponible lors de la notification JavaFX");
-            }
-        } catch (Exception e) {
-            logger.error("Erreur lors de la notification du ViewThread", e);
-        }
+        MessageRouter.getInstance().sendRequestToView("JAVAFX_READY", null, MessageType.NOTIFICATION, null);
     }
 
     private void handleApplicationShutdown() {
