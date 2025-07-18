@@ -95,7 +95,6 @@ public class Main {
 
             try {
                 Thread messageProcessingThread = startMessageProcessingThread();
-                //Thread.sleep(500);
                 Thread javafxThread = startJavaFXThread(args);
                 monitorThreads(javafxThread);
                 waitForThreadsCompletion(messageProcessingThread, javafxThread);

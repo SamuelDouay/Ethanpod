@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EpisodeDao extends BaseDao {
-    private static final String QUEUE_ITEMS_JOIN = "FROM Feeds AS feed INNER JOIN Queue queue ON queue.feeditem = feed.id";
-    private static final String NEWS_ITEMS_JOIN = "FROM FeedItems feed INNER JOIN FeedMedia fm ON fm.feeditem = feed.id";
+    private static final String QUEUE_ITEMS_JOIN = "FROM Feeds AS feed INNER JOIN Queue queue ON queue.feeditem = feed.id ";
+    private static final String NEWS_ITEMS_JOIN = "FROM FeedItems feed INNER JOIN FeedMedia fm ON fm.feeditem = feed.id ";
     private static final String LIMIT_8 = "LIMIT 8";
 
     public EpisodeDao() {

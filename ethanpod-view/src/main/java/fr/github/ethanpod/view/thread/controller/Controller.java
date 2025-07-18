@@ -2,7 +2,7 @@ package fr.github.ethanpod.view.thread.controller;
 
 import fr.github.ethanpod.service.AsyncServiceManager;
 import fr.github.ethanpod.view.layout.NavigationContainer;
-import fr.github.ethanpod.view.thread.UIUpdateCallback;
+import fr.github.ethanpod.view.thread.callback.UIUpdateCallback;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
