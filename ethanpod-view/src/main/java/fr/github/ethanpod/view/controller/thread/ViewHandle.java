@@ -1,15 +1,14 @@
-package fr.github.ethanpod.view.thread;
+package fr.github.ethanpod.view.controller.thread;
 
-import fr.github.ethanpod.core.item.NavigationItem;
+
 import fr.github.ethanpod.core.thread.MessageRouter;
+import fr.github.ethanpod.core.thread.MessageType;
 import fr.github.ethanpod.core.thread.ThreadMessage;
 import fr.github.ethanpod.service.AsyncServiceManager;
-import fr.github.ethanpod.view.thread.controller.ControllerManager;
-import javafx.application.Platform;
+import fr.github.ethanpod.view.controller.ControllerManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -36,10 +35,10 @@ public class ViewHandle {
             logger.info("🟢 {}", message);
 
             switch (message.getType()) {
-                case RESPONSE -> handleResponse(message);
-                case DATA_UPDATE -> handleDataUpdate(message);
-                case NOTIFICATION -> handleNotification(message);
-                case ERROR -> handleError(message);
+                case MessageType.RESPONSE -> handleResponse(message);
+                case MessageType.DATA_UPDATE -> handleDataUpdate(message);
+                case MessageType.NOTIFICATION -> handleNotification(message);
+                case MessageType.ERROR -> handleError(message);
                 default -> logger.warn("Type de message non géré: {}", message.getType());
             }
         }
@@ -54,13 +53,10 @@ public class ViewHandle {
 
         switch (content) {
             case "DATA_REFRESHED" -> {
-                @SuppressWarnings("unchecked")
-                List<NavigationItem> updatedList = (List<NavigationItem>) message.getData();
-                this.controllerManager.getNavigationService().updateNavigationUI(updatedList);
+                logger.info("data refresh");
             }
             case "INBOX_UPDATED" -> {
-                Integer count = (Integer) message.getData();
-                this.controllerManager.getInboxService().updateInboxCount(count);
+                logger.info("Inbox update");
             }
             default -> logger.warn("Contenu de mise à jour non géré: {}", content);
         }
@@ -80,17 +76,6 @@ public class ViewHandle {
 
     private void handleError(ThreadMessage message) {
         logger.error("🔴 Erreur reçue du thread de logique: {}", message.getContent());
-
-        // Mettre à jour l'interface pour afficher l'erreur
-        if (Platform.isFxApplicationThread()) {
-            showErrorToUser(message.getContent());
-        } else {
-            Platform.runLater(() -> showErrorToUser(message.getContent()));
-        }
-    }
-
-    private void showErrorToUser(String errorMessage) {
-        logger.error("Affichage de l'erreur à l'utilisateur: {}", errorMessage);
     }
 
 }

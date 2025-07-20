@@ -1,4 +1,4 @@
-package fr.github.ethanpod.view.thread.callback;
+package fr.github.ethanpod.view.controller.event;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

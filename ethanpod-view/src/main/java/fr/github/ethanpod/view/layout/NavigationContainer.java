@@ -4,7 +4,10 @@ import fr.github.ethanpod.core.item.ItemManager;
 import fr.github.ethanpod.core.item.NavigationItem;
 import fr.github.ethanpod.view.component.navigation.NavigationComponent;
 import fr.github.ethanpod.view.context.FeedContext;
-import fr.github.ethanpod.view.thread.callback.*;
+import fr.github.ethanpod.view.controller.event.InboxCountUpdatedEvent;
+import fr.github.ethanpod.view.controller.event.NavigationUpdatedEvent;
+import fr.github.ethanpod.view.controller.event.UIEventHandler;
+import fr.github.ethanpod.view.controller.event.UIEventManager;
 import fr.github.ethanpod.view.util.ColorThemeConstants;
 import fr.github.ethanpod.view.util.LayoutType;
 import javafx.geometry.Insets;
@@ -173,36 +176,20 @@ public class NavigationContainer {
     }
 
     private void updateInboxCount(Integer count) {
-        // no
+        log.info(count);
     }
 
     private void registerEventHandlers() {
         // Créer des handlers spécifiques pour chaque type d'événement
-        UIEventHandler<NavigationUpdatedEvent> navigationHandler = new UIEventHandler<NavigationUpdatedEvent>() {
-            @Override
-            public void handleEvent(NavigationUpdatedEvent event) {
-                log.info("Mise à jour de la navigation avec {} éléments", event.getItemCount());
-                updateNavigationList(event.getNavigationItems());
-            }
-
-            @Override
-            public boolean canHandle(Class<? extends UIEvent> eventType) {
-                return NavigationUpdatedEvent.class.equals(eventType);
-            }
+        UIEventHandler<NavigationUpdatedEvent> navigationHandler = event -> {
+            log.info("Mise à jour de la navigation avec {} éléments", event.getItemCount());
+            updateNavigationList(event.getNavigationItems());
         };
 
-        UIEventHandler<InboxCountUpdatedEvent> inboxHandler = new UIEventHandler<InboxCountUpdatedEvent>() {
-            @Override
-            public void handleEvent(InboxCountUpdatedEvent event) {
-                log.info("Mise à jour du compteur inbox: {}",
-                        event.getCount());
-                updateInboxCount(event.getCount());
-            }
-
-            @Override
-            public boolean canHandle(Class<? extends UIEvent> eventType) {
-                return InboxCountUpdatedEvent.class.equals(eventType);
-            }
+        UIEventHandler<InboxCountUpdatedEvent> inboxHandler = event -> {
+            log.info("Mise à jour du compteur inbox: {}",
+                    event.getCount());
+            updateInboxCount(event.getCount());
         };
 
         // Enregistrement des handlers

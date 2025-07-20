@@ -1,4 +1,4 @@
-package fr.github.ethanpod.view.thread.callback;
+package fr.github.ethanpod.view.controller.event;
 
 import fr.github.ethanpod.core.item.NavigationItem;
 

@@ -1,4 +1,4 @@
-package fr.github.ethanpod.view.thread;
+package fr.github.ethanpod.view.controller.thread;
 
 import fr.github.ethanpod.core.thread.MessageRouter;
 import fr.github.ethanpod.core.thread.MessageType;
