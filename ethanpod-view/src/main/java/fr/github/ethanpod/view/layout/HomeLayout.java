@@ -1,7 +1,5 @@
 package fr.github.ethanpod.view.layout;
 
-import fr.github.ethanpod.core.item.EpisodeItem;
-import fr.github.ethanpod.service.EpisodeService;
 import fr.github.ethanpod.view.component.episode.EpisodeComponent;
 import fr.github.ethanpod.view.component.image.ImageComponent;
 import fr.github.ethanpod.view.component.surprise.SurpriseComponent;
@@ -115,7 +113,7 @@ public class HomeLayout extends Layout implements ContextualLayout {
     }
 
     private Node getNewsTable() {
-        VBox box = new VBox();
+        /*VBox box = new VBox();
 
         EpisodeService episodeService = new EpisodeService();
 
@@ -124,6 +122,10 @@ public class HomeLayout extends Layout implements ContextualLayout {
         }
 
         return box;
+        */
+
+        return new VBox();
+
     }
 
     private ScrollPane getClassic() {
@@ -163,11 +165,12 @@ public class HomeLayout extends Layout implements ContextualLayout {
         box.setBackground(new Background(new BackgroundFill(ColorThemeConstants.getGrey000(), null, null)));
         HBox.setHgrow(box, Priority.ALWAYS);
 
+        /*
         EpisodeService episodeService = new EpisodeService();
 
         for (EpisodeItem e : episodeService.getTop8Queue()) {
             box.getChildren().add(IMAGE_COMPONENT.createImageCard(e.getUrlImage(), e.getName(), e.getDate()));
-        }
+        } */
 
         scrollPane.setContent(box);
         return scrollPane;

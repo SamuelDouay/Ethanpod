@@ -1,7 +1,6 @@
 package fr.github.ethanpod.view.thread.controller;
 
 import fr.github.ethanpod.service.AsyncServiceManager;
-import fr.github.ethanpod.view.layout.NavigationContainer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,6 +8,7 @@ import java.util.Map;
 public class ControllerManager {
     private final Map<String, Controller> services = new HashMap<>();
     private final AsyncServiceManager asyncServiceManager;
+
 
     public ControllerManager(AsyncServiceManager asyncServiceManager) {
         this.asyncServiceManager = asyncServiceManager;
@@ -19,10 +19,6 @@ public class ControllerManager {
         // Enregistrer les services disponibles
         registerService("navigation", new NavigationController(asyncServiceManager));
         registerService("inbox", new InboxController(asyncServiceManager));
-    }
-
-    public void setNavigationContainer(NavigationContainer navigationContainer) {
-        services.values().forEach(service -> service.setNavigationContainer(navigationContainer));
     }
 
     public void registerService(String serviceId, Controller service) {

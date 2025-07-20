@@ -2,6 +2,7 @@ package fr.github.ethanpod.view.thread.controller;
 
 import fr.github.ethanpod.core.item.NavigationItem;
 import fr.github.ethanpod.service.AsyncServiceManager;
+import fr.github.ethanpod.view.thread.callback.NavigationUpdatedEvent;
 import javafx.application.Platform;
 
 import java.util.List;
@@ -24,23 +25,17 @@ public class NavigationController extends Controller {
                     logger.error("🔴 Erreur lors du chargement de la navigation : {}", throwable.getMessage());
                     return null;
                 });
+
     }
 
     public void updateNavigationUI(List<NavigationItem> navigationList) {
-        Platform.runLater(() -> doUpdateNavigationUI(navigationList));
-    }
-
-    private void doUpdateNavigationUI(List<NavigationItem> navigationList) {
-        try {
-            if (uiUpdateCallback != null) {
-                logger.info("🟢 Interface mise à jour avec {} éléments", navigationList.size());
-                this.uiUpdateCallback.updateNavigationList(navigationList);
-            } else {
-                logger.warn("NavigationContainer n'est pas encore initialisé");
-            }
-        } catch (Exception e) {
-            logger.error("Erreur lors de la mise à jour de l'interface", e);
-        }
+        Platform.runLater(() -> {
+            // Publier l'événement de mise à jour de navigation
+            NavigationUpdatedEvent event = new NavigationUpdatedEvent(
+                    "NavigationController", navigationList
+            );
+            eventManager.publishEvent(event);
+        });
     }
 
     @Override

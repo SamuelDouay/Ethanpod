@@ -8,6 +8,7 @@ module ethanpod.view {
     exports fr.github.ethanpod.view.component.episode;
     exports fr.github.ethanpod.view.thread;
     exports fr.github.ethanpod.view.thread.callback;
+    exports fr.github.ethanpod.view.thread.controller;
     requires javafx.base;
     requires javafx.controls;
     requires javafx.graphics;

@@ -4,8 +4,7 @@ import fr.github.ethanpod.core.item.ItemManager;
 import fr.github.ethanpod.core.item.NavigationItem;
 import fr.github.ethanpod.view.component.navigation.NavigationComponent;
 import fr.github.ethanpod.view.context.FeedContext;
-import fr.github.ethanpod.view.thread.ViewThread;
-import fr.github.ethanpod.view.thread.callback.UIUpdateCallback;
+import fr.github.ethanpod.view.thread.callback.*;
 import fr.github.ethanpod.view.util.ColorThemeConstants;
 import fr.github.ethanpod.view.util.LayoutType;
 import javafx.geometry.Insets;
@@ -25,19 +24,20 @@ import org.kordamp.ikonli.materialdesign2.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NavigationContainer implements UIUpdateCallback {
+public class NavigationContainer {
     private static final String FONT = "Inter";
     private static final Logger log = LogManager.getLogger(NavigationContainer.class);
-
     private final ItemManager manager;
     private final List<HBox> listNav;
+    private final UIEventManager eventManager;
     private LayoutManager layoutManager;
     private VBox scrollBox;
 
     public NavigationContainer() {
         this.manager = new ItemManager();
         this.listNav = new ArrayList<>();
-        ViewThread.getInstance().setNavigationContainer(this);
+        this.eventManager = UIEventManager.getInstance();
+        registerEventHandlers();
     }
 
     public NavigationContainer(LayoutManager layoutManager) {
@@ -159,8 +159,8 @@ public class NavigationContainer implements UIUpdateCallback {
         }
     }
 
-    @Override
-    public void updateNavigationList(List<NavigationItem> navigationList) {
+
+    private void updateNavigationList(List<NavigationItem> navigationList) {
         scrollBox.getChildren().clear();
         for (NavigationItem navigationItem : navigationList) {
             try {
@@ -172,24 +172,41 @@ public class NavigationContainer implements UIUpdateCallback {
         }
     }
 
-    @Override
-    public void updateInboxCount(Integer count) {
-        System.out.println(count);
+    private void updateInboxCount(Integer count) {
         // no
     }
 
-    @Override
-    public void showNotification(String message) {
-        // no
-    }
+    private void registerEventHandlers() {
+        // Créer des handlers spécifiques pour chaque type d'événement
+        UIEventHandler<NavigationUpdatedEvent> navigationHandler = new UIEventHandler<NavigationUpdatedEvent>() {
+            @Override
+            public void handleEvent(NavigationUpdatedEvent event) {
+                log.info("Mise à jour de la navigation avec {} éléments", event.getItemCount());
+                updateNavigationList(event.getNavigationItems());
+            }
 
-    @Override
-    public void showError(String errorMessage) {
-        // no
-    }
+            @Override
+            public boolean canHandle(Class<? extends UIEvent> eventType) {
+                return NavigationUpdatedEvent.class.equals(eventType);
+            }
+        };
 
-    @Override
-    public void updateLoadingState(boolean isLoading) {
-        // no
+        UIEventHandler<InboxCountUpdatedEvent> inboxHandler = new UIEventHandler<InboxCountUpdatedEvent>() {
+            @Override
+            public void handleEvent(InboxCountUpdatedEvent event) {
+                log.info("Mise à jour du compteur inbox: {}",
+                        event.getCount());
+                updateInboxCount(event.getCount());
+            }
+
+            @Override
+            public boolean canHandle(Class<? extends UIEvent> eventType) {
+                return InboxCountUpdatedEvent.class.equals(eventType);
+            }
+        };
+
+        // Enregistrement des handlers
+        eventManager.registerHandler(NavigationUpdatedEvent.EVENT_TYPE, navigationHandler);
+        eventManager.registerHandler(InboxCountUpdatedEvent.EVENT_TYPE, inboxHandler);
     }
 }

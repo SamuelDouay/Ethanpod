@@ -25,10 +25,6 @@ public class ViewHandle {
         this.controllerManager = new ControllerManager(asyncServiceManager);
     }
 
-    public ControllerManager getControllerManager() {
-        return controllerManager;
-    }
-
     public void stopAllService() {
         this.asyncServiceManager.stopAllServices();
     }
