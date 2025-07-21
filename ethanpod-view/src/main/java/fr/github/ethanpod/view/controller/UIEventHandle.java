@@ -5,7 +5,6 @@ import fr.github.ethanpod.core.item.NavigationItem;
 import fr.github.ethanpod.core.thread.MessageRouter;
 import fr.github.ethanpod.core.thread.MessageType;
 import fr.github.ethanpod.core.thread.ThreadMessage;
-import fr.github.ethanpod.view.controller.ui.UIControllerManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

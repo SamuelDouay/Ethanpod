@@ -35,6 +35,10 @@
         </dependency>
         <dependency>
             <groupId>fr.github</groupId>
+            <artifactId>ethanpod-controller</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>fr.github</groupId>
             <artifactId>ethanpod-view</artifactId>
         </dependency>
 

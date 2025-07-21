@@ -1,10 +1,10 @@
-package fr.github.ethanpod.view.controller.ui;
+package fr.github.ethanpod.view.controller;
 
-import fr.github.ethanpod.view.controller.event.InboxCountUpdatedEvent;
-import fr.github.ethanpod.view.controller.event.UIEventManager;
+import fr.github.ethanpod.view.event.InboxCountUpdatedEvent;
+import fr.github.ethanpod.view.event.UIEventManager;
 import javafx.application.Platform;
 
-public class InboxUIController extends UIController {
+public class InboxUIController implements UIController {
 
     private final UIEventManager eventManager = UIEventManager.getInstance();
 

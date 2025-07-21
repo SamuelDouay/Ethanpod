@@ -3,11 +3,15 @@ package fr.github.ethanpod.core.thread;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class MessageRouter {
+    public static final String UI_EVENT_THREAD = "UIEventThread";
+    public static final String VIEW_THREAD = "ViewThread";
+    public static final String LOGIC_THREAD = "LogicThread";
     private static final Logger logger = LogManager.getLogger(MessageRouter.class);
     private final ConcurrentHashMap<String, BlockingQueue<ThreadMessage>> threadQueues;
     private final ConcurrentHashMap<String, String> requestSenders;
@@ -66,6 +70,7 @@ public class MessageRouter {
     }
 
     private void sendRequest(String request, String requestId, String sender, String receiver, MessageType messageType, Object data) {
+        if (requestId == null) requestId = UUID.randomUUID().toString();
         ThreadMessage message = new ThreadMessage(request, sender, receiver,
                 messageType, data, requestId);
 
@@ -82,27 +87,19 @@ public class MessageRouter {
     }
 
     public void sendRequestToLogicFromView(String request, String requestId, MessageType messageType, Object data) {
-        sendRequest(request, requestId, "ViewThread", "LogicThread", messageType, data);
-    }
-
-    public void sendRequestToLogicFromEvent(String request, String requestId, MessageType messageType, Object data) {
-        sendRequest(request, requestId, "UIEventThread", "LogicThread", messageType, data);
+        sendRequest(request, requestId, VIEW_THREAD, LOGIC_THREAD, messageType, data);
     }
 
     public void sendRequestToViewFromLogic(String request, String requestId, MessageType messageType, Object data) {
-        sendRequest(request, requestId, "LogicThread", "ViewThread", messageType, data);
+        sendRequest(request, requestId, LOGIC_THREAD, VIEW_THREAD, messageType, data);
     }
 
     public void sendRequestToViewFromEvent(String request, String requestId, MessageType messageType, Object data) {
-        sendRequest(request, requestId, "UIEventThread", "ViewThread", messageType, data);
+        sendRequest(request, requestId, UI_EVENT_THREAD, VIEW_THREAD, messageType, data);
     }
 
     public void sendRequestToUiEventFromView(String request, String requestId, MessageType messageType, Object data) {
-        sendRequest(request, requestId, "ViewThread", "UIEventThread", messageType, data);
-    }
-
-    public void sendRequestToUiEventFromLogic(String request, String requestId, MessageType messageType, Object data) {
-        sendRequest(request, requestId, "LogicThread", "UIEventThread", messageType, data);
+        sendRequest(request, requestId, VIEW_THREAD, UI_EVENT_THREAD, messageType, data);
     }
 
     private static class Holder {

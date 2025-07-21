@@ -1,13 +1,13 @@
-package fr.github.ethanpod.view.controller.ui;
+package fr.github.ethanpod.view.controller;
 
 import fr.github.ethanpod.core.item.NavigationItem;
-import fr.github.ethanpod.view.controller.event.NavigationUpdatedEvent;
-import fr.github.ethanpod.view.controller.event.UIEventManager;
+import fr.github.ethanpod.view.event.NavigationUpdatedEvent;
+import fr.github.ethanpod.view.event.UIEventManager;
 import javafx.application.Platform;
 
 import java.util.List;
 
-public class NavigationUIController extends UIController {
+public class NavigationUIController implements UIController {
 
     private final UIEventManager eventManager = UIEventManager.getInstance();
 

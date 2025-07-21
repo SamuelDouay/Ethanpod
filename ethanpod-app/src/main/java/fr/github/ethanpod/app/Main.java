@@ -1,8 +1,8 @@
 package fr.github.ethanpod.app;
 
 
+import fr.github.ethanpod.controller.ViewThread;
 import fr.github.ethanpod.logic.LogicThread;
-import fr.github.ethanpod.service.thread.ViewThread;
 import fr.github.ethanpod.view.controller.UIEventThread;
 import javafx.application.Platform;
 import org.apache.logging.log4j.LogManager;

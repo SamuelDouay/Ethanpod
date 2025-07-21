@@ -5,4 +5,5 @@ module ethanpod.app {
     requires ethanpod.core;
     requires javafx.graphics;
     requires ethanpod.service;
+    requires ethanpod.controller;
 }

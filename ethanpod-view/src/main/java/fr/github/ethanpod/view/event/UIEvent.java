@@ -1,4 +1,4 @@
-package fr.github.ethanpod.view.controller.event;
+package fr.github.ethanpod.view.event;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

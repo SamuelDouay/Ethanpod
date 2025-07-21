@@ -1,4 +1,4 @@
-package fr.github.ethanpod.view.controller.event;
+package fr.github.ethanpod.view.event;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

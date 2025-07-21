@@ -1,4 +1,4 @@
-package fr.github.ethanpod.view.controller.event;
+package fr.github.ethanpod.view.event;
 
 import fr.github.ethanpod.core.item.NavigationItem;
 

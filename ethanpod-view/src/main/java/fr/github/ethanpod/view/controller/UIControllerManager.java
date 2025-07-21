@@ -1,4 +1,4 @@
-package fr.github.ethanpod.view.controller.ui;
+package fr.github.ethanpod.view.controller;
 
 import java.util.HashMap;
 import java.util.Map;

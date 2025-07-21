@@ -1,4 +1,4 @@
-package fr.github.ethanpod.view.controller.event;
+package fr.github.ethanpod.view.event;
 
 public class InboxCountUpdatedEvent extends UIEvent {
     public static final String EVENT_TYPE = "INBOX_COUNT_UPDATED";

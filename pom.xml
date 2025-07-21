@@ -18,6 +18,7 @@
         <module>ethanpod-service</module>
         <module>ethanpod-view</module>
         <module>ethanpod-app</module>
+        <module>ethanpod-controller</module>
     </modules>
 
     <properties>
