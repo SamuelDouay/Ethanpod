@@ -67,7 +67,7 @@ public class Main extends Application {
     }
 
     private void notifyViewThreadReady() {
-        MessageRouter.getInstance().sendRequestToView("JAVAFX_READY", null, MessageType.NOTIFICATION, null);
+        MessageRouter.getInstance().sendRequestToViewFromEvent("JAVAFX_READY", null, MessageType.NOTIFICATION, null);
     }
 
     private void handleApplicationShutdown() {

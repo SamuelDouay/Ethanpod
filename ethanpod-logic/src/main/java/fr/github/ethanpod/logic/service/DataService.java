@@ -35,9 +35,9 @@ public abstract class DataService {
                 .whenComplete((result, throwable) -> {
                     if (throwable != null) {
                         logger.error("Erreur {}", operationName, throwable);
-                        messageRouter.sendRequestToView("ERROR", requestId, MessageType.ERROR, throwable.getMessage());
+                        messageRouter.sendRequestToViewFromLogic("ERROR", requestId, MessageType.ERROR, throwable.getMessage());
                     } else {
-                        messageRouter.sendRequestToView(successMessageType, requestId, MessageType.RESPONSE, result);
+                        messageRouter.sendRequestToViewFromLogic(successMessageType, requestId, MessageType.RESPONSE, result);
                     }
                 });
     }

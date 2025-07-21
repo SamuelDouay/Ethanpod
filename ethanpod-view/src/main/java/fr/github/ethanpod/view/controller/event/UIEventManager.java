@@ -25,16 +25,6 @@ public class UIEventManager {
         logger.info("Handler enregistré pour le type d'événement: {}", eventType);
     }
 
-    public void unregisterHandler(String eventType, UIEventHandler<?> handler) {
-        List<UIEventHandler<? extends UIEvent>> eventHandlers = handlers.get(eventType);
-        if (eventHandlers != null) {
-            eventHandlers.remove(handler);
-            if (eventHandlers.isEmpty()) {
-                handlers.remove(eventType);
-            }
-        }
-    }
-
     @SuppressWarnings("unchecked")
     public void publishEvent(UIEvent event) {
         String eventType = event.getEventType();

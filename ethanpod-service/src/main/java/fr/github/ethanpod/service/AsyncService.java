@@ -38,7 +38,7 @@ public abstract class AsyncService {
     }
 
     public void refreshData() {
-        messageRouter.sendRequestToLogic("REFRESH_DATA", generateRequestId(), MessageType.DATA_UPDATE, null);
+        messageRouter.sendRequestToLogicFromView("REFRESH_DATA", generateRequestId(), MessageType.DATA_UPDATE, null);
     }
 
     public void stop() {
@@ -99,7 +99,7 @@ public abstract class AsyncService {
         logger.info("🟢 Service: Création requête {} avec ID: {}", request, requestId);
         pendingRequests.put(requestId, future);
         futureTimeOut(future, requestId);
-        messageRouter.sendRequestToLogic(request, requestId, MessageType.REQUEST, data);
+        messageRouter.sendRequestToLogicFromView(request, requestId, MessageType.REQUEST, data);
         return future;
     }
 

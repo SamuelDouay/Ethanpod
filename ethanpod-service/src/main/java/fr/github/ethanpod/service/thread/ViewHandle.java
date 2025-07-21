@@ -1,11 +1,10 @@
-package fr.github.ethanpod.view.controller.thread;
+package fr.github.ethanpod.service.thread;
 
 
 import fr.github.ethanpod.core.thread.MessageRouter;
 import fr.github.ethanpod.core.thread.MessageType;
 import fr.github.ethanpod.core.thread.ThreadMessage;
 import fr.github.ethanpod.service.AsyncServiceManager;
-import fr.github.ethanpod.view.controller.ControllerManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -52,12 +51,8 @@ public class ViewHandle {
         String content = message.getContent();
 
         switch (content) {
-            case "DATA_REFRESHED" -> {
-                logger.info("data refresh");
-            }
-            case "INBOX_UPDATED" -> {
-                logger.info("Inbox update");
-            }
+            case "DATA_REFRESHED" -> logger.info("data refresh");
+            case "INBOX_UPDATED" -> logger.info("Inbox update");
             default -> logger.warn("Contenu de mise à jour non géré: {}", content);
         }
     }
@@ -67,7 +62,11 @@ public class ViewHandle {
 
         if ("LOGIC_READY".equals(message.getContent())) {
             asyncServiceManager.initializeAllServices();
-            logger.info("🟢 Services initialisés, en attente de JavaFX");
+            logger.info("🟢 Logic ready");
+        }
+        if ("UI_EVENT_READY".equals(message.getContent())) {
+            logger.info("🟢 Event ready");
+
         }
         if ("JAVAFX_READY".equals(message.getContent())) {
             controllerManager.initializeAllServices();

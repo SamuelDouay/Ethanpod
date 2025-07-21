@@ -7,7 +7,7 @@ import javafx.application.Platform;
 
 import java.util.List;
 
-public class NavigationUIController {
+public class NavigationUIController extends UIController {
 
     private final UIEventManager eventManager = UIEventManager.getInstance();
 

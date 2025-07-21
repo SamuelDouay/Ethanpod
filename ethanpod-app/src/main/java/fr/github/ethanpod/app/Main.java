@@ -2,7 +2,8 @@ package fr.github.ethanpod.app;
 
 
 import fr.github.ethanpod.logic.LogicThread;
-import fr.github.ethanpod.view.controller.thread.ViewThread;
+import fr.github.ethanpod.service.thread.ViewThread;
+import fr.github.ethanpod.view.controller.UIEventThread;
 import javafx.application.Platform;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,9 +18,11 @@ public class Main {
     private static final AtomicBoolean isRunning = new AtomicBoolean(true);
     private ExecutorService logicExecutor;
     private ExecutorService viewExecutor;
+    private ExecutorService uiEventExecutor;
     private CountDownLatch terminationLatch;
     private LogicThread logicThread;
     private ViewThread viewThread;
+    private UIEventThread uiEventThread;
 
     public static void main(String[] args) {
         new Main().run(args);
@@ -50,10 +53,12 @@ public class Main {
     private void initializeSystem() {
         logicThread = new LogicThread();
         viewThread = new ViewThread();
+        uiEventThread = new UIEventThread();
 
         logicExecutor = createExecutor("LogicThread");
         viewExecutor = createExecutor("ViewThread");
-        terminationLatch = new CountDownLatch(2);
+        uiEventExecutor = createExecutor("UIEventThread");
+        terminationLatch = new CountDownLatch(3);
 
         logger.info("Système multithread initialisé");
     }
@@ -68,10 +73,11 @@ public class Main {
 
     private void startThreads(String[] args) {
         CompletableFuture<Void> logicFuture = startLogicThread();
+        CompletableFuture<Void> uiEventFuture = startUIEventThread();
         CompletableFuture<Void> viewFuture = startViewThread(args);
 
         // Monitoring des threads
-        CompletableFuture.allOf(logicFuture, viewFuture)
+        CompletableFuture.allOf(logicFuture, uiEventFuture, viewFuture)
                 .exceptionally(this::handleThreadException);
     }
 
@@ -88,6 +94,21 @@ public class Main {
                 terminationLatch.countDown();
             }
         }, logicExecutor);
+    }
+
+    private CompletableFuture<Void> startUIEventThread() {
+        return CompletableFuture.runAsync(() -> {
+            logger.info("Démarrage du thread de Ui Event");
+            try {
+                uiEventThread.run();
+            } catch (Exception e) {
+                logger.error("Erreur dans le thread de Ui Event", e);
+                isRunning.set(false);
+            } finally {
+                logger.info("Fin du thread de Ui Event");
+                terminationLatch.countDown();
+            }
+        }, uiEventExecutor);
     }
 
     private CompletableFuture<Void> startViewThread(String[] args) {
@@ -183,9 +204,8 @@ public class Main {
         logger.info("Nettoyage du thread d'interface utilisateur");
         isRunning.set(false);
 
-        if (logicThread != null) {
-            logicThread.stop();
-        }
+        if (logicThread != null) logicThread.stop();
+        if (uiEventThread != null) uiEventThread.stop();
 
         terminationLatch.countDown();
         logger.info("Fin du thread d'interface utilisateur");
@@ -195,6 +215,7 @@ public class Main {
         logger.error("Exception dans l'un des threads: {}", e.getMessage());
         isRunning.set(false);
         if (logicThread != null) logicThread.stop();
+        if (uiEventThread != null) uiEventThread.stop();
         if (viewThread != null) viewThread.stop();
 
         return null;
@@ -205,6 +226,7 @@ public class Main {
         if (!terminated) {
             logger.warn("Les threads ne se sont pas terminés dans le délai imparti");
             if (logicThread != null) logicThread.stop();
+            if (uiEventThread != null) uiEventThread.stop();
             if (viewThread != null) viewThread.stop();
         }
     }
@@ -229,10 +251,12 @@ public class Main {
         }
 
         if (logicThread != null) logicThread.stop();
+        if (uiEventThread != null) uiEventThread.stop();
         if (viewThread != null) viewThread.stop();
 
         shutdownExecutor(logicExecutor, "Logique");
         shutdownExecutor(viewExecutor, "Vue");
+        shutdownExecutor(uiEventExecutor, "Event");
 
         logShutdown(startTime);
     }

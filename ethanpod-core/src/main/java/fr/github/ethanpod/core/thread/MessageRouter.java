@@ -81,12 +81,28 @@ public class MessageRouter {
         }
     }
 
-    public void sendRequestToLogic(String request, String requestId, MessageType messageType, Object data) {
+    public void sendRequestToLogicFromView(String request, String requestId, MessageType messageType, Object data) {
         sendRequest(request, requestId, "ViewThread", "LogicThread", messageType, data);
     }
 
-    public void sendRequestToView(String request, String requestId, MessageType messageType, Object data) {
+    public void sendRequestToLogicFromEvent(String request, String requestId, MessageType messageType, Object data) {
+        sendRequest(request, requestId, "UIEventThread", "LogicThread", messageType, data);
+    }
+
+    public void sendRequestToViewFromLogic(String request, String requestId, MessageType messageType, Object data) {
         sendRequest(request, requestId, "LogicThread", "ViewThread", messageType, data);
+    }
+
+    public void sendRequestToViewFromEvent(String request, String requestId, MessageType messageType, Object data) {
+        sendRequest(request, requestId, "UIEventThread", "ViewThread", messageType, data);
+    }
+
+    public void sendRequestToUiEventFromView(String request, String requestId, MessageType messageType, Object data) {
+        sendRequest(request, requestId, "ViewThread", "UIEventThread", messageType, data);
+    }
+
+    public void sendRequestToUiEventFromLogic(String request, String requestId, MessageType messageType, Object data) {
+        sendRequest(request, requestId, "LogicThread", "UIEventThread", messageType, data);
     }
 
     private static class Holder {

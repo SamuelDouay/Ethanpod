@@ -1,4 +1,4 @@
-package fr.github.ethanpod.view.controller;
+package fr.github.ethanpod.service.thread;
 
 import fr.github.ethanpod.service.AsyncServiceManager;
 

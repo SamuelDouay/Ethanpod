@@ -1,4 +1,4 @@
-package fr.github.ethanpod.view.controller.thread;
+package fr.github.ethanpod.service.thread;
 
 import fr.github.ethanpod.core.thread.MessageRouter;
 import fr.github.ethanpod.core.thread.MessageType;
@@ -22,7 +22,7 @@ public class ViewThread implements Runnable {
     public void run() {
         logger.info("🟢 Thread View démarré - Interface utilisateur");
 
-        messageRouter.sendRequestToLogic("UI_READY", null, MessageType.NOTIFICATION, null);
+        messageRouter.sendRequestToLogicFromView("UI_READY", null, MessageType.NOTIFICATION, null);
         while (running.get()) {
             try {
                 viewHandle.processIncomingMessages();

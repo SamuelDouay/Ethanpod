@@ -48,14 +48,14 @@ public class LogicHandle {
             case "REFRESH_DATA" -> serviceManager.refreshAllData();
             default -> {
                 logger.warn("🔵 Requête non reconnue: {}", content);
-                messageRouter.sendRequestToView("ERROR", requestId, MessageType.ERROR, "Unknown request: " + content);
+                messageRouter.sendRequestToViewFromLogic("ERROR", requestId, MessageType.ERROR, "Unknown request: " + content);
             }
         }
     }
 
     private void handleNotification(ThreadMessage message) {
         if ("UI_READY".equals(message.getContent())) {
-            messageRouter.sendRequestToView("LOGIC_READY", null, MessageType.NOTIFICATION, null);
+            messageRouter.sendRequestToViewFromLogic("LOGIC_READY", null, MessageType.NOTIFICATION, null);
         }
     }
 

@@ -4,7 +4,7 @@ import fr.github.ethanpod.view.controller.event.InboxCountUpdatedEvent;
 import fr.github.ethanpod.view.controller.event.UIEventManager;
 import javafx.application.Platform;
 
-public class InboxUIController {
+public class InboxUIController extends UIController {
 
     private final UIEventManager eventManager = UIEventManager.getInstance();
 
