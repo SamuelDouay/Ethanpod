@@ -20,7 +20,7 @@ public class UIEventThread implements Runnable {
 
     @Override
     public void run() {
-        logger.info("🟢 Thread View démarré - Interface utilisateur");
+        logger.info("🟢 Thread Event démarré - Event UI");
 
         messageRouter.sendRequestToViewFromEvent("UI_EVENT_READY", null, MessageType.NOTIFICATION, null);
         while (running.get()) {
@@ -28,18 +28,18 @@ public class UIEventThread implements Runnable {
                 uiEventHandle.processIncomingMessages();
 
                 if (Thread.currentThread().isInterrupted()) {
-                    logger.info("🟢 Thread View interrompu volontairement");
+                    logger.info("🟢 Thread Event interrompu volontairement");
                     break;
                 }
             } catch (InterruptedException _) {
-                logger.info("🟢 Thread View interrompu");
+                logger.info("🟢 Thread Event interrompu");
                 Thread.currentThread().interrupt();
             } catch (Exception e) {
                 logger.error("Erreur dans le thread d'interface", e);
             }
         }
 
-        logger.info("🟢 Thread View terminé");
+        logger.info("🟢 Thread Event terminé");
     }
 
     public void stop() {
