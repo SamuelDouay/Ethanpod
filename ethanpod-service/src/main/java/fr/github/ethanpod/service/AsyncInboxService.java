@@ -8,11 +8,11 @@ public class AsyncInboxService extends AsyncService {
         super("INBOX");
     }
 
-    public CompletableFuture<Integer> getInboxCountAsync() {
+    public CompletableFuture<RequestResult<Integer>> getInboxCountAsync() {
         return createRequestFuture("INBOX_COUNT");
     }
 
-    public CompletableFuture<Boolean> markAsReadAsync() {
+    public CompletableFuture<RequestResult<Boolean>> markAsReadAsync() {
         return createRequestFuture("INBOX_MARK_READ");
     }
 }

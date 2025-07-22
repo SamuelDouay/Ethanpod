@@ -93,21 +93,24 @@ public abstract class AsyncService {
                 });
     }
 
-    private <T> CompletableFuture<T> createFuture(String request, Object data) {
+    private <T> CompletableFuture<RequestResult<T>> createFuture(String request, Object data) {
         CompletableFuture<T> future = new CompletableFuture<>();
         String requestId = generateRequestId();
         logger.info("🟢 Service: Création requête {} avec ID: {}", request, requestId);
         pendingRequests.put(requestId, future);
         futureTimeOut(future, requestId);
         messageRouter.sendRequestToLogicFromView(request, requestId, MessageType.REQUEST, data);
-        return future;
+        return future.thenApply(donne -> new RequestResult<>(requestId, donne));
     }
 
-    protected <T> CompletableFuture<T> createRequestFuture(String request) {
+    protected <T> CompletableFuture<RequestResult<T>> createRequestFuture(String request) {
         return createFuture(request, null);
     }
 
-    protected <T> CompletableFuture<T> createRequestFuture(String request, Object data) {
+    protected <T> CompletableFuture<RequestResult<T>> createRequestFuture(String request, Object data) {
         return createFuture(request, data);
+    }
+
+    public record RequestResult<T>(String requestId, T data) {
     }
 }

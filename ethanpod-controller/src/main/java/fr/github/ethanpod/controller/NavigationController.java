@@ -13,9 +13,9 @@ public class NavigationController extends Controller {
         logger.info("🟢 Chargement des données de navigation");
 
         asyncServiceManager.getNavigationService().getListAsync()
-                .thenAccept(navigationList -> {
-                    logger.info("🟢 {} éléments de navigation reçus", navigationList.size());
-                    messageRouter.sendRequestToUiEventFromView("NAVIGATION_UPDATED", null, MessageType.EVENT, navigationList);
+                .thenAccept(result -> {
+                    logger.info("🟢 {} éléments de navigation reçus", result.data().size());
+                    messageRouter.sendRequestToUiEventFromView("NAVIGATION_UPDATED", result.requestId(), MessageType.EVENT, result.data());
                 })
                 .exceptionally(throwable -> {
                     logger.error("🔴 Erreur lors du chargement de la navigation : {}", throwable.getMessage());

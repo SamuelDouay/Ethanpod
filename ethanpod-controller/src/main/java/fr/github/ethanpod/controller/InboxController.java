@@ -13,9 +13,9 @@ public class InboxController extends Controller {
         logger.info("🟢 Chargement du nombre d'éléments inbox");
 
         asyncServiceManager.getInboxService().getInboxCountAsync()
-                .thenAccept(count -> {
-                    logger.info("🟢 {} éléments dans l'inbox", count);
-                    messageRouter.sendRequestToUiEventFromView("INBOX_COUNT_UPDATED", null, MessageType.EVENT, count);
+                .thenAccept(result -> {
+                    logger.info("🟢 {} éléments dans l'inbox", result.data());
+                    messageRouter.sendRequestToUiEventFromView("INBOX_COUNT_UPDATED", result.requestId(), MessageType.EVENT, result.data());
                 })
                 .exceptionally(throwable -> {
                     logger.error("🔴 Erreur lors du chargement du compte inbox", throwable);
