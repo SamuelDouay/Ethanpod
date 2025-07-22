@@ -45,7 +45,8 @@ public class UIEventHandle {
         switch (content) {
             case "NAVIGATION_UPDATED" ->
                     uiControllerManager.getNavigationService().updateNavigationUI((List<NavigationItem>) message.getData());
-            case "INBOX_COUNT" -> uiControllerManager.getInboxService().updateInboxCount((Integer) message.getData());
+            case "INBOX_COUNT_UPDATED" ->
+                    uiControllerManager.getInboxService().updateInboxCount((Integer) message.getData());
             default -> {
                 logger.warn("🔵 Requête non reconnue: {}", content);
                 messageRouter.sendRequestToViewFromEvent("ERROR", requestId, MessageType.ERROR, "Unknown request: " + content);

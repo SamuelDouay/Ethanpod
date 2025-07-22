@@ -21,6 +21,9 @@ public class UIEventManager {
     }
 
     public <T extends UIEvent> void registerHandler(String eventType, UIEventHandler<T> handler) {
+        if (eventType == null || handler == null) {
+            throw new IllegalArgumentException("Event type and handler cannot be null");
+        }
         handlers.computeIfAbsent(eventType, _ -> new CopyOnWriteArrayList<>()).add(handler);
         logger.info("Handler enregistré pour le type d'événement: {}", eventType);
     }

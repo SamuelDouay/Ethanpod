@@ -1,30 +1,24 @@
 package fr.github.ethanpod.view.controller;
 
-import java.util.HashMap;
-import java.util.Map;
+import fr.github.ethanpod.util.manager.BaseServiceManager;
+import fr.github.ethanpod.util.manager.ServiceConstants;
 
-public class UIControllerManager {
-    private final Map<String, UIController> services = new HashMap<>();
+public class UIControllerManager extends BaseServiceManager<UIController> {
 
     public UIControllerManager() {
         initializeServices();
     }
 
     private void initializeServices() {
-        // Enregistrer les services disponibles
-        registerService("navigation", new NavigationUIController());
-        registerService("inbox", new InboxUIController());
-    }
-
-    public void registerService(String serviceId, UIController service) {
-        services.put(serviceId, service);
+        registerService(ServiceConstants.NAVIGATION_SERVICE, new NavigationUIController());
+        registerService(ServiceConstants.INBOX_SERVICE, new InboxUIController());
     }
 
     public NavigationUIController getNavigationService() {
-        return (NavigationUIController) services.get("navigation");
+        return getService(ServiceConstants.NAVIGATION_SERVICE, NavigationUIController.class);
     }
 
     public InboxUIController getInboxService() {
-        return (InboxUIController) services.get("inbox");
+        return getService(ServiceConstants.INBOX_SERVICE, InboxUIController.class);
     }
 }

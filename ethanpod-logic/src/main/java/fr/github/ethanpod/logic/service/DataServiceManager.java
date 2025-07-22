@@ -1,15 +1,14 @@
 package fr.github.ethanpod.logic.service;
 
+import fr.github.ethanpod.util.manager.BaseServiceManager;
+import fr.github.ethanpod.util.manager.ServiceConstants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
-public class DataServiceManager {
+public class DataServiceManager extends BaseServiceManager<DataService> {
     private static final Logger logger = LogManager.getLogger(DataServiceManager.class);
-    private final Map<String, DataService> services = new HashMap<>();
     private final ExecutorService executor;
 
     public DataServiceManager(ExecutorService executor) {
@@ -18,26 +17,21 @@ public class DataServiceManager {
     }
 
     private void initializeServices() {
-        // Enregistrer les services disponibles
-        registerService("navigation", new DataNavigationService(executor));
-        registerService("inbox", new DataInboxService(executor));
-    }
-
-    public void registerService(String serviceId, DataService service) {
-        services.put(serviceId, service);
+        registerService(ServiceConstants.NAVIGATION_SERVICE, new DataNavigationService(executor));
+        registerService(ServiceConstants.INBOX_SERVICE, new DataInboxService(executor));
     }
 
     public DataNavigationService getNavigationService() {
-        return (DataNavigationService) services.get("navigation");
+        return getService(ServiceConstants.NAVIGATION_SERVICE, DataNavigationService.class);
     }
 
     public DataInboxService getInboxService() {
-        return (DataInboxService) services.get("inbox");
+        return getService(ServiceConstants.INBOX_SERVICE, DataInboxService.class);
     }
 
     public void refreshAllData() {
         logger.info("Rafraîchissement de toutes les données des services");
-        services.values().forEach(service -> {
+        getAllServices().forEach(service -> {
             try {
                 service.refreshData();
             } catch (Exception e) {
@@ -45,4 +39,5 @@ public class DataServiceManager {
             }
         });
     }
+
 }
