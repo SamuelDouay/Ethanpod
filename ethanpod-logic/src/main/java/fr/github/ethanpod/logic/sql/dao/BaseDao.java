@@ -1,9 +1,10 @@
 package fr.github.ethanpod.logic.sql.dao;
 
-import fr.github.ethanpod.logic.sql.setting.Connect;
+import fr.github.ethanpod.logic.sql.setting.DatabaseManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,13 +12,25 @@ import java.sql.SQLException;
 public abstract class BaseDao {
     protected static final Logger logger = LogManager.getLogger(BaseDao.class);
 
+    public BaseDao() {
+
+        // Vérification de l'initialisation sans la forcer
+    }
+
+    private Connection getConnexion() throws SQLException {
+        if (!DatabaseManager.getInstance().isInitialized()) {
+            DatabaseManager.getInstance().initialize();
+        }
+        return DatabaseManager.getInstance().getConnection();
+    }
+
     // Méthodes utilitaires génériques - une fois écrites, utilisées partout
     protected <T> T executeQuery(String sql, ResultSetMapper<T> mapper) {
         return executeQuery(sql, mapper, null);
     }
 
     protected <T> T executeQuery(String sql, ResultSetMapper<T> mapper, T defaultValue) {
-        try (PreparedStatement stmt = Connect.getInstance().getConnection().prepareStatement(sql);
+        try (PreparedStatement stmt = getConnexion().prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 
             return mapper.map(rs);
@@ -33,7 +46,7 @@ public abstract class BaseDao {
     }
 
     protected <T> T executeQueryWithParams(String sql, ResultSetMapper<T> mapper, T defaultValue, Object... params) {
-        try (PreparedStatement stmt = Connect.getInstance().getConnection().prepareStatement(sql)) {
+        try (PreparedStatement stmt = getConnexion().prepareStatement(sql)) {
 
             // Paramètres
             for (int i = 0; i < params.length; i++) {
@@ -51,7 +64,7 @@ public abstract class BaseDao {
     }
 
     protected int executeUpdate(String sql, Object... params) {
-        try (PreparedStatement stmt = Connect.getInstance().getConnection().prepareStatement(sql)) {
+        try (PreparedStatement stmt = getConnexion().prepareStatement(sql)) {
 
             for (int i = 0; i < params.length; i++) {
                 stmt.setObject(i + 1, params[i]);

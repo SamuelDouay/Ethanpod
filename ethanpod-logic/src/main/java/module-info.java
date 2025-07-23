@@ -3,6 +3,8 @@ module ethanpod.logic {
     requires ethanpod.util;
     requires java.sql;
     requires org.apache.logging.log4j;
+    requires com.zaxxer.hikari;
+    requires org.xerial.sqlitejdbc;
 
     exports fr.github.ethanpod.logic;
     exports fr.github.ethanpod.logic.sql.dao;
