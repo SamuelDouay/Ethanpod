@@ -12,11 +12,6 @@ import java.sql.SQLException;
 public abstract class BaseDao {
     protected static final Logger logger = LogManager.getLogger(BaseDao.class);
 
-    public BaseDao() {
-
-        // Vérification de l'initialisation sans la forcer
-    }
-
     private Connection getConnexion() throws SQLException {
         if (!DatabaseManager.getInstance().isInitialized()) {
             DatabaseManager.getInstance().initialize();

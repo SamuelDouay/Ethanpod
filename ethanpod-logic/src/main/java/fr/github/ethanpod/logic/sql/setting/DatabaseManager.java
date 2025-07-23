@@ -12,24 +12,16 @@ import java.sql.SQLException;
 
 public class DatabaseManager {
     private static final Logger logger = LogManager.getLogger();
-    private static volatile DatabaseManager instance;
-    private volatile HikariDataSource dataSource;
-    private volatile boolean initialized = false;
-    private volatile boolean initializing = false;
+    private HikariDataSource dataSource;
+    private boolean initialized = false;
+    private boolean initializing = false;
 
     private DatabaseManager() {
         // no param
     }
 
     public static DatabaseManager getInstance() {
-        if (instance == null) {
-            synchronized (DatabaseManager.class) {
-                if (instance == null) {
-                    instance = new DatabaseManager();
-                }
-            }
-        }
-        return instance;
+        return DatabaseManager.Holder.instance;
     }
 
     public synchronized void initialize() {
@@ -57,25 +49,6 @@ public class DatabaseManager {
                 initializing = false;
             }
         }
-
-        /*
-        this.initialized = true;
-        try {
-            loadSQLiteDriver();
-            String jdbcUrl = buildJdbcUrl();
-            this.dataSource = createDataSource(jdbcUrl);
-            testConnection();
-            registerShutdownHook();
-
-            logger.info("DatabaseManager initialisé avec succès");
-
-        } catch (Exception e) {
-            cleanup();
-            logger.error("Erreur lors de l'initialisation du DatabaseManager: {}", e.getMessage(), e);
-            throw new RuntimeException("Database initialization failed", e);
-        } finally {
-            this.initialized = false;
-        } */
     }
 
     private void loadSQLiteDriver() throws ClassNotFoundException {
@@ -189,5 +162,9 @@ public class DatabaseManager {
             logger.info("Shutdown hook - Fermeture du DatabaseManager");
             shutdown();
         }));
+    }
+
+    private static final class Holder {
+        private static final DatabaseManager instance = new DatabaseManager();
     }
 }
