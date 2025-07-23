@@ -16,6 +16,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class Main {
     private static final Logger logger = LogManager.getLogger(Main.class);
     private static final AtomicBoolean isRunning = new AtomicBoolean(true);
+    private static final int SHUTDOWN_TIMEOUT_MS = 15000;  // 15 secondes au lieu de 5
+    private static final int CHECK_INTERVAL_MS = 1000;     // Vérification toutes les secondes
     private ExecutorService logicExecutor;
     private ExecutorService viewExecutor;
     private ExecutorService uiEventExecutor;
@@ -182,30 +184,49 @@ public class Main {
             throws InterruptedException {
 
         if (messageProcessingThread != null && messageProcessingThread.isAlive()) {
-            logger.info("Attente de la fin du thread de traitement des messages...");
-            messageProcessingThread.join(5000);
+            logger.info("Demande d'arrêt gracieux du thread de traitement...");
+            if (viewThread != null) {
+                viewThread.requestShutdown(); // ⚠️ Nouvelle méthode à ajouter
+            }
+
+            // Attendre avec vérification périodique
+            long startTime = System.currentTimeMillis();
+            while (messageProcessingThread.isAlive() &&
+                    (System.currentTimeMillis() - startTime) < SHUTDOWN_TIMEOUT_MS) {
+                Thread.sleep(CHECK_INTERVAL_MS);
+            }
 
             if (messageProcessingThread.isAlive()) {
-                logger.warn("Le thread de traitement des messages ne s'est pas terminé dans les temps");
-            }
-        }
-
-        if (javafxThread != null && javafxThread.isAlive()) {
-            logger.info("Attente de la fin du thread JavaFX...");
-            javafxThread.join(5000);
-
-            if (javafxThread.isAlive()) {
-                logger.warn("Le thread JavaFX ne s'est pas terminé dans les temps");
+                logger.warn("Interruption forcée du thread de traitement");
+                messageProcessingThread.interrupt();
+                messageProcessingThread.join(2000);
             }
         }
     }
 
     private void cleanupViewThread() {
-        logger.info("Nettoyage du thread d'interface utilisateur");
+        logger.info("Début de l'arrêt coordonné des threads");
         isRunning.set(false);
 
-        if (logicThread != null) logicThread.stop();
-        if (uiEventThread != null) uiEventThread.stop();
+        // 1. Arrêter UIEventThread en premier
+        if (uiEventThread != null) {
+            uiEventThread.stop();
+        }
+
+        // 2. Demander arrêt gracieux ViewThread
+        if (viewThread != null) {
+            viewThread.requestShutdown(); // ⚠️ Nouvelle méthode
+            try {
+                Thread.sleep(2000); // Laisser le temps de traiter les derniers messages
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+
+        // 3. Arrêter LogicThread en dernier
+        if (logicThread != null) {
+            logicThread.stop();
+        }
 
         terminationLatch.countDown();
         logger.info("Fin du thread d'interface utilisateur");

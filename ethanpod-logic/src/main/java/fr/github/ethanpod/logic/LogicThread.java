@@ -2,6 +2,7 @@ package fr.github.ethanpod.logic;
 
 import fr.github.ethanpod.core.thread.MessageRouter;
 import fr.github.ethanpod.core.thread.ThreadMessage;
+import fr.github.ethanpod.logic.sql.setting.DatabaseManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -73,6 +74,7 @@ public class LogicThread implements Runnable {
         running.set(false);
         scheduler.shutdown();
         asyncExecutor.shutdown();
+        DatabaseManager.getInstance().shutdown();
     }
 
 }

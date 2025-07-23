@@ -9,6 +9,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ViewThread implements Runnable {
     private static final Logger logger = LogManager.getLogger(ViewThread.class);
+    private final AtomicBoolean shutdownRequested = new AtomicBoolean(false);
     private final MessageRouter messageRouter;
     private final AtomicBoolean running = new AtomicBoolean(true);
     private final ViewHandle viewHandle;
@@ -18,25 +19,44 @@ public class ViewThread implements Runnable {
         this.viewHandle = new ViewHandle();
     }
 
+    public void requestShutdown() {
+        logger.info("🟢 Demande d'arrêt gracieux du ViewThread");
+        shutdownRequested.set(true);
+        viewHandle.interruptProcessing(); // ⚠️ Nouvelle méthode ViewHandle
+    }
+
     @Override
     public void run() {
         logger.info("🟢 Thread View démarré - Interface utilisateur");
 
         messageRouter.sendRequestToLogicFromView("UI_READY", null, MessageType.NOTIFICATION, null);
-        while (running.get()) {
+
+        while (running.get() && !shutdownRequested.get()) {
             try {
+                // Utiliser timeout plus court pour plus de réactivité
                 viewHandle.processIncomingMessages();
 
                 if (Thread.currentThread().isInterrupted()) {
                     logger.info("🟢 Thread View interrompu volontairement");
                     break;
                 }
+
             } catch (InterruptedException _) {
                 logger.info("🟢 Thread View interrompu");
                 Thread.currentThread().interrupt();
+                break;
             } catch (Exception e) {
                 logger.error("Erreur dans le thread d'interface", e);
+                if (shutdownRequested.get()) {
+                    break;
+                }
             }
+        }
+
+        // Traitement final
+        if (shutdownRequested.get()) {
+            logger.info("🟢 Traitement des derniers messages...");
+            viewHandle.flushPendingMessages(); // ⚠️ Nouvelle méthode ViewHandle
         }
 
         logger.info("🟢 Thread View terminé");
@@ -44,6 +64,7 @@ public class ViewThread implements Runnable {
 
     public void stop() {
         logger.info("🟢 Arrêt du thread d'interface demandé");
+        shutdownRequested.set(true);  // Ajouter cette ligne
         running.set(false);
         viewHandle.stopAllService();
     }
