@@ -16,8 +16,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class Main {
     private static final Logger logger = LogManager.getLogger(Main.class);
     private static final AtomicBoolean isRunning = new AtomicBoolean(true);
-    private static final int SHUTDOWN_TIMEOUT_MS = 15000;  // 15 secondes au lieu de 5
-    private static final int CHECK_INTERVAL_MS = 1000;     // Vérification toutes les secondes
+    private static final int SHUTDOWN_TIMEOUT_MS = 15000;
+    private static final int CHECK_INTERVAL_MS = 1000;
     private ExecutorService logicExecutor;
     private ExecutorService viewExecutor;
     private ExecutorService uiEventExecutor;
@@ -48,7 +48,7 @@ public class Main {
 
     private void logStartup(LocalDateTime startTime) {
         String date = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss").format(startTime);
-        logger.info("=== Démarrage de l'application AntennaPod ===");
+        logger.info("=== Démarrage de l'application Ethanpod ===");
         logger.info("Heure de démarrage: {}", date);
     }
 
@@ -121,7 +121,7 @@ public class Main {
                 Thread messageProcessingThread = startMessageProcessingThread();
                 Thread javafxThread = startJavaFXThread(args);
                 monitorThreads(javafxThread);
-                waitForThreadsCompletion(messageProcessingThread, javafxThread);
+                waitForThreadsCompletion(messageProcessingThread);
 
             } catch (InterruptedException e) {
                 logger.error("Interruption du thread d'interface utilisateur", e);
@@ -180,7 +180,7 @@ public class Main {
         }
     }
 
-    private void waitForThreadsCompletion(Thread messageProcessingThread, Thread javafxThread)
+    private void waitForThreadsCompletion(Thread messageProcessingThread)
             throws InterruptedException {
 
         if (messageProcessingThread != null && messageProcessingThread.isAlive()) {
@@ -218,7 +218,7 @@ public class Main {
             viewThread.requestShutdown(); // ⚠️ Nouvelle méthode
             try {
                 Thread.sleep(2000); // Laisser le temps de traiter les derniers messages
-            } catch (InterruptedException e) {
+            } catch (InterruptedException _) {
                 Thread.currentThread().interrupt();
             }
         }
@@ -287,7 +287,7 @@ public class Main {
         long duration = endTime.toEpochSecond(java.time.ZoneOffset.UTC) -
                 startTime.toEpochSecond(java.time.ZoneOffset.UTC);
         logger.info("Durée d'exécution: {} secondes", duration);
-        logger.info("=== Fermeture de l'application AntennaPod Multithread ===");
+        logger.info("=== Fermeture de l'application Ethanpod Multithread ===");
     }
 
     private void shutdownExecutor(ExecutorService executor, String name) {

@@ -1,11 +1,15 @@
 package fr.github.ethanpod.view.layout;
 
+import fr.github.ethanpod.core.item.EpisodeItem;
 import fr.github.ethanpod.view.component.episode.EpisodeComponent;
 import fr.github.ethanpod.view.component.image.ImageComponent;
 import fr.github.ethanpod.view.component.surprise.SurpriseComponent;
 import fr.github.ethanpod.view.context.ContextualLayout;
 import fr.github.ethanpod.view.context.HomeContext;
 import fr.github.ethanpod.view.context.LayoutContext;
+import fr.github.ethanpod.view.event.QueueTop8UpdateEvent;
+import fr.github.ethanpod.view.event.UIEventHandler;
+import fr.github.ethanpod.view.event.UIEventManager;
 import fr.github.ethanpod.view.util.ColorThemeConstants;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -15,26 +19,31 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.List;
 
 public class HomeLayout extends Layout implements ContextualLayout {
     public static final ImageComponent IMAGE_COMPONENT = new ImageComponent();
     public static final EpisodeComponent EPISODE_COMPONENT = new EpisodeComponent();
     public static final SurpriseComponent SURPRISE_COMPONENT = new SurpriseComponent();
-
     // Constants for image paths
     public static final String IMAGE_EX = String.valueOf(HomeLayout.class.getResource("/images/ex.jpeg"));
     public static final String IMAGE_HDM = String.valueOf(HomeLayout.class.getResource("/images/heure_du_monde.png"));
     public static final String IMAGE_SMLTLK = String.valueOf(HomeLayout.class.getResource("/images/small_talk.jpg"));
     public static final String IMAGE_UNDERSCORE = String.valueOf(HomeLayout.class.getResource("/images/underscore.jpeg"));
     public static final String IMAGE_ZERL = String.valueOf(HomeLayout.class.getResource("/images/zerl.jpg"));
-
     // Constants for example data
     public static final String TITLE_EXAMPLE = "Lil Nas X, une icône noire, et gay et flamboyante [REDIF]";
-
+    private static final Logger log = LogManager.getLogger(HomeLayout.class);
+    private final UIEventManager eventManager = UIEventManager.getInstance();
+    private HBox topQueue;
     private VBox mainContainer;
 
     public HomeLayout() {
         super("Home");
+        registerEventHandlers();
     }
 
     private VBox getNewsSection() {
@@ -160,10 +169,10 @@ public class HomeLayout extends Layout implements ContextualLayout {
         scrollPane.setBackground(new Background(new BackgroundFill(ColorThemeConstants.getGrey000(), null, null)));
         HBox.setHgrow(scrollPane, Priority.ALWAYS);
 
-        HBox box = new HBox(15);
-        box.setPadding(new Insets(0.0, 1.0, 0.0, 1.0));
-        box.setBackground(new Background(new BackgroundFill(ColorThemeConstants.getGrey000(), null, null)));
-        HBox.setHgrow(box, Priority.ALWAYS);
+        topQueue = new HBox(15);
+        topQueue.setPadding(new Insets(0.0, 1.0, 0.0, 1.0));
+        topQueue.setBackground(new Background(new BackgroundFill(ColorThemeConstants.getGrey000(), null, null)));
+        HBox.setHgrow(topQueue, Priority.ALWAYS);
 
         /*
         EpisodeService episodeService = new EpisodeService();
@@ -172,7 +181,7 @@ public class HomeLayout extends Layout implements ContextualLayout {
             box.getChildren().add(IMAGE_COMPONENT.createImageCard(e.getUrlImage(), e.getName(), e.getDate()));
         } */
 
-        scrollPane.setContent(box);
+        scrollPane.setContent(topQueue);
         return scrollPane;
     }
 
@@ -193,6 +202,26 @@ public class HomeLayout extends Layout implements ContextualLayout {
                 getClassicsSection(),
                 getDownloadSection()
         );
+    }
+
+    private void registerEventHandlers() {
+        // Créer des handlers spécifiques pour chaque type d'événement
+        UIEventHandler<QueueTop8UpdateEvent> queueTop8UpdateEventUIEventHandler = event -> {
+            log.info("Mise à jour du la queue avec {} éléments", event.getEpisodeItems().size());
+            updateTopQueue(event.getEpisodeItems());
+            //updateNavigationList(event.getNavigationItems());
+        };
+
+        // Enregistrement des handlers
+        eventManager.registerHandler(QueueTop8UpdateEvent.EVENT_TYPE, queueTop8UpdateEventUIEventHandler);
+    }
+
+    private void updateTopQueue(List<EpisodeItem> episodeItems) {
+        topQueue.getChildren().clear();
+        for (EpisodeItem episodeItem : episodeItems) {
+            topQueue.getChildren().add(IMAGE_COMPONENT.createImageCard(episodeItem.getUrlImage(), episodeItem.getName(), episodeItem.getDate()));
+
+        }
     }
 
     @Override

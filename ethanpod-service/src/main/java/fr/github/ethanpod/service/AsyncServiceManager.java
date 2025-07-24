@@ -20,6 +20,7 @@ public class AsyncServiceManager extends BaseServiceManager<AsyncService> {
     private void initializeServices() {
         registerService(ServiceConstants.NAVIGATION_SERVICE, new AsyncNavigationService());
         registerService(ServiceConstants.INBOX_SERVICE, new AsyncInboxService());
+        registerService(ServiceConstants.QUEUE_SERVICE, new AsyncQueueService());
     }
 
     public AsyncNavigationService getNavigationService() {
@@ -28,6 +29,10 @@ public class AsyncServiceManager extends BaseServiceManager<AsyncService> {
 
     public AsyncInboxService getInboxService() {
         return getService(ServiceConstants.INBOX_SERVICE, AsyncInboxService.class);
+    }
+
+    public AsyncQueueService getQueueService() {
+        return getService(ServiceConstants.QUEUE_SERVICE, AsyncQueueService.class);
     }
 
     public void handleResponse(ThreadMessage message) {

@@ -18,6 +18,5 @@ public class ImageComponent {
 
     public Node createImageCard(String imageUrl, String title, String date) {
         return new ImageBuilder().withImage(imageUrl).withTitle(title).withDate(date).build();
-
     }
 }

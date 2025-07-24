@@ -1,6 +1,7 @@
 package fr.github.ethanpod.view.controller;
 
 
+import fr.github.ethanpod.core.item.EpisodeItem;
 import fr.github.ethanpod.core.item.NavigationItem;
 import fr.github.ethanpod.core.thread.MessageRouter;
 import fr.github.ethanpod.core.thread.MessageType;
@@ -47,6 +48,8 @@ public class UIEventHandle {
                     uiControllerManager.getNavigationService().updateNavigationUI((List<NavigationItem>) message.getData());
             case "INBOX_COUNT_UPDATED" ->
                     uiControllerManager.getInboxService().updateInboxCount((Integer) message.getData());
+            case "GET_TOP8_QUEUE_UPDATE" ->
+                    uiControllerManager.getQueueService().updateQueueTop8UI((List<EpisodeItem>) message.getData());
             default -> {
                 logger.warn("🔵 Requête non reconnue: {}", content);
                 messageRouter.sendRequestToViewFromEvent("ERROR", requestId, MessageType.ERROR, "Unknown request: " + content);

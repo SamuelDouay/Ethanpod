@@ -32,14 +32,13 @@ public class NavigationContainer {
     private static final Logger log = LogManager.getLogger(NavigationContainer.class);
     private final ItemManager manager;
     private final List<HBox> listNav;
-    private final UIEventManager eventManager;
+    private final UIEventManager eventManager = UIEventManager.getInstance();
     private LayoutManager layoutManager;
     private VBox scrollBox;
 
     public NavigationContainer() {
         this.manager = new ItemManager();
         this.listNav = new ArrayList<>();
-        this.eventManager = UIEventManager.getInstance();
         registerEventHandlers();
     }
 
@@ -92,10 +91,8 @@ public class NavigationContainer {
     }
 
     private ScrollPane createScrollList() {
-        VBox box = createList();
-        box.setId("#scrollListNavigationBar");
-        this.scrollBox = box;
-        ScrollPane scrollPane = getScrollPane(box);
+        scrollBox = createList();
+        ScrollPane scrollPane = getScrollPane(scrollBox);
         VBox.setVgrow(scrollPane, Priority.ALWAYS);
         return scrollPane;
     }

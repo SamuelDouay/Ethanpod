@@ -15,14 +15,7 @@ public class ControllerManager extends BaseServiceManager<Controller> {
     private void initializeServices() {
         registerService(ServiceConstants.NAVIGATION_SERVICE, new NavigationController(asyncServiceManager));
         registerService(ServiceConstants.INBOX_SERVICE, new InboxController(asyncServiceManager));
-    }
-
-    public NavigationController getNavigationService() {
-        return getService(ServiceConstants.NAVIGATION_SERVICE, NavigationController.class);
-    }
-
-    public InboxController getInboxService() {
-        return getService(ServiceConstants.INBOX_SERVICE, InboxController.class);
+        registerService(ServiceConstants.QUEUE_SERVICE, new QueueController(asyncServiceManager));
     }
 
     public void initializeAllServices() {

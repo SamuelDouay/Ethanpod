@@ -19,6 +19,7 @@ public class DataServiceManager extends BaseServiceManager<DataService> {
     private void initializeServices() {
         registerService(ServiceConstants.NAVIGATION_SERVICE, new DataNavigationService(executor));
         registerService(ServiceConstants.INBOX_SERVICE, new DataInboxService(executor));
+        registerService(ServiceConstants.QUEUE_SERVICE, new DataQueueService(executor));
     }
 
     public DataNavigationService getNavigationService() {
@@ -27,6 +28,10 @@ public class DataServiceManager extends BaseServiceManager<DataService> {
 
     public DataInboxService getInboxService() {
         return getService(ServiceConstants.INBOX_SERVICE, DataInboxService.class);
+    }
+
+    public DataQueueService getQueueService() {
+        return getService(ServiceConstants.QUEUE_SERVICE, DataQueueService.class);
     }
 
     public void refreshAllData() {

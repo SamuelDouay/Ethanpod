@@ -1,7 +1,7 @@
 package fr.github.ethanpod.util.manager;
 
 public enum ServiceConstants {
-    NAVIGATION_SERVICE("navigation"), INBOX_SERVICE("inbox");
+    NAVIGATION_SERVICE("navigation"), INBOX_SERVICE("inbox"), QUEUE_SERVICE("queue");
     private final String name;
 
     ServiceConstants(String name) {
