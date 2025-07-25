@@ -1,6 +1,7 @@
 package fr.github.ethanpod.logic.sql.dao;
 
 import fr.github.ethanpod.core.item.EpisodeItem;
+import fr.github.ethanpod.util.Converter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,7 @@ public class QueueDao extends BaseDao {
                         false,
                         rs.getString("title"),
                         null,
-                        rs.getString("date"),
+                        Converter.timestampToDate(rs.getLong("date")),
                         null,
                         false
                 ));
