@@ -1,28 +1,19 @@
 package fr.github.ethanpod.view.component.navigation;
 
 import fr.github.ethanpod.view.util.ColorThemeConstants;
+import fr.github.ethanpod.view.util.FontThemeConstants;
 import fr.github.ethanpod.view.util.ImageCache;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
-import javafx.scene.text.FontWeight;
 import org.kordamp.ikonli.javafx.FontIcon;
 
-public class NavigationBuilder {
-    private static final double ICON_SIZE = 25.0;
-    private static final double TITLE_MAX_WIDTH = 140.0;
-    private static final double MAX_WIDTH = 224.0;
-    private static final double SPACING = 14.0;
-    private static final Insets PADDING = new Insets(6.0, 12.0, 6.0, 12.0);
-    private static final String FONT = "Inter";
+import static fr.github.ethanpod.view.util.Constant.*;
 
+public class NavigationBuilder {
     private String title;
     private FontIcon icon;
     private String imageUrl;
@@ -62,20 +53,20 @@ public class NavigationBuilder {
         Label titleLabel = getTitleLabel();
 
         // Create icon and title container
-        HBox iconTitleBox = new HBox(SPACING, graphic, titleLabel);
-        iconTitleBox.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
-        iconTitleBox.setMinSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
-        iconTitleBox.setAlignment(Pos.CENTER);
+        HBox iconTitleBox = new HBox(NAVIGATION_SPACING, graphic, titleLabel);
+        iconTitleBox.setMaxSize(USE_PREF_SIZE, USE_PREF_SIZE);
+        iconTitleBox.setMinSize(USE_PREF_SIZE, USE_PREF_SIZE);
+        iconTitleBox.setAlignment(POS_CENTER);
 
         // Create spacer
         Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
+        HBox.setHgrow(spacer, PRIORITY_ALWAYS);
 
         // Create main container
         HBox mainBox = new HBox();
-        mainBox.setPadding(PADDING);
-        mainBox.setMaxWidth(MAX_WIDTH);
-        mainBox.setAlignment(Pos.CENTER);
+        mainBox.setPadding(NAVIGATION_PADDING);
+        mainBox.setMaxWidth(NAVIGATION_MAX_WIDTH);
+        mainBox.setAlignment(POS_CENTER);
 
         // Add badge if needed
         if (badgeCount > 0) {
@@ -99,16 +90,8 @@ public class NavigationBuilder {
     private Label getTitleLabel() {
         // Create title label
         Label titleLabel = new Label(title);
-        titleLabel.setMaxWidth(TITLE_MAX_WIDTH);
-
-        // Apply text styling
-        if (selected) {
-            titleLabel.setFont(Font.font(FONT, FontWeight.BOLD, 12));
-            titleLabel.setTextFill(ColorThemeConstants.getMain950());
-        } else {
-            titleLabel.setFont(Font.font(FONT, FontPosture.REGULAR, 12));
-            titleLabel.setTextFill(ColorThemeConstants.getGrey800());
-        }
+        titleLabel.setMaxWidth(NAVIGATION_TITLE_MAX_WIDTH);
+        titleLabel.setFont(selected ? FontThemeConstants.BOLD_12 : FontThemeConstants.REGULAR_12);
         return titleLabel;
     }
 
@@ -117,12 +100,12 @@ public class NavigationBuilder {
             // Create image view
             Image image = ImageCache.getImage(imageUrl);
             ImageView imageView = new ImageView(image);
-            imageView.setFitWidth(ICON_SIZE);
-            imageView.setFitHeight(ICON_SIZE);
+            imageView.setFitWidth(NAVIGATION_ICON_SIZE);
+            imageView.setFitHeight(NAVIGATION_ICON_SIZE);
             return imageView;
         } else if (icon != null) {
             // Configure icon
-            icon.setIconSize((int) ICON_SIZE);
+            icon.setIconSize((int) NAVIGATION_ICON_SIZE);
 
             if (!selected) {
                 icon.setIconColor(ColorThemeConstants.getGrey800());
@@ -134,15 +117,15 @@ public class NavigationBuilder {
         }
         // Create empty region as fallback
         Region emptyRegion = new Region();
-        emptyRegion.setMinSize(ICON_SIZE, ICON_SIZE);
-        emptyRegion.setPrefSize(ICON_SIZE, ICON_SIZE);
+        emptyRegion.setMinSize(NAVIGATION_ICON_SIZE, NAVIGATION_ICON_SIZE);
+        emptyRegion.setPrefSize(NAVIGATION_ICON_SIZE, NAVIGATION_ICON_SIZE);
         return emptyRegion;
     }
 
     private Label createBadgeLabel(int count) {
         Label numberLabel = new Label(String.valueOf(count));
         numberLabel.setTextFill(ColorThemeConstants.getMain950());
-        numberLabel.setFont(Font.font(FONT, FontWeight.BOLD, 10));
+        numberLabel.setFont(FontThemeConstants.BOLD_10);
         return numberLabel;
     }
 }

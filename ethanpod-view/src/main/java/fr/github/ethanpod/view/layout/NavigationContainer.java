@@ -140,10 +140,17 @@ public class NavigationContainer {
         Label titleLabel = (Label) ((HBox) mainBox.getChildren().getFirst()).getChildren().get(1);
         Node icon = ((HBox) mainBox.getChildren().getFirst()).getChildren().get(0);
 
+        Background background = new Background(new BackgroundFill(
+                isSelected ? ColorThemeConstants.getMain100() : Color.TRANSPARENT,
+                new CornerRadii(2.0),
+                null
+        ));
+        updateBackgroundIfNeeded(mainBox, background);
+
         if (isSelected) {
             titleLabel.setTextFill(ColorThemeConstants.getMain950());
             titleLabel.setFont(Font.font(FONT, FontWeight.BOLD, 12));
-            mainBox.setBackground(new Background(new BackgroundFill(ColorThemeConstants.getMain100(), new CornerRadii(2.0), null)));
+            //mainBox.setBackground(new Background(new BackgroundFill(ColorThemeConstants.getMain100(), new CornerRadii(2.0), null)));
             if (!(icon instanceof FontIcon)) {
                 return;
             }
@@ -151,7 +158,7 @@ public class NavigationContainer {
         } else {
             titleLabel.setTextFill(ColorThemeConstants.getGrey800());
             titleLabel.setFont(Font.font(FONT, FontPosture.REGULAR, 12));
-            mainBox.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, null, null)));
+            //mainBox.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, null, null)));
             if (!(icon instanceof FontIcon)) {
                 return;
             }
@@ -169,6 +176,13 @@ public class NavigationContainer {
             } catch (Exception e) {
                 log.error("Erreur création composant pour {}", navigationItem, e);
             }
+        }
+    }
+
+    private void updateBackgroundIfNeeded(Region region, Background newBackground) {
+        Background current = region.getBackground();
+        if (current == null || !current.equals(newBackground)) {
+            region.setBackground(newBackground);
         }
     }
 

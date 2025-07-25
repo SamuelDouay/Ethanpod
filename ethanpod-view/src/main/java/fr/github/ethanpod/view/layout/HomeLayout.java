@@ -209,7 +209,6 @@ public class HomeLayout extends Layout implements ContextualLayout {
         UIEventHandler<QueueTop8UpdateEvent> queueTop8UpdateEventUIEventHandler = event -> {
             log.info("Mise à jour du la queue avec {} éléments", event.getEpisodeItems().size());
             updateTopQueue(event.getEpisodeItems());
-            //updateNavigationList(event.getNavigationItems());
         };
 
         // Enregistrement des handlers
@@ -220,7 +219,6 @@ public class HomeLayout extends Layout implements ContextualLayout {
         topQueue.getChildren().clear();
         for (EpisodeItem episodeItem : episodeItems) {
             topQueue.getChildren().add(IMAGE_COMPONENT.createImageCard(episodeItem.getUrlImage(), episodeItem.getName(), episodeItem.getDate()));
-
         }
     }
 
