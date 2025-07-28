@@ -9,4 +9,5 @@ module ethanpod.logic {
     exports fr.github.ethanpod.logic;
     exports fr.github.ethanpod.logic.sql.dao;
     exports fr.github.ethanpod.logic.service;
+    exports fr.github.ethanpod.logic.sql.setting;
 }

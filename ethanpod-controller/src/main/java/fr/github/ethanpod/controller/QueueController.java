@@ -3,6 +3,8 @@ package fr.github.ethanpod.controller;
 import fr.github.ethanpod.core.thread.MessageType;
 import fr.github.ethanpod.service.AsyncServiceManager;
 
+import java.util.concurrent.CompletableFuture;
+
 public class QueueController extends Controller {
     public QueueController(AsyncServiceManager asyncServiceManager) {
         super(asyncServiceManager);
@@ -25,6 +27,8 @@ public class QueueController extends Controller {
 
     @Override
     void initializeUI() {
-        loadQueueTop8();
+        CompletableFuture.allOf(
+                CompletableFuture.runAsync(this::loadQueueTop8)
+        );
     }
 }

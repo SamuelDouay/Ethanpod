@@ -30,12 +30,13 @@ public class InboxDao extends BaseDao {
         return executeQuery(sql, rs -> {
             List<EpisodeItem> result = new ArrayList<>();
             while (rs.next()) {
-                String title = rs.getString("title");
-                String date = Converter.timestampToDate(rs.getLong("date"));
-                String duration = rs.getString("duration");
-                String imgUrl = rs.getString("image_url");
-                String size = Converter.getSize(rs.getLong("size"));
-                result.add(new EpisodeItem(imgUrl, false, title, duration, date, size, false));
+                result.add(new EpisodeItem(rs.getString("image_url"),
+                        false,
+                        rs.getString("title"),
+                        Converter.timestampToDate(rs.getLong("date")),
+                        Converter.timestampToDate(rs.getLong("date")),
+                        Converter.getSize(rs.getLong("size")),
+                        false));
             }
             return result;
         }, new ArrayList<>());

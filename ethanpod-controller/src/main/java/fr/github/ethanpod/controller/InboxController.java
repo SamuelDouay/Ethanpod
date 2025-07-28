@@ -3,6 +3,8 @@ package fr.github.ethanpod.controller;
 import fr.github.ethanpod.core.thread.MessageType;
 import fr.github.ethanpod.service.AsyncServiceManager;
 
+import java.util.concurrent.CompletableFuture;
+
 public class InboxController extends Controller {
 
     public InboxController(AsyncServiceManager asyncServiceManager) {
@@ -40,7 +42,9 @@ public class InboxController extends Controller {
 
     @Override
     void initializeUI() {
-        loadInboxCount();
-        loadInboxTop8();
+        CompletableFuture.allOf(
+                CompletableFuture.runAsync(this::loadInboxTop8),
+                CompletableFuture.runAsync(this::loadInboxCount)
+        );
     }
 }

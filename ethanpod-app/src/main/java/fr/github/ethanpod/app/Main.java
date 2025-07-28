@@ -3,6 +3,7 @@ package fr.github.ethanpod.app;
 
 import fr.github.ethanpod.controller.ViewThread;
 import fr.github.ethanpod.logic.LogicThread;
+import fr.github.ethanpod.logic.sql.setting.DatabaseManager;
 import fr.github.ethanpod.view.controller.UIEventThread;
 import javafx.application.Platform;
 import org.apache.logging.log4j.LogManager;
@@ -57,6 +58,9 @@ public class Main {
         viewThread = new ViewThread();
         uiEventThread = new UIEventThread();
 
+
+        DatabaseManager.getInstance().initialize();
+        
         logicExecutor = createExecutor("LogicThread");
         viewExecutor = createExecutor("ViewThread");
         uiEventExecutor = createExecutor("UIEventThread");

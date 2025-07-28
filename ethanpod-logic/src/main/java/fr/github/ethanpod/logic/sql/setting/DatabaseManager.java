@@ -20,7 +20,7 @@ public class DatabaseManager {
         // no param
     }
 
-    public static DatabaseManager getInstance() {
+    public static synchronized DatabaseManager getInstance() {
         return DatabaseManager.Holder.instance;
     }
 
@@ -63,7 +63,7 @@ public class DatabaseManager {
 
     private String buildJdbcUrl() {
         String jdbcPrefix = ConfigProperties.getInstance().getProperty("jdbc.database");
-        
+
         URL dbResource = DatabaseManager.class.getResource("/data/data_240825.db");
         if (dbResource == null) {
             throw new RuntimeException("Fichier de base de données non trouvé: /data/data_240825.db");
