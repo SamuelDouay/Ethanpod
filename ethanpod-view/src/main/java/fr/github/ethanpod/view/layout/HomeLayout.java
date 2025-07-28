@@ -7,6 +7,7 @@ import fr.github.ethanpod.view.component.surprise.SurpriseComponent;
 import fr.github.ethanpod.view.context.ContextualLayout;
 import fr.github.ethanpod.view.context.HomeContext;
 import fr.github.ethanpod.view.context.LayoutContext;
+import fr.github.ethanpod.view.event.InboxTop8UpdatedEvent;
 import fr.github.ethanpod.view.event.QueueTop8UpdateEvent;
 import fr.github.ethanpod.view.event.UIEventHandler;
 import fr.github.ethanpod.view.event.UIEventManager;
@@ -39,6 +40,7 @@ public class HomeLayout extends Layout implements ContextualLayout {
     private static final Logger log = LogManager.getLogger(HomeLayout.class);
     private final UIEventManager eventManager = UIEventManager.getInstance();
     private HBox topQueue;
+    private VBox inboxContainer;
     private VBox mainContainer;
 
     public HomeLayout() {
@@ -71,7 +73,6 @@ public class HomeLayout extends Layout implements ContextualLayout {
     private VBox getDownloadSection() {
         VBox box = getMainBox();
         box.getChildren().add(getTitleSection("Manage downloads"));
-        box.getChildren().add(getNewsTable());
         return box;
     }
 
@@ -122,18 +123,8 @@ public class HomeLayout extends Layout implements ContextualLayout {
     }
 
     private Node getNewsTable() {
-        /*VBox box = new VBox();
-
-        EpisodeService episodeService = new EpisodeService();
-
-        for (EpisodeItem e : episodeService.getNewsTop8()) {
-            box.getChildren().add(EPISODE_COMPONENT.createInboxEpisode(e));
-        }
-
-        return box;
-        */
-
-        return new VBox();
+        inboxContainer = new VBox();
+        return inboxContainer;
 
     }
 
@@ -173,14 +164,6 @@ public class HomeLayout extends Layout implements ContextualLayout {
         topQueue.setPadding(new Insets(0.0, 1.0, 0.0, 1.0));
         topQueue.setBackground(new Background(new BackgroundFill(ColorThemeConstants.getGrey000(), null, null)));
         HBox.setHgrow(topQueue, Priority.ALWAYS);
-
-        /*
-        EpisodeService episodeService = new EpisodeService();
-
-        for (EpisodeItem e : episodeService.getTop8Queue()) {
-            box.getChildren().add(IMAGE_COMPONENT.createImageCard(e.getUrlImage(), e.getName(), e.getDate()));
-        } */
-
         scrollPane.setContent(topQueue);
         return scrollPane;
     }
@@ -207,18 +190,31 @@ public class HomeLayout extends Layout implements ContextualLayout {
     private void registerEventHandlers() {
         // Créer des handlers spécifiques pour chaque type d'événement
         UIEventHandler<QueueTop8UpdateEvent> queueTop8UpdateEventUIEventHandler = event -> {
-            log.info("Mise à jour du la queue avec {} éléments", event.getEpisodeItems().size());
+            log.info("Mise à jour de la queue avec {} éléments", event.getEpisodeItems().size());
             updateTopQueue(event.getEpisodeItems());
+        };
+
+        UIEventHandler<InboxTop8UpdatedEvent> inboxTop8UpdatedEventUIEventHandler = event -> {
+            log.info("Mise à jour d'inbox container avec {} éléments", event.getEpisodeItems().size());
+            updateTopInbox(event.getEpisodeItems());
         };
 
         // Enregistrement des handlers
         eventManager.registerHandler(QueueTop8UpdateEvent.EVENT_TYPE, queueTop8UpdateEventUIEventHandler);
+        eventManager.registerHandler(InboxTop8UpdatedEvent.EVENT_TYPE, inboxTop8UpdatedEventUIEventHandler);
     }
 
     private void updateTopQueue(List<EpisodeItem> episodeItems) {
         topQueue.getChildren().clear();
         for (EpisodeItem episodeItem : episodeItems) {
             topQueue.getChildren().add(IMAGE_COMPONENT.createImageCard(episodeItem.getUrlImage(), episodeItem.getName(), episodeItem.getDate()));
+        }
+    }
+
+    private void updateTopInbox(List<EpisodeItem> episodeItems) {
+        inboxContainer.getChildren().clear();
+        for (EpisodeItem episodeItem : episodeItems) {
+            inboxContainer.getChildren().add(EPISODE_COMPONENT.createInboxEpisode(episodeItem));
         }
     }
 

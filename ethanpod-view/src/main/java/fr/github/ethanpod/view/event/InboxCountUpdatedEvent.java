@@ -5,13 +5,8 @@ public class InboxCountUpdatedEvent extends UIEvent {
     private final Integer count;
 
     public InboxCountUpdatedEvent(String source, Integer count) {
-        super(source);
+        super(source, EVENT_TYPE);
         this.count = count;
-    }
-
-    @Override
-    public String getEventType() {
-        return EVENT_TYPE;
     }
 
     public Integer getCount() {

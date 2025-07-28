@@ -13,7 +13,7 @@ public class QueueController extends Controller {
 
         asyncServiceManager.getQueueService().getQueueTop8()
                 .thenAccept(result -> {
-                    logger.info("🟢 {} éléments dans l'inbox", result.data().size());
+                    logger.info("🟢 {} éléments dans la queue", result.data().size());
                     messageRouter.sendRequestToUiEventFromView("GET_TOP8_QUEUE_UPDATE", result.requestId(), MessageType.EVENT, result.data());
                 })
                 .exceptionally(throwable -> {

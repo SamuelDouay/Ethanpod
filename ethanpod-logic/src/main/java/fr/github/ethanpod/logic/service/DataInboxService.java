@@ -22,4 +22,10 @@ public class DataInboxService extends DataService {
                 inboxDao::getNumberOfInbox,
                 "getting inbox count");
     }
+
+    public void getTop8InInbox(String requestId) {
+        executeAsync(requestId, "INBOX_TOP8_RESPONSE",
+                inboxDao::getTop8InInbox,
+                "getting inbox top 8");
+    }
 }

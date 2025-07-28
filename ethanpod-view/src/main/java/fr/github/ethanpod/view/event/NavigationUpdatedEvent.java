@@ -10,13 +10,8 @@ public class NavigationUpdatedEvent extends UIEvent {
     private final List<NavigationItem> navigationItems;
 
     public NavigationUpdatedEvent(String source, List<NavigationItem> navigationItems) {
-        super(source);
+        super(source, EVENT_TYPE);
         this.navigationItems = List.copyOf(navigationItems); // Copie défensive
-    }
-
-    @Override
-    public String getEventType() {
-        return EVENT_TYPE;
     }
 
     public List<NavigationItem> getNavigationItems() {

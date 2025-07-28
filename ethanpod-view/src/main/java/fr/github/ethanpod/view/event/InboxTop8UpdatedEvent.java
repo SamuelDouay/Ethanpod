@@ -4,18 +4,16 @@ import fr.github.ethanpod.core.item.EpisodeItem;
 
 import java.util.List;
 
-public class QueueTop8UpdateEvent extends UIEvent {
-    public static final String EVENT_TYPE = "GET_TOP8_QUEUE_UPDATE";
-
+public class InboxTop8UpdatedEvent extends UIEvent {
+    public static final String EVENT_TYPE = "GET_TOP8_INBOX_UPDATE";
     private final List<EpisodeItem> episodeItems;
 
-    public QueueTop8UpdateEvent(String source, List<EpisodeItem> episodeItems) {
+    public InboxTop8UpdatedEvent(String source, List<EpisodeItem> episodeItems) {
         super(source, EVENT_TYPE);
-        this.episodeItems = List.copyOf(episodeItems); // Copie défensive
+        this.episodeItems = List.copyOf(episodeItems);
     }
 
     public List<EpisodeItem> getEpisodeItems() {
         return episodeItems;
     }
-
 }

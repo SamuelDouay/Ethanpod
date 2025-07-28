@@ -7,11 +7,13 @@ public abstract class UIEvent {
     private final String eventId;
     private final LocalDateTime timestamp;
     private final String source;
+    private final String eventType;
 
-    protected UIEvent(String source) {
+    protected UIEvent(String source, String eventType) {
         this.eventId = UUID.randomUUID().toString();
         this.timestamp = LocalDateTime.now();
         this.source = source;
+        this.eventType = eventType;
     }
 
     public String getEventId() {
@@ -26,5 +28,7 @@ public abstract class UIEvent {
         return source;
     }
 
-    public abstract String getEventType();
+    public String getEventType() {
+        return eventType;
+    }
 }

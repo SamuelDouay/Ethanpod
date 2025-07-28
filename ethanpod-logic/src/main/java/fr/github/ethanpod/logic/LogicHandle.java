@@ -44,7 +44,8 @@ public class LogicHandle {
 
         switch (content) {
             case "GET_NAVIGATION_LIST" -> serviceManager.getNavigationService().getNavigationListAsync(requestId);
-            case "INBOX_COUNT" -> serviceManager.getInboxService().getInboxCountAsync(requestId);
+            case "GET_COUNT_INBOX" -> serviceManager.getInboxService().getInboxCountAsync(requestId);
+            case "GET_TOP8_INBOX" -> serviceManager.getInboxService().getTop8InInbox(requestId);
             case "GET_TOP8_QUEUE" -> serviceManager.getQueueService().getQueueTop8(requestId);
             case "REFRESH_DATA" -> serviceManager.refreshAllData();
             default -> {
