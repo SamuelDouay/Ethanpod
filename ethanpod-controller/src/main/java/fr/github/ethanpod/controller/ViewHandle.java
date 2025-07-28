@@ -33,18 +33,13 @@ public class ViewHandle {
 
     public void processIncomingMessages() throws InterruptedException {
         if (processingInterrupted || shutdownRequested) {
+            logger.info("🟢 Arrêt en cours");
             return; // Sortir immédiatement si arrêt demandé
         }
         ThreadMessage message = messageQueue.poll(500, TimeUnit.MILLISECONDS);
 
         if (message != null) {
             logger.info("🟢 {}", message);
-
-            if (processingInterrupted || shutdownRequested) {
-                logger.info("🟢 Message ignoré (arrêt en cours): {}", message.getContent());
-                return;
-            }
-
             switch (message.getType()) {
                 case MessageType.RESPONSE -> handleResponse(message);
                 case MessageType.DATA_UPDATE -> handleDataUpdate(message);

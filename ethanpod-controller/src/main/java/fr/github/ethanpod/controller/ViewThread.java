@@ -30,33 +30,32 @@ public class ViewThread implements Runnable {
         logger.info("🟢 Thread View démarré - Interface utilisateur");
 
         messageRouter.sendRequestToLogicFromView("UI_READY", null, MessageType.NOTIFICATION, null);
-
-        while (running.get() && !shutdownRequested.get()) {
+        boolean shouldExit = false;
+        
+        while (running.get() && !shutdownRequested.get() && !shouldExit) {
             try {
-                // Utiliser timeout plus court pour plus de réactivité
                 viewHandle.processIncomingMessages();
 
                 if (Thread.currentThread().isInterrupted()) {
                     logger.info("🟢 Thread View interrompu volontairement");
-                    break;
+                    shouldExit = true;
                 }
 
             } catch (InterruptedException _) {
                 logger.info("🟢 Thread View interrompu");
                 Thread.currentThread().interrupt();
-                break;
+                shouldExit = true;
             } catch (Exception e) {
                 logger.error("Erreur dans le thread d'interface", e);
                 if (shutdownRequested.get()) {
-                    break;
+                    shouldExit = true;
                 }
             }
         }
 
-        // Traitement final
         if (shutdownRequested.get()) {
             logger.info("🟢 Traitement des derniers messages...");
-            viewHandle.flushPendingMessages(); // ⚠️ Nouvelle méthode ViewHandle
+            viewHandle.flushPendingMessages();
         }
 
         logger.info("🟢 Thread View terminé");

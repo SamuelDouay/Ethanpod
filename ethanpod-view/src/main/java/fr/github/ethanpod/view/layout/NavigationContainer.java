@@ -150,7 +150,6 @@ public class NavigationContainer {
         if (isSelected) {
             titleLabel.setTextFill(ColorThemeConstants.getMain950());
             titleLabel.setFont(Font.font(FONT, FontWeight.BOLD, 12));
-            //mainBox.setBackground(new Background(new BackgroundFill(ColorThemeConstants.getMain100(), new CornerRadii(2.0), null)));
             if (!(icon instanceof FontIcon)) {
                 return;
             }
@@ -158,7 +157,6 @@ public class NavigationContainer {
         } else {
             titleLabel.setTextFill(ColorThemeConstants.getGrey800());
             titleLabel.setFont(Font.font(FONT, FontPosture.REGULAR, 12));
-            //mainBox.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, null, null)));
             if (!(icon instanceof FontIcon)) {
                 return;
             }
