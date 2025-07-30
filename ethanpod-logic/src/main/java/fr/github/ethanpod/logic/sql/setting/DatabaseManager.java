@@ -106,7 +106,7 @@ public class DatabaseManager {
             if (!testConnection.isValid(5)) {
                 throw new SQLException("Validation de connexion échouée");
             }
-            logger.info("Test de connexion réussi");
+            logger.debug("Test de connexion réussi");
         }
     }
 

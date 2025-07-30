@@ -25,7 +25,7 @@ public class UIEventManager {
             throw new IllegalArgumentException("Event type and handler cannot be null");
         }
         handlers.computeIfAbsent(eventType, _ -> new CopyOnWriteArrayList<>()).add(handler);
-        logger.info("Handler enregistré pour le type d'événement: {}", eventType);
+        logger.debug("Handler enregistré pour le type d'événement: {}", eventType);
     }
 
     @SuppressWarnings("unchecked")

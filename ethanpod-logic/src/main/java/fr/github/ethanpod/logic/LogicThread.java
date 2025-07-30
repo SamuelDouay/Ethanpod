@@ -47,7 +47,7 @@ public class LogicThread implements Runnable {
                     logicHandler.processIncomingMessages();
 
                 } catch (InterruptedException _) {
-                    logger.info("🔵 Thread Logique interrompu");
+                    logger.debug("🔵 Thread Logique interrompu");
                     Thread.currentThread().interrupt();
                     break;
                 } catch (Exception e) {
@@ -57,7 +57,7 @@ public class LogicThread implements Runnable {
         } finally {
             scheduler.shutdown();
             asyncExecutor.shutdown();
-            logger.info("🔵 Thread Logique terminé");
+            logger.debug("🔵 Thread Logique terminé");
         }
     }
 
@@ -70,7 +70,7 @@ public class LogicThread implements Runnable {
     }
 
     public void stop() {
-        logger.info("🔵 Arrêt du thread de logique demandé");
+        logger.debug("🔵 Arrêt du thread de logique demandé");
         running.set(false);
         scheduler.shutdown();
         asyncExecutor.shutdown();

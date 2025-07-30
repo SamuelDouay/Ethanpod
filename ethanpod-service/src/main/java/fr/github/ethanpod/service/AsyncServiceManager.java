@@ -59,17 +59,17 @@ public class AsyncServiceManager extends BaseServiceManager<AsyncService> {
     }
 
     public void refreshAllData() {
-        logger.info("Rafraîchissement de toutes les données des services");
+        logger.debug("Rafraîchissement de toutes les données des services");
         performOperationOnAllServices("refresh", AsyncService::refreshData);
     }
 
     public void initializeAllServices() {
-        logger.info("Initialisation de tous les services");
+        logger.debug("Initialisation de tous les services");
         performOperationOnAllServices("initialization", AsyncService::initialize);
     }
 
     public void stopAllServices() {
-        logger.info("Arrêt de tous les services");
+        logger.debug("Arrêt de tous les services");
         performOperationOnAllServices("stop", AsyncService::stop);
     }
 

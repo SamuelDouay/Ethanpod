@@ -20,7 +20,7 @@ public class ViewThread implements Runnable {
     }
 
     public void requestShutdown() {
-        logger.info("🟢 Demande d'arrêt gracieux du ViewThread");
+        logger.debug("🟢 Demande d'arrêt gracieux du ViewThread");
         shutdownRequested.set(true);
         viewHandle.interruptProcessing(); // ⚠️ Nouvelle méthode ViewHandle
     }
@@ -31,7 +31,7 @@ public class ViewThread implements Runnable {
 
         messageRouter.sendRequestToLogicFromView("UI_READY", null, MessageType.NOTIFICATION, null);
         boolean shouldExit = false;
-        
+
         while (running.get() && !shutdownRequested.get() && !shouldExit) {
             try {
                 viewHandle.processIncomingMessages();
@@ -62,7 +62,7 @@ public class ViewThread implements Runnable {
     }
 
     public void stop() {
-        logger.info("🟢 Arrêt du thread d'interface demandé");
+        logger.debug("🟢 Arrêt du thread d'interface demandé");
         shutdownRequested.set(true);  // Ajouter cette ligne
         running.set(false);
         viewHandle.stopAllService();

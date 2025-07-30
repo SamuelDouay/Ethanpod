@@ -33,7 +33,7 @@ public abstract class AsyncService {
     }
 
     public void initialize() {
-        logger.info("Initialisation du service {}", serviceId);
+        logger.debug("Initialisation du service {}", serviceId);
         active.set(true);
     }
 
@@ -42,7 +42,7 @@ public abstract class AsyncService {
     }
 
     public void stop() {
-        logger.info("Arrêt du service {}", serviceId);
+        logger.debug("Arrêt du service {}", serviceId);
         active.set(false);
         pendingRequests.clear();
     }

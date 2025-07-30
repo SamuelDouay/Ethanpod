@@ -26,7 +26,7 @@ public class ViewHandle {
     }
 
     public void stopAllService() {
-        logger.info("🟢 Arrêt de tous les services ViewHandle");
+        logger.debug("🟢 Arrêt de tous les services ViewHandle");
         shutdownRequested = true;  // Ajouter cette ligne
         this.asyncServiceManager.stopAllServices();
     }
@@ -77,13 +77,14 @@ public class ViewHandle {
 
         if ("LOGIC_READY".equals(message.getContent())) {
             asyncServiceManager.initializeAllServices();
-            logger.info("🟢 Logic ready");
+            logger.debug("🟢 Logic ready");
         }
         if ("UI_EVENT_READY".equals(message.getContent())) {
-            logger.info("🟢 Event ready");
+            logger.debug("🟢 Event ready");
 
         }
         if ("JAVAFX_READY".equals(message.getContent())) {
+            logger.debug("🟢 Javafx ready");
             controllerManager.initializeAllServices();
         }
     }
@@ -93,19 +94,19 @@ public class ViewHandle {
     }
 
     public void interruptProcessing() {
-        logger.info("🟢 Interruption du traitement des messages demandée");
+        logger.debug("🟢 Interruption du traitement des messages demandée");
         processingInterrupted = true;
     }
 
     public void flushPendingMessages() {
-        logger.info("🟢 Traitement des messages restants...");
+        logger.debug("🟢 Traitement des messages restants...");
         int processedCount = 0;
 
         try {
             while (!messageQueue.isEmpty() && processedCount < 10) { // Limite de sécurité
                 ThreadMessage message = messageQueue.poll();
                 if (message != null) {
-                    logger.info("🟢 Message final: {}", message.getContent());
+                    logger.debug("🟢 Message final: {}", message.getContent());
 
                     // Traiter seulement les responses critiques
                     if (message.getType() == MessageType.RESPONSE) {
@@ -114,7 +115,7 @@ public class ViewHandle {
                     processedCount++;
                 }
             }
-            logger.info("🟢 {} messages restants traités", processedCount);
+            logger.debug("🟢 {} messages restants traités", processedCount);
         } catch (Exception e) {
             logger.warn("🟠 Erreur lors du flush: {}", e.getMessage());
         }

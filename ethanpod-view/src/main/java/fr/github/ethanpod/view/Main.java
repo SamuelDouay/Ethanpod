@@ -48,7 +48,7 @@ public class Main extends Application {
 
             // Gérer la fermeture de la fenêtre
             stage.setOnCloseRequest(_ -> {
-                logger.info("Demande de fermeture de la fenêtre principale");
+                logger.debug("Demande de fermeture de la fenêtre principale");
                 handleApplicationShutdown();
             });
 
@@ -72,7 +72,7 @@ public class Main extends Application {
 
     private void handleApplicationShutdown() {
         try {
-            logger.info("Début de l'arrêt de l'application JavaFX");
+            logger.debug("Début de l'arrêt de l'application JavaFX");
             Platform.exit();
 
         } catch (Exception e) {
@@ -82,7 +82,7 @@ public class Main extends Application {
 
     @Override
     public void stop() throws Exception {
-        logger.info("Méthode stop() de JavaFX appelée");
+        logger.debug("Méthode stop() de JavaFX appelée");
         super.stop();
     }
 }

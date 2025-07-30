@@ -26,9 +26,9 @@ public class ConfigProperties {
     private void loadFile() {
         try {
             this.properties.load(getClass().getResourceAsStream("/setting/style.properties"));
-            logger.info("Load style properties file");
+            logger.debug("Load style properties file");
             this.properties.load(getClass().getResourceAsStream("/setting/application.properties"));
-            logger.info("Load config properties file");
+            logger.debug("Load config properties file");
         } catch (IOException e) {
             logger.error("Error load properties : {}", e.getMessage());
         }

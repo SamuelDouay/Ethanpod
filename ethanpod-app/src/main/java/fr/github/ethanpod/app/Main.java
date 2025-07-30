@@ -60,7 +60,7 @@ public class Main {
 
 
         DatabaseManager.getInstance().initialize();
-        
+
         logicExecutor = createExecutor("LogicThread");
         viewExecutor = createExecutor("ViewThread");
         uiEventExecutor = createExecutor("UIEventThread");
@@ -150,7 +150,6 @@ public class Main {
 
         messageProcessingThread.setDaemon(false);
         messageProcessingThread.start();
-        logger.info("Thread de traitement des messages démarré");
 
         return messageProcessingThread;
     }
@@ -167,8 +166,6 @@ public class Main {
 
         javafxThread.setDaemon(false);
         javafxThread.start();
-        logger.info("Thread JavaFX démarré");
-
         return javafxThread;
     }
 
@@ -188,7 +185,7 @@ public class Main {
             throws InterruptedException {
 
         if (messageProcessingThread != null && messageProcessingThread.isAlive()) {
-            logger.info("Demande d'arrêt gracieux du thread de traitement...");
+            logger.info("Demande d'arrêt du thread de traitement...");
             if (viewThread != null) {
                 viewThread.requestShutdown(); // ⚠️ Nouvelle méthode à ajouter
             }

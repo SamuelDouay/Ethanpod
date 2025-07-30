@@ -43,7 +43,7 @@ public class UIEventThread implements Runnable {
     }
 
     public void stop() {
-        logger.info("🟢 Arrêt du thread d'interface demandé");
+        logger.debug("🟢 Arrêt du thread d'interface demandé");
         running.set(false);
     }
 }

@@ -27,7 +27,7 @@ public class MessageRouter {
 
     public void registerThread(String threadName, BlockingQueue<ThreadMessage> queue) {
         threadQueues.put(threadName, queue);
-        logger.info("📬 Thread {} enregistré avec sa queue dédiée", threadName);
+        logger.debug("📬 Thread {} enregistré avec sa queue dédiée", threadName);
     }
 
     public BlockingQueue<ThreadMessage> registerThread(String threadName) {
