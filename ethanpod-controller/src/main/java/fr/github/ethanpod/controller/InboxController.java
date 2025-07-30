@@ -11,12 +11,15 @@ public class InboxController extends Controller {
         super(asyncServiceManager);
     }
 
+
     public void loadInboxCount() {
+        long startTime = System.currentTimeMillis();
         logger.info("🟢 Chargement du nombre d'éléments inbox");
 
         asyncServiceManager.getInboxService().getInboxCountAsync()
                 .thenAccept(result -> {
-                    logger.info("🟢 {} éléments dans l'inbox", result.data());
+                    long executionTime = System.currentTimeMillis() - startTime;
+                    logRequestTime(result.requestId(), executionTime);
                     messageRouter.sendRequestToUiEventFromView("INBOX_COUNT_UPDATED", result.requestId(), MessageType.EVENT, result.data());
                 })
                 .exceptionally(throwable -> {
@@ -26,11 +29,12 @@ public class InboxController extends Controller {
     }
 
     public void loadInboxTop8() {
+        long startTime = System.currentTimeMillis();
         logger.info("🟢 Chargement du top 8 Inbox");
-
         asyncServiceManager.getInboxService().getTop8InInbox()
                 .thenAccept(result -> {
-                    logger.info("🟢 {} éléments dans l'inbox", result.data().size());
+                    long executionTime = System.currentTimeMillis() - startTime;
+                    logRequestTime(result.requestId(), executionTime);
                     messageRouter.sendRequestToUiEventFromView("GET_TOP8_INBOX_UPDATE", result.requestId(), MessageType.EVENT, result.data());
                 })
                 .exceptionally(throwable -> {

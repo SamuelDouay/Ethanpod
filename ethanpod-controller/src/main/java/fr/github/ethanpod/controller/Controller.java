@@ -14,5 +14,10 @@ public abstract class Controller {
         this.asyncServiceManager = asyncServiceManager;
     }
 
+
+    protected void logRequestTime(String result, long executionTime) {
+        logger.info("🟢 RESQUEST : {}, ⏱️ {}ms", result, executionTime);
+    }
+
     abstract void initializeUI();
 }

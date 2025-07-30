@@ -74,13 +74,13 @@ public class MessageRouter {
         ThreadMessage message = new ThreadMessage(request, sender, receiver,
                 messageType, data, requestId);
 
-        logger.info("🟢 Service: Envoi message - De: {}, Pour: {}, Type: {}, Contenu: {}, ID: {}",
+        logger.debug("🟢 Service: Envoi message - De: {}, Pour: {}, Type: {}, Contenu: {}, ID: {}",
                 message.getSender(), message.getReceiver(), message.getType(),
                 message.getContent(), message.getRequestId());
 
         boolean success = routeMessage(message);
         if (success) {
-            logger.info("🟢 Service: Message routé avec succès vers {}", receiver);
+            logger.debug("🟢 Service: Message routé avec succès vers {}", receiver);
         } else {
             logger.error("🔴 Service: Échec du routage du message vers {}", receiver);
         }

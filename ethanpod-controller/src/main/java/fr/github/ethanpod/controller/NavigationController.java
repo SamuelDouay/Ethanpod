@@ -12,11 +12,13 @@ public class NavigationController extends Controller {
     }
 
     public void loadNavigationData() {
+        long startTime = System.currentTimeMillis();
         logger.info("🟢 Chargement des données de navigation");
 
         asyncServiceManager.getNavigationService().getListAsync()
                 .thenAccept(result -> {
-                    logger.info("🟢 {} éléments de navigation reçus", result.data().size());
+                    long executionTime = System.currentTimeMillis() - startTime;
+                    logRequestTime(result.requestId(), executionTime);
                     messageRouter.sendRequestToUiEventFromView("NAVIGATION_UPDATED", result.requestId(), MessageType.EVENT, result.data());
                 })
                 .exceptionally(throwable -> {

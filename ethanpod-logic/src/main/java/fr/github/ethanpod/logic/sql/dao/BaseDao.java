@@ -12,6 +12,15 @@ import java.sql.SQLException;
 public abstract class BaseDao {
     protected static final Logger logger = LogManager.getLogger(BaseDao.class);
 
+    private void logMetrics(String sql, long startTime) {
+        long executionTime = System.currentTimeMillis() - startTime;
+        if (executionTime > 100) {
+            logger.warn("⚠️ Slow SQL Query detected: {} executed in {}ms", sql, executionTime);
+        } else {
+            logger.debug("⏱️ SQL Query executed in {}ms: {}", executionTime, sql);
+        }
+    }
+
     private Connection getConnexion() throws SQLException {
         if (!DatabaseManager.getInstance().isInitialized()) {
             DatabaseManager.getInstance().initialize();
@@ -19,16 +28,13 @@ public abstract class BaseDao {
         return DatabaseManager.getInstance().getConnection();
     }
 
-    // Méthodes utilitaires génériques - une fois écrites, utilisées partout
-    protected <T> T executeQuery(String sql, ResultSetMapper<T> mapper) {
-        return executeQuery(sql, mapper, null);
-    }
-
     protected <T> T executeQuery(String sql, ResultSetMapper<T> mapper, T defaultValue) {
+        long startTime = System.currentTimeMillis();
         try (PreparedStatement stmt = getConnexion().prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
-
-            return mapper.map(rs);
+            T result = mapper.map(rs);
+            logMetrics(sql, startTime);
+            return result;
 
         } catch (SQLException e) {
             logger.error("Erreur SQL [{}]: {}", sql, e.getMessage(), e);
@@ -41,6 +47,7 @@ public abstract class BaseDao {
     }
 
     protected <T> T executeQueryWithParams(String sql, ResultSetMapper<T> mapper, T defaultValue, Object... params) {
+        long startTime = System.currentTimeMillis();
         try (PreparedStatement stmt = getConnexion().prepareStatement(sql)) {
 
             // Paramètres
@@ -49,7 +56,10 @@ public abstract class BaseDao {
             }
 
             try (ResultSet rs = stmt.executeQuery()) {
-                return mapper.map(rs);
+                T result = mapper.map(rs);
+
+                logMetrics(sql, startTime);
+                return result;
             }
 
         } catch (SQLException e) {
@@ -59,18 +69,35 @@ public abstract class BaseDao {
     }
 
     protected int executeUpdate(String sql, Object... params) {
+        long startTime = System.currentTimeMillis();
         try (PreparedStatement stmt = getConnexion().prepareStatement(sql)) {
 
             for (int i = 0; i < params.length; i++) {
                 stmt.setObject(i + 1, params[i]);
             }
 
-            return stmt.executeUpdate();
+            int rowsAffected = stmt.executeUpdate();
+            logMetrics(sql, startTime);
+            return rowsAffected;
 
         } catch (SQLException e) {
             logger.error("Erreur update SQL [{}]: {}", sql, e.getMessage(), e);
             return 0;
         }
+    }
+
+    private String formatParams(Object... params) {
+        if (params == null || params.length == 0) {
+            return "[]";
+        }
+
+        StringBuilder sb = new StringBuilder("[");
+        for (int i = 0; i < params.length; i++) {
+            if (i > 0) sb.append(", ");
+            sb.append(params[i] != null ? params[i].toString() : "null");
+        }
+        sb.append("]");
+        return sb.toString();
     }
 
     @FunctionalInterface

@@ -55,7 +55,7 @@ public abstract class AsyncService {
 
     public void handleResponse(ThreadMessage message) {
         String requestId = message.getRequestId();
-        logger.info("🟢 Service: Réception réponse pour ID: {}, Type: {}",
+        logger.debug("🟢 Service: Réception réponse pour ID: {}, Type: {}",
                 requestId, message.getType());
 
         if (requestId == null) {
@@ -74,7 +74,7 @@ public abstract class AsyncService {
                 logger.error("🔴 Service: Erreur reçue: {}", message.getContent());
                 future.completeExceptionally(new RuntimeException(message.getContent()));
             } else {
-                logger.info("🟢 Service: Completion du future avec succès");
+                logger.debug("🟢 Service: Completion du future avec succès");
                 future.complete(message.getData());
             }
         } catch (Exception e) {
@@ -84,7 +84,7 @@ public abstract class AsyncService {
     }
 
     private void futureTimeOut(CompletableFuture<?> future, String requestId) {
-        logger.info("🟢 Service: Requête enregistrée, total en attente: {}", pendingRequests.size());
+        logger.debug("🟢 Service: Requête enregistrée, total en attente: {}", pendingRequests.size());
         future.orTimeout(this.timeoutSeconds, TimeUnit.SECONDS)
                 .exceptionally(_ -> {
                     logger.error("🔴 Service: Timeout pour requête ID: {}", requestId);
@@ -96,7 +96,7 @@ public abstract class AsyncService {
     private <T> CompletableFuture<RequestResult<T>> createFuture(String request, Object data) {
         CompletableFuture<T> future = new CompletableFuture<>();
         String requestId = generateRequestId();
-        logger.info("🟢 Service: Création requête {} avec ID: {}", request, requestId);
+        logger.debug("🟢 Service: Création requête {} avec ID: {}", request, requestId);
         pendingRequests.put(requestId, future);
         futureTimeOut(future, requestId);
         messageRouter.sendRequestToLogicFromView(request, requestId, MessageType.REQUEST, data);
