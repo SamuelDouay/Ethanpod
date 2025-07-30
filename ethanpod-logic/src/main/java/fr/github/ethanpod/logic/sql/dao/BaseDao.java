@@ -86,20 +86,6 @@ public abstract class BaseDao {
         }
     }
 
-    private String formatParams(Object... params) {
-        if (params == null || params.length == 0) {
-            return "[]";
-        }
-
-        StringBuilder sb = new StringBuilder("[");
-        for (int i = 0; i < params.length; i++) {
-            if (i > 0) sb.append(", ");
-            sb.append(params[i] != null ? params[i].toString() : "null");
-        }
-        sb.append("]");
-        return sb.toString();
-    }
-
     @FunctionalInterface
     protected interface ResultSetMapper<T> {
         T map(ResultSet rs) throws SQLException;
