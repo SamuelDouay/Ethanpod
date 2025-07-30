@@ -26,11 +26,11 @@ public class LogicHandle {
         ThreadMessage message = messageQueue.poll(500, TimeUnit.MILLISECONDS);
 
         if (message != null) {
-            logger.debug("🔵 {}", message);
+            logger.debug(message);
             switch (message.getType()) {
                 case REQUEST -> handleRequest(message);
                 case NOTIFICATION -> handleNotification(message);
-                default -> logger.warn("🔵 Type de message non géré: {}", message.getType());
+                default -> logger.warn("Type de message non géré: {}", message.getType());
             }
         }
     }
@@ -39,7 +39,7 @@ public class LogicHandle {
         String content = message.getContent();
         String requestId = message.getRequestId();
 
-        logger.info("🔵 Traitement requête: {} avec ID: {}", content, requestId);
+        logger.debug("Traitement requête: {} avec ID: {}", content, requestId);
 
         switch (content) {
             case "GET_NAVIGATION_LIST" -> serviceManager.getNavigationService().getNavigationListAsync(requestId);
@@ -48,7 +48,7 @@ public class LogicHandle {
             case "GET_TOP8_QUEUE" -> serviceManager.getQueueService().getQueueTop8(requestId);
             case "REFRESH_DATA" -> serviceManager.refreshAllData();
             default -> {
-                logger.warn("🔵 Requête non reconnue: {}", content);
+                logger.warn("Requête non reconnue: {}", content);
                 messageRouter.sendRequestToViewFromLogic("ERROR", requestId, MessageType.ERROR, "Unknown request: " + content);
             }
         }

@@ -33,7 +33,7 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) {
         try {
-            logger.info("Démarrage de l'interface utilisateur JavaFX");
+            logger.debug("Démarrage de l'interface utilisateur JavaFX");
 
             // Créer le layout principal
             AnchorPane root = new MainLayout().createInterface();
@@ -54,7 +54,7 @@ public class Main extends Application {
 
             // Afficher la fenêtre
             stage.show();
-            logger.info("Interface utilisateur initialisée avec succès");
+            logger.debug("Interface utilisateur initialisée avec succès");
 
             // Notifier le ViewThread que JavaFX est prêt
             notifyViewThreadReady();

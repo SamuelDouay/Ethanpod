@@ -26,7 +26,7 @@ public abstract class DataService {
                 .supplyAsync(() -> {
                     try {
                         T result = operation.get();
-                        logger.info("🔵 {} completed successfully", operationName);
+                        logger.debug("{} completed successfully", operationName);
                         return result;
                     } catch (Exception e) {
                         throw new RuntimeException("Error in " + operationName, e);

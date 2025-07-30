@@ -26,20 +26,20 @@ public class ViewHandle {
     }
 
     public void stopAllService() {
-        logger.debug("🟢 Arrêt de tous les services ViewHandle");
+        logger.debug("Arrêt de tous les services ViewHandle");
         shutdownRequested = true;  // Ajouter cette ligne
         this.asyncServiceManager.stopAllServices();
     }
 
     public void processIncomingMessages() throws InterruptedException {
         if (processingInterrupted || shutdownRequested) {
-            logger.info("🟢 Arrêt en cours");
-            return; // Sortir immédiatement si arrêt demandé
+            logger.debug("Arrêt en cours");
+            return;
         }
         ThreadMessage message = messageQueue.poll(500, TimeUnit.MILLISECONDS);
 
         if (message != null) {
-            logger.debug("🟢 {}", message);
+            logger.debug(message);
             switch (message.getType()) {
                 case MessageType.RESPONSE -> handleResponse(message);
                 case MessageType.DATA_UPDATE -> handleDataUpdate(message);
@@ -56,7 +56,7 @@ public class ViewHandle {
 
     private void handleDataUpdate(ThreadMessage message) {
         if (shutdownRequested) {
-            logger.debug("🟠 Mise à jour ignorée (arrêt en cours): {}", message.getContent());
+            logger.debug("Mise à jour ignorée (arrêt en cours): {}", message.getContent());
             return;
         }
         String content = message.getContent();
@@ -70,43 +70,43 @@ public class ViewHandle {
 
     private void handleNotification(ThreadMessage message) {
         if (shutdownRequested) {
-            logger.debug("🟠 Notification ignorée (arrêt en cours): {}", message.getContent());
+            logger.debug("Notification ignorée (arrêt en cours): {}", message.getContent());
             return;
         }
-        logger.info("🟢 Notification reçue: {}", message.getContent());
+        logger.debug("Notification reçue: {}", message.getContent());
 
         if ("LOGIC_READY".equals(message.getContent())) {
             asyncServiceManager.initializeAllServices();
-            logger.debug("🟢 Logic ready");
+            logger.debug("Logic ready");
         }
         if ("UI_EVENT_READY".equals(message.getContent())) {
-            logger.debug("🟢 Event ready");
+            logger.debug("Event ready");
 
         }
         if ("JAVAFX_READY".equals(message.getContent())) {
-            logger.debug("🟢 Javafx ready");
+            logger.debug("Javafx ready");
             controllerManager.initializeAllServices();
         }
     }
 
     private void handleError(ThreadMessage message) {
-        logger.error("🔴 Erreur reçue du thread de logique: {}", message.getContent());
+        logger.error("Erreur reçue du thread de logique: {}", message.getContent());
     }
 
     public void interruptProcessing() {
-        logger.debug("🟢 Interruption du traitement des messages demandée");
+        logger.debug("Interruption du traitement des messages demandée");
         processingInterrupted = true;
     }
 
     public void flushPendingMessages() {
-        logger.debug("🟢 Traitement des messages restants...");
+        logger.debug("Traitement des messages restants...");
         int processedCount = 0;
 
         try {
             while (!messageQueue.isEmpty() && processedCount < 10) { // Limite de sécurité
                 ThreadMessage message = messageQueue.poll();
                 if (message != null) {
-                    logger.debug("🟢 Message final: {}", message.getContent());
+                    logger.debug("Message final: {}", message.getContent());
 
                     // Traiter seulement les responses critiques
                     if (message.getType() == MessageType.RESPONSE) {
@@ -115,9 +115,9 @@ public class ViewHandle {
                     processedCount++;
                 }
             }
-            logger.debug("🟢 {} messages restants traités", processedCount);
+            logger.debug("{} messages restants traités", processedCount);
         } catch (Exception e) {
-            logger.warn("🟠 Erreur lors du flush: {}", e.getMessage());
+            logger.warn("Erreur lors du flush: {}", e.getMessage());
         }
     }
 

@@ -187,7 +187,7 @@ public class Main {
         if (messageProcessingThread != null && messageProcessingThread.isAlive()) {
             logger.info("Demande d'arrêt du thread de traitement...");
             if (viewThread != null) {
-                viewThread.requestShutdown(); // ⚠️ Nouvelle méthode à ajouter
+                viewThread.requestShutdown();
             }
 
             // Attendre avec vérification périodique
@@ -216,9 +216,9 @@ public class Main {
 
         // 2. Demander arrêt gracieux ViewThread
         if (viewThread != null) {
-            viewThread.requestShutdown(); // ⚠️ Nouvelle méthode
+            viewThread.requestShutdown();
             try {
-                Thread.sleep(2000); // Laisser le temps de traiter les derniers messages
+                Thread.sleep(2000);
             } catch (InterruptedException _) {
                 Thread.currentThread().interrupt();
             }

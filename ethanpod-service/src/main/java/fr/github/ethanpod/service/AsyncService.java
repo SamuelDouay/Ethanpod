@@ -55,7 +55,7 @@ public abstract class AsyncService {
 
     public void handleResponse(ThreadMessage message) {
         String requestId = message.getRequestId();
-        logger.debug("🟢 Service: Réception réponse pour ID: {}, Type: {}",
+        logger.debug("Service: Réception réponse pour ID: {}, Type: {}",
                 requestId, message.getType());
 
         if (requestId == null) {
@@ -65,29 +65,29 @@ public abstract class AsyncService {
 
         CompletableFuture<Object> future = (CompletableFuture<Object>) pendingRequests.remove(requestId);
         if (future == null) {
-            logger.warn("🟡 Service: Aucun future en attente pour ID: {}", requestId);
+            logger.warn("Service: Aucun future en attente pour ID: {}", requestId);
             return;
         }
 
         try {
             if (message.getType() == MessageType.ERROR) {
-                logger.error("🔴 Service: Erreur reçue: {}", message.getContent());
+                logger.error("Service: Erreur reçue: {}", message.getContent());
                 future.completeExceptionally(new RuntimeException(message.getContent()));
             } else {
-                logger.debug("🟢 Service: Completion du future avec succès");
+                logger.debug("Service: Completion du future avec succès");
                 future.complete(message.getData());
             }
         } catch (Exception e) {
-            logger.error("🔴 Service: Erreur lors de la completion du future", e);
+            logger.error("Service: Erreur lors de la completion du future", e);
             future.completeExceptionally(e);
         }
     }
 
     private void futureTimeOut(CompletableFuture<?> future, String requestId) {
-        logger.debug("🟢 Service: Requête enregistrée, total en attente: {}", pendingRequests.size());
+        logger.debug("Service: Requête enregistrée, total en attente: {}", pendingRequests.size());
         future.orTimeout(this.timeoutSeconds, TimeUnit.SECONDS)
                 .exceptionally(_ -> {
-                    logger.error("🔴 Service: Timeout pour requête ID: {}", requestId);
+                    logger.error("Service: Timeout pour requête ID: {}", requestId);
                     pendingRequests.remove(requestId);
                     return null;
                 });
@@ -96,7 +96,7 @@ public abstract class AsyncService {
     private <T> CompletableFuture<RequestResult<T>> createFuture(String request, Object data) {
         CompletableFuture<T> future = new CompletableFuture<>();
         String requestId = generateRequestId();
-        logger.debug("🟢 Service: Création requête {} avec ID: {}", request, requestId);
+        logger.debug("Service: Création requête {} avec ID: {}", request, requestId);
         pendingRequests.put(requestId, future);
         futureTimeOut(future, requestId);
         messageRouter.sendRequestToLogicFromView(request, requestId, MessageType.REQUEST, data);

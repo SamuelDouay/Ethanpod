@@ -33,7 +33,7 @@ public class UIEventHandle {
             if (Objects.requireNonNull(message.getType()) == MessageType.EVENT) {
                 handleEvent(message);
             } else {
-                logger.warn("🔵 Type de message non géré: {}", message.getType());
+                logger.warn("Type de message non géré: {}", message.getType());
             }
         }
     }
@@ -42,7 +42,7 @@ public class UIEventHandle {
         String content = message.getContent();
         String requestId = message.getRequestId();
 
-        logger.info("🔵 Traitement requête: {} avec ID: {}", content, requestId);
+        logger.debug("Traitement requête: {} avec ID: {}", content, requestId);
 
         switch (content) {
             case "NAVIGATION_UPDATED" ->

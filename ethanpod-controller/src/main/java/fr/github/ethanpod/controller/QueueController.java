@@ -12,7 +12,7 @@ public class QueueController extends Controller {
 
     public void loadQueueTop8() {
         long startTime = System.currentTimeMillis();
-        logger.info("🟢 Chargement du top 8 Queue");
+        logger.info("Chargement du top 8 Queue");
 
         asyncServiceManager.getQueueService().getQueueTop8()
                 .thenAccept(result -> {
@@ -21,7 +21,7 @@ public class QueueController extends Controller {
                     messageRouter.sendRequestToUiEventFromView("GET_TOP8_QUEUE_UPDATE", result.requestId(), MessageType.EVENT, result.data());
                 })
                 .exceptionally(throwable -> {
-                    logger.error("🔴 Erreur lors du chargement du top 8 queue", throwable);
+                    logger.error("Erreur lors du chargement du top 8 queue", throwable);
                     return null;
                 });
 

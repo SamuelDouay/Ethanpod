@@ -40,7 +40,7 @@ public class DatabaseManager {
                 testConnection(); // ← autorisé car initializing = true
                 registerShutdownHook();
                 this.initialized = true;
-                logger.info("DatabaseManager initialisé avec succès");
+                logger.debug("DatabaseManager initialisé avec succès");
             } catch (Exception e) {
                 cleanup();
                 logger.error("Erreur lors de l'initialisation du DatabaseManager: {}", e.getMessage(), e);
@@ -71,7 +71,7 @@ public class DatabaseManager {
 
         String jdbcUrl = jdbcPrefix + dbResource;
 
-        logger.info("URL JDBC construite: {}", jdbcUrl);
+        logger.debug("URL JDBC construite: {}", jdbcUrl);
         return jdbcUrl;
     }
 
@@ -145,9 +145,9 @@ public class DatabaseManager {
     private void cleanup() {
         if (dataSource != null && !dataSource.isClosed()) {
             try {
-                logger.info("Fermeture du pool de connexions: {}", getPoolStats());
+                logger.debug("Fermeture du pool de connexions: {}", getPoolStats());
                 dataSource.close();
-                logger.info("Pool de connexions fermé avec succès");
+                logger.debug("Pool de connexions fermé avec succès");
             } catch (Exception e) {
                 logger.warn("Erreur lors de la fermeture du DataSource: {}", e.getMessage());
             }
@@ -158,7 +158,7 @@ public class DatabaseManager {
 
     private void registerShutdownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            logger.info("Shutdown hook - Fermeture du DatabaseManager");
+            logger.debug("Shutdown hook - Fermeture du DatabaseManager");
             shutdown();
         }));
     }

@@ -14,7 +14,7 @@ public class InboxController extends Controller {
 
     public void loadInboxCount() {
         long startTime = System.currentTimeMillis();
-        logger.info("🟢 Chargement du nombre d'éléments inbox");
+        logger.info("Chargement du nombre d'éléments inbox");
 
         asyncServiceManager.getInboxService().getInboxCountAsync()
                 .thenAccept(result -> {
@@ -23,14 +23,14 @@ public class InboxController extends Controller {
                     messageRouter.sendRequestToUiEventFromView("INBOX_COUNT_UPDATED", result.requestId(), MessageType.EVENT, result.data());
                 })
                 .exceptionally(throwable -> {
-                    logger.error("🔴 Erreur lors du chargement du compte inbox", throwable);
+                    logger.error("Erreur lors du chargement du compte inbox", throwable);
                     return null;
                 });
     }
 
     public void loadInboxTop8() {
         long startTime = System.currentTimeMillis();
-        logger.info("🟢 Chargement du top 8 Inbox");
+        logger.info("Chargement du top 8 Inbox");
         asyncServiceManager.getInboxService().getTop8InInbox()
                 .thenAccept(result -> {
                     long executionTime = System.currentTimeMillis() - startTime;

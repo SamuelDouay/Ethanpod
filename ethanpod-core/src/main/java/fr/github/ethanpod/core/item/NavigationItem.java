@@ -1,10 +1,10 @@
 package fr.github.ethanpod.core.item;
 
 public class NavigationItem extends Item {
-    private boolean icon;
-    private String title;
-    private int number;
-    private String name;
+    private final boolean icon;
+    private final String title;
+    private final int number;
+    private final String name;
 
     public NavigationItem(String name, String title, boolean icon) {
         super();

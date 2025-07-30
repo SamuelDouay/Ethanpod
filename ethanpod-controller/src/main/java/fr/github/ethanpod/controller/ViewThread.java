@@ -20,14 +20,14 @@ public class ViewThread implements Runnable {
     }
 
     public void requestShutdown() {
-        logger.debug("🟢 Demande d'arrêt gracieux du ViewThread");
+        logger.debug("Demande d'arrêt gracieux du ViewThread");
         shutdownRequested.set(true);
         viewHandle.interruptProcessing(); // ⚠️ Nouvelle méthode ViewHandle
     }
 
     @Override
     public void run() {
-        logger.info("🟢 Thread View démarré - Interface utilisateur");
+        logger.info("Thread View démarré - Interface utilisateur");
 
         messageRouter.sendRequestToLogicFromView("UI_READY", null, MessageType.NOTIFICATION, null);
         boolean shouldExit = false;
@@ -37,12 +37,12 @@ public class ViewThread implements Runnable {
                 viewHandle.processIncomingMessages();
 
                 if (Thread.currentThread().isInterrupted()) {
-                    logger.info("🟢 Thread View interrompu volontairement");
+                    logger.info("Thread View interrompu volontairement");
                     shouldExit = true;
                 }
 
             } catch (InterruptedException _) {
-                logger.info("🟢 Thread View interrompu");
+                logger.info("Thread View interrompu");
                 Thread.currentThread().interrupt();
                 shouldExit = true;
             } catch (Exception e) {
@@ -54,15 +54,15 @@ public class ViewThread implements Runnable {
         }
 
         if (shutdownRequested.get()) {
-            logger.info("🟢 Traitement des derniers messages...");
+            logger.info("Traitement des derniers messages...");
             viewHandle.flushPendingMessages();
         }
 
-        logger.info("🟢 Thread View terminé");
+        logger.info("Thread View terminé");
     }
 
     public void stop() {
-        logger.debug("🟢 Arrêt du thread d'interface demandé");
+        logger.debug("Arrêt du thread d'interface demandé");
         shutdownRequested.set(true);  // Ajouter cette ligne
         running.set(false);
         viewHandle.stopAllService();

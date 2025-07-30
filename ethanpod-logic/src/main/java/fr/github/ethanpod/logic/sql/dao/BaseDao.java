@@ -15,9 +15,9 @@ public abstract class BaseDao {
     private void logMetrics(String sql, long startTime) {
         long executionTime = System.currentTimeMillis() - startTime;
         if (executionTime > 100) {
-            logger.warn("⚠️ Slow SQL Query detected: {} executed in {}ms", sql, executionTime);
+            logger.warn("Slow SQL Query detected: {} executed in {}ms", sql, executionTime);
         } else {
-            logger.debug("⏱️ SQL Query executed in {}ms: {}", executionTime, sql);
+            logger.debug("SQL Query executed in {}ms: {}", executionTime, sql);
         }
     }
 

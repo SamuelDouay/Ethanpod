@@ -13,7 +13,7 @@ public class NavigationController extends Controller {
 
     public void loadNavigationData() {
         long startTime = System.currentTimeMillis();
-        logger.info("🟢 Chargement des données de navigation");
+        logger.info("Chargement des données de navigation");
 
         asyncServiceManager.getNavigationService().getListAsync()
                 .thenAccept(result -> {
@@ -22,7 +22,7 @@ public class NavigationController extends Controller {
                     messageRouter.sendRequestToUiEventFromView("NAVIGATION_UPDATED", result.requestId(), MessageType.EVENT, result.data());
                 })
                 .exceptionally(throwable -> {
-                    logger.error("🔴 Erreur lors du chargement de la navigation : {}", throwable.getMessage());
+                    logger.error("Erreur lors du chargement de la navigation : {}", throwable.getMessage());
                     return null;
                 });
 
