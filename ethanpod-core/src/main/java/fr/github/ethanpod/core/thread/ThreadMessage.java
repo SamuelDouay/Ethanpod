@@ -52,6 +52,6 @@ public class ThreadMessage {
 
     @Override
     public String toString() {
-        return String.format("%s -> %s (%s): %s", sender, receiver, type, content);
+        return String.format("%s -> %s (%s): %s avec l'ID %s", sender, receiver, type, content, requestId);
     }
 }

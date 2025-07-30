@@ -22,8 +22,8 @@ public class LogicThread implements Runnable {
                 @Override
                 public Thread newThread(Runnable r) {
                     Thread thread = new Thread(r);
-                    thread.setName("LogicThread-" + threadNumber.getAndIncrement());
-                    thread.setDaemon(true);
+                    thread.setName("Logic-" + threadNumber.getAndIncrement());
+                    thread.setDaemon(false);
                     return thread;
                 }
             }

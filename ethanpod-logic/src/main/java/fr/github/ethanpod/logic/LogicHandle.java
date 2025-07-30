@@ -26,8 +26,7 @@ public class LogicHandle {
         ThreadMessage message = messageQueue.poll(500, TimeUnit.MILLISECONDS);
 
         if (message != null) {
-            logger.info("🔵 {}", message);
-
+            logger.debug("🔵 {}", message);
             switch (message.getType()) {
                 case REQUEST -> handleRequest(message);
                 case NOTIFICATION -> handleNotification(message);

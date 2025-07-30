@@ -39,7 +39,7 @@ public class ViewHandle {
         ThreadMessage message = messageQueue.poll(500, TimeUnit.MILLISECONDS);
 
         if (message != null) {
-            logger.info("🟢 {}", message);
+            logger.debug("🟢 {}", message);
             switch (message.getType()) {
                 case MessageType.RESPONSE -> handleResponse(message);
                 case MessageType.DATA_UPDATE -> handleDataUpdate(message);

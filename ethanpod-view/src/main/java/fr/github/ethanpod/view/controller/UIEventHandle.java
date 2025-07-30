@@ -29,6 +29,7 @@ public class UIEventHandle {
         ThreadMessage message = messageQueue.poll(500, TimeUnit.MILLISECONDS);
 
         if (message != null) {
+            logger.debug(message);
             if (Objects.requireNonNull(message.getType()) == MessageType.EVENT) {
                 handleEvent(message);
             } else {
