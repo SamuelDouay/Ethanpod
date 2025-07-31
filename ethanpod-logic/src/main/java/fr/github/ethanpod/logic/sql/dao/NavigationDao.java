@@ -14,10 +14,10 @@ public class NavigationDao extends BaseDao {
 
     public List<NavigationItem> getList() {
         String sql = "SELECT feed.title as title, feed.image_url as image_url, " +
-                "COUNT( items.read ) as unread_count " +
+                "COUNT( * ) as unread_count " +
                 FEED_ITEMS_JOIN + " " +
                 "WHERE items.read = -1 " +
-                "GROUP BY feed.id, feed.title, feed.image_url " +
+                "GROUP BY feed.id " +
                 "ORDER BY unread_count DESC, feed.title ASC";
 
         return executeQuery(sql, rs -> {
