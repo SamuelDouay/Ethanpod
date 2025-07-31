@@ -16,7 +16,7 @@ public abstract class Controller {
 
 
     protected void logRequestTime(String result, long executionTime) {
-        logger.debug("RESQUEST : {}, ⏱️ {}ms", result, executionTime);
+        logger.debug("RESQUEST : {} {}ms", result, executionTime);
     }
 
     abstract void initializeUI();

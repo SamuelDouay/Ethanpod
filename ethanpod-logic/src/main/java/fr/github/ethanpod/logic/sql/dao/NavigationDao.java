@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NavigationDao extends BaseDao {
-    private static final String UNREAD_CONDITION = "CASE WHEN items.read = -1 THEN 1 END";
     private static final String FEED_ITEMS_JOIN = "FROM Feeds AS feed INNER JOIN FeedItems AS items ON items.feed = feed.id";
 
     public NavigationDao() {
@@ -15,8 +14,9 @@ public class NavigationDao extends BaseDao {
 
     public List<NavigationItem> getList() {
         String sql = "SELECT feed.title as title, feed.image_url as image_url, " +
-                "COUNT(" + UNREAD_CONDITION + ") as unread_count " +
+                "COUNT( items.read ) as unread_count " +
                 FEED_ITEMS_JOIN + " " +
+                "WHERE items.read = -1 " +
                 "GROUP BY feed.id, feed.title, feed.image_url " +
                 "ORDER BY unread_count DESC, feed.title ASC";
 
