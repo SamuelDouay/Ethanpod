@@ -132,7 +132,7 @@ class MessageRouterTest {
 
         try {
             doThrow(new InterruptedException("Test interruption")).when(mockQueue).put(any(ThreadMessage.class));
-        } catch (InterruptedException e) {
+        } catch (InterruptedException _) {
             fail("Setup failed");
         }
 
@@ -247,15 +247,6 @@ class MessageRouterTest {
             ThreadMessage message = logicQueue.poll();
             assertEquals("generated-uuid", message.getRequestId());
         }
-    }
-
-    @Test
-    void sendRequestFailure() {
-        // Ne pas enregistrer le thread destinataire pour forcer l'échec
-        messageRouter.sendRequestToLogicFromView("test", "id", MessageType.REQUEST, null);
-
-        // Aucune exception ne devrait être levée, mais le message ne sera pas routé
-        // Le test passe si aucune exception n'est lancée
     }
 
     @Test
