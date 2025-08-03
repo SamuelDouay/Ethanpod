@@ -53,8 +53,10 @@ public class UIEventHandle {
                     uiControllerManager.getQueueService().updateQueueTop8UI((List<EpisodeItem>) message.getData());
             case "GET_TOP8_INBOX_UPDATE" ->
                     uiControllerManager.getInboxService().updateInboxTop8((List<EpisodeItem>) message.getData());
+            case "GET_TOP8_PODCAST_UPDATED" ->
+                    uiControllerManager.getPodcastService().updatePodcastTop8UI((List<EpisodeItem>) message.getData());
             default -> {
-                logger.warn("🔵 Requête non reconnue: {}", content);
+                logger.warn("Requête non reconnue: {}", content);
                 messageRouter.sendRequestToViewFromEvent("ERROR", requestId, MessageType.ERROR, "Unknown request: " + content);
             }
         }

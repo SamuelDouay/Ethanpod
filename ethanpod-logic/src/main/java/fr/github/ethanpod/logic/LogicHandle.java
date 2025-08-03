@@ -46,6 +46,7 @@ public class LogicHandle {
             case "GET_COUNT_INBOX" -> serviceManager.getInboxService().getInboxCountAsync(requestId);
             case "GET_TOP8_INBOX" -> serviceManager.getInboxService().getTop8InInbox(requestId);
             case "GET_TOP8_QUEUE" -> serviceManager.getQueueService().getQueueTop8(requestId);
+            case "GET_TOP8_PODCAST_READ" -> serviceManager.getPodcastService().getTop8PodcastRead(requestId);
             case "REFRESH_DATA" -> serviceManager.refreshAllData();
             default -> {
                 logger.warn("Requête non reconnue: {}", content);

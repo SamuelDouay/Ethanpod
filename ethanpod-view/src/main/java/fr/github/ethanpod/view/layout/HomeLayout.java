@@ -7,10 +7,7 @@ import fr.github.ethanpod.view.component.surprise.SurpriseComponent;
 import fr.github.ethanpod.view.context.ContextualLayout;
 import fr.github.ethanpod.view.context.HomeContext;
 import fr.github.ethanpod.view.context.LayoutContext;
-import fr.github.ethanpod.view.event.InboxTop8UpdatedEvent;
-import fr.github.ethanpod.view.event.QueueTop8UpdateEvent;
-import fr.github.ethanpod.view.event.UIEventHandler;
-import fr.github.ethanpod.view.event.UIEventManager;
+import fr.github.ethanpod.view.event.*;
 import fr.github.ethanpod.view.util.ColorThemeConstants;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -30,16 +27,17 @@ public class HomeLayout extends Layout implements ContextualLayout {
     public static final EpisodeComponent EPISODE_COMPONENT = new EpisodeComponent();
     public static final SurpriseComponent SURPRISE_COMPONENT = new SurpriseComponent();
     // Constants for image paths
-    public static final String IMAGE_EX = String.valueOf(HomeLayout.class.getResource("/images/ex.jpeg"));
+    //public static final String IMAGE_EX = String.valueOf(HomeLayout.class.getResource("/images/ex.jpeg"));
     public static final String IMAGE_HDM = String.valueOf(HomeLayout.class.getResource("/images/heure_du_monde.png"));
-    public static final String IMAGE_SMLTLK = String.valueOf(HomeLayout.class.getResource("/images/small_talk.jpg"));
-    public static final String IMAGE_UNDERSCORE = String.valueOf(HomeLayout.class.getResource("/images/underscore.jpeg"));
-    public static final String IMAGE_ZERL = String.valueOf(HomeLayout.class.getResource("/images/zerl.jpg"));
+    //public static final String IMAGE_SMLTLK = String.valueOf(HomeLayout.class.getResource("/images/small_talk.jpg"));
+    //public static final String IMAGE_UNDERSCORE = String.valueOf(HomeLayout.class.getResource("/images/underscore.jpeg"));
+    //public static final String IMAGE_ZERL = String.valueOf(HomeLayout.class.getResource("/images/zerl.jpg"));
     // Constants for example data
     public static final String TITLE_EXAMPLE = "Lil Nas X, une icône noire, et gay et flamboyante [REDIF]";
     private static final Logger log = LogManager.getLogger(HomeLayout.class);
     private final UIEventManager eventManager = UIEventManager.getInstance();
     private HBox topQueue;
+    private HBox classicContainer;
     private VBox inboxContainer;
     private VBox mainContainer;
 
@@ -135,21 +133,11 @@ public class HomeLayout extends Layout implements ContextualLayout {
         scrollPane.setBackground(new Background(new BackgroundFill(ColorThemeConstants.getGrey000(), null, null)));
         HBox.setHgrow(scrollPane, Priority.ALWAYS);
 
-        HBox box = new HBox(15);
-        box.setPadding(new Insets(0.0, 1.0, 0.0, 1.0));
-        box.setBackground(new Background(new BackgroundFill(ColorThemeConstants.getGrey000(), null, null)));
-        HBox.setHgrow(box, Priority.ALWAYS);
-
-        box.getChildren().add(IMAGE_COMPONENT.createImageCard(IMAGE_EX));
-        box.getChildren().add(IMAGE_COMPONENT.createImageCard(IMAGE_HDM));
-        box.getChildren().add(IMAGE_COMPONENT.createImageCard(IMAGE_SMLTLK));
-        box.getChildren().add(IMAGE_COMPONENT.createImageCard(IMAGE_UNDERSCORE));
-        box.getChildren().add(IMAGE_COMPONENT.createImageCard(IMAGE_ZERL));
-        box.getChildren().add(IMAGE_COMPONENT.createImageCard(IMAGE_UNDERSCORE));
-        box.getChildren().add(IMAGE_COMPONENT.createImageCard(IMAGE_ZERL));
-        box.getChildren().add(IMAGE_COMPONENT.createImageCard(IMAGE_SMLTLK));
-
-        scrollPane.setContent(box);
+        classicContainer = new HBox(15);
+        classicContainer.setPadding(new Insets(0.0, 1.0, 0.0, 1.0));
+        classicContainer.setBackground(new Background(new BackgroundFill(ColorThemeConstants.getGrey000(), null, null)));
+        HBox.setHgrow(classicContainer, Priority.ALWAYS);
+        scrollPane.setContent(classicContainer);
         return scrollPane;
     }
 
@@ -199,9 +187,15 @@ public class HomeLayout extends Layout implements ContextualLayout {
             updateTopInbox(event.getEpisodeItems());
         };
 
+        UIEventHandler<PodcastTop8UpdateEvent> podcastTop8UpdateEventUIEventHandler = event -> {
+            log.info("Mise à jour de la classique avec {} éléments", event.getEpisodeItems().size());
+            updateTopPodcast(event.getEpisodeItems());
+        };
+
         // Enregistrement des handlers
         eventManager.registerHandler(QueueTop8UpdateEvent.EVENT_TYPE, queueTop8UpdateEventUIEventHandler);
         eventManager.registerHandler(InboxTop8UpdatedEvent.EVENT_TYPE, inboxTop8UpdatedEventUIEventHandler);
+        eventManager.registerHandler(PodcastTop8UpdateEvent.EVENT_TYPE, podcastTop8UpdateEventUIEventHandler);
     }
 
     private void updateTopQueue(List<EpisodeItem> episodeItems) {
@@ -215,6 +209,13 @@ public class HomeLayout extends Layout implements ContextualLayout {
         inboxContainer.getChildren().clear();
         for (EpisodeItem episodeItem : episodeItems) {
             inboxContainer.getChildren().add(EPISODE_COMPONENT.createInboxEpisode(episodeItem));
+        }
+    }
+
+    private void updateTopPodcast(List<EpisodeItem> episodeItems) {
+        classicContainer.getChildren().clear();
+        for (EpisodeItem episodeItem : episodeItems) {
+            classicContainer.getChildren().add(IMAGE_COMPONENT.createImageCard(episodeItem.getUrlImage()));
         }
     }
 
