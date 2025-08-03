@@ -21,16 +21,10 @@ public abstract class BaseDao {
         }
     }
 
-    private Connection getConnexion() throws SQLException {
-        if (!DatabaseManager.getInstance().isInitialized()) {
-            DatabaseManager.getInstance().initialize();
-        }
-        return DatabaseManager.getInstance().getConnection();
-    }
-
     protected <T> T executeQuery(String sql, ResultSetMapper<T> mapper, T defaultValue) {
         long startTime = System.currentTimeMillis();
-        try (PreparedStatement stmt = getConnexion().prepareStatement(sql);
+        try (Connection con = DatabaseManager.getInstance().getConnection();
+             PreparedStatement stmt = con.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
             T result = mapper.map(rs);
             logMetrics(sql, startTime);
@@ -48,7 +42,8 @@ public abstract class BaseDao {
 
     protected <T> T executeQueryWithParams(String sql, ResultSetMapper<T> mapper, T defaultValue, Object... params) {
         long startTime = System.currentTimeMillis();
-        try (PreparedStatement stmt = getConnexion().prepareStatement(sql)) {
+        try (Connection con = DatabaseManager.getInstance().getConnection();
+             PreparedStatement stmt = con.prepareStatement(sql)) {
 
             // Paramètres
             for (int i = 0; i < params.length; i++) {
@@ -70,7 +65,8 @@ public abstract class BaseDao {
 
     protected int executeUpdate(String sql, Object... params) {
         long startTime = System.currentTimeMillis();
-        try (PreparedStatement stmt = getConnexion().prepareStatement(sql)) {
+        try (Connection con = DatabaseManager.getInstance().getConnection();
+             PreparedStatement stmt = con.prepareStatement(sql)) {
 
             for (int i = 0; i < params.length; i++) {
                 stmt.setObject(i + 1, params[i]);
