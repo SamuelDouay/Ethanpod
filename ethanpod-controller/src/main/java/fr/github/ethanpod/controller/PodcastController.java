@@ -12,19 +12,12 @@ public class PodcastController extends Controller {
     }
 
     public void loadTop8PodcastRead() {
-        long startTime = System.currentTimeMillis();
-        logger.info("Chargement du top 8 Podcast");
-
-        asyncServiceManager.getPodcastService().getTop8PodcastRead()
-                .thenAccept(result -> {
-                    long executionTime = System.currentTimeMillis() - startTime;
-                    logRequestTime(result.requestId(), executionTime);
-                    messageRouter.sendEvent(EventType.PODCAST_TOP8_UPDATED, result.requestId(), result.data());
-                })
-                .exceptionally(throwable -> {
-                    logger.error("Erreur lors du chargement de la navigation : {}", throwable.getMessage());
-                    return null;
-                });
+        executeAsyncOperation(
+                "Chargement du top 8 Podcast",
+                () -> asyncServiceManager.getPodcastService().getTop8PodcastRead(),
+                EventType.PODCAST_TOP8_UPDATED,
+                "Erreur lors du chargement du top 8 podcast"
+        );
     }
 
     @Override

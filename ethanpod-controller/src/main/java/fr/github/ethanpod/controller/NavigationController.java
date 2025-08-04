@@ -12,20 +12,12 @@ public class NavigationController extends Controller {
     }
 
     public void loadNavigationData() {
-        long startTime = System.currentTimeMillis();
-        logger.info("Chargement des données de navigation");
-
-        asyncServiceManager.getNavigationService().getListAsync()
-                .thenAccept(result -> {
-                    long executionTime = System.currentTimeMillis() - startTime;
-                    logRequestTime(result.requestId(), executionTime);
-                    messageRouter.sendEvent(EventType.NAVIGATION_UPDATED, result.requestId(), result.data());
-                })
-                .exceptionally(throwable -> {
-                    logger.error("Erreur lors du chargement de la navigation : {}", throwable.getMessage());
-                    return null;
-                });
-
+        executeAsyncOperation(
+                "Chargement des données de navigation",
+                () -> asyncServiceManager.getNavigationService().getListAsync(),
+                EventType.NAVIGATION_UPDATED,
+                "Erreur lors du chargement de la navigation"
+        );
     }
 
     @Override
