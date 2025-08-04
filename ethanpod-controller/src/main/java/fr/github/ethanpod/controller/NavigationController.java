@@ -1,6 +1,6 @@
 package fr.github.ethanpod.controller;
 
-import fr.github.ethanpod.core.thread.MessageType;
+import fr.github.ethanpod.core.thread.EventType;
 import fr.github.ethanpod.service.AsyncServiceManager;
 
 import java.util.concurrent.CompletableFuture;
@@ -19,7 +19,7 @@ public class NavigationController extends Controller {
                 .thenAccept(result -> {
                     long executionTime = System.currentTimeMillis() - startTime;
                     logRequestTime(result.requestId(), executionTime);
-                    messageRouter.sendRequestToUiEventFromView("NAVIGATION_UPDATED", result.requestId(), MessageType.EVENT, result.data());
+                    messageRouter.sendEvent(EventType.NAVIGATION_UPDATED, result.requestId(), result.data());
                 })
                 .exceptionally(throwable -> {
                     logger.error("Erreur lors du chargement de la navigation : {}", throwable.getMessage());

@@ -1,6 +1,6 @@
 package fr.github.ethanpod.controller;
 
-import fr.github.ethanpod.core.thread.MessageType;
+import fr.github.ethanpod.core.thread.EventType;
 import fr.github.ethanpod.service.AsyncServiceManager;
 
 import java.util.concurrent.CompletableFuture;
@@ -18,7 +18,7 @@ public class QueueController extends Controller {
                 .thenAccept(result -> {
                     long executionTime = System.currentTimeMillis() - startTime;
                     logRequestTime(result.requestId(), executionTime);
-                    messageRouter.sendRequestToUiEventFromView("GET_TOP8_QUEUE_UPDATE", result.requestId(), MessageType.EVENT, result.data());
+                    messageRouter.sendEvent(EventType.QUEUE_TOP8_UPDATED, result.requestId(), result.data());
                 })
                 .exceptionally(throwable -> {
                     logger.error("Erreur lors du chargement du top 8 queue", throwable);

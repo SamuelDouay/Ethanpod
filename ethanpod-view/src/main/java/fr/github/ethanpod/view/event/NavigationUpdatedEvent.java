@@ -1,16 +1,15 @@
 package fr.github.ethanpod.view.event;
 
 import fr.github.ethanpod.core.item.NavigationItem;
+import fr.github.ethanpod.core.thread.EventType;
 
 import java.util.List;
 
 public class NavigationUpdatedEvent extends UIEvent {
-    public static final String EVENT_TYPE = "NAVIGATION_UPDATED";
-
     private final List<NavigationItem> navigationItems;
 
     public NavigationUpdatedEvent(String source, List<NavigationItem> navigationItems) {
-        super(source, EVENT_TYPE);
+        super(source, EventType.NAVIGATION_UPDATED);
         this.navigationItems = List.copyOf(navigationItems); // Copie défensive
     }
 

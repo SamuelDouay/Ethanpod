@@ -1,0 +1,10 @@
+package fr.github.ethanpod.core.thread;
+
+public enum ResponseType {
+    ERROR,
+    NAVIGATION_LIST_RESULT,
+    INBOX_TOP8_RESULT,
+    INBOX_COUNT_RESULT,
+    QUEUE_TOP8_RESULT,
+    PODCAST_READ_TOP8_RESULT
+}

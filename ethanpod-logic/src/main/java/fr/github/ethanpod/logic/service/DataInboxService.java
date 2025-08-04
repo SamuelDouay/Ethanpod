@@ -1,5 +1,6 @@
 package fr.github.ethanpod.logic.service;
 
+import fr.github.ethanpod.core.thread.ResponseType;
 import fr.github.ethanpod.logic.sql.dao.InboxDao;
 
 import java.util.concurrent.ExecutorService;
@@ -18,13 +19,13 @@ public class DataInboxService extends DataService {
     }
 
     public void getInboxCountAsync(String requestId) {
-        executeAsync(requestId, "INBOX_COUNT_RESPONSE",
+        executeAsync(requestId, ResponseType.INBOX_COUNT_RESULT,
                 inboxDao::getNumberOfInbox,
                 "getting inbox count");
     }
 
     public void getTop8InInbox(String requestId) {
-        executeAsync(requestId, "INBOX_TOP8_RESPONSE",
+        executeAsync(requestId, ResponseType.INBOX_TOP8_RESULT,
                 inboxDao::getTop8InInbox,
                 "getting inbox top 8");
     }

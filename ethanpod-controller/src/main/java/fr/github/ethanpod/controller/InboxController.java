@@ -1,6 +1,6 @@
 package fr.github.ethanpod.controller;
 
-import fr.github.ethanpod.core.thread.MessageType;
+import fr.github.ethanpod.core.thread.EventType;
 import fr.github.ethanpod.service.AsyncServiceManager;
 
 import java.util.concurrent.CompletableFuture;
@@ -20,7 +20,7 @@ public class InboxController extends Controller {
                 .thenAccept(result -> {
                     long executionTime = System.currentTimeMillis() - startTime;
                     logRequestTime(result.requestId(), executionTime);
-                    messageRouter.sendRequestToUiEventFromView("INBOX_COUNT_UPDATED", result.requestId(), MessageType.EVENT, result.data());
+                    messageRouter.sendEvent(EventType.INBOX_COUNT_UPDATED, result.requestId(), result.data());
                 })
                 .exceptionally(throwable -> {
                     logger.error("Erreur lors du chargement du compte inbox", throwable);
@@ -35,7 +35,7 @@ public class InboxController extends Controller {
                 .thenAccept(result -> {
                     long executionTime = System.currentTimeMillis() - startTime;
                     logRequestTime(result.requestId(), executionTime);
-                    messageRouter.sendRequestToUiEventFromView("GET_TOP8_INBOX_UPDATE", result.requestId(), MessageType.EVENT, result.data());
+                    messageRouter.sendEvent(EventType.INBOX_TOP8_UPDATED, result.requestId(), result.data());
                 })
                 .exceptionally(throwable -> {
                     logger.error("🔴 Erreur lors du chargement du top 8 inbox", throwable);

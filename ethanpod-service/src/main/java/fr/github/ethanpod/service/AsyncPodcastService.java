@@ -1,6 +1,7 @@
 package fr.github.ethanpod.service;
 
 import fr.github.ethanpod.core.item.EpisodeItem;
+import fr.github.ethanpod.core.thread.RequestType;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -12,6 +13,6 @@ public class AsyncPodcastService extends AsyncService {
     }
 
     public CompletableFuture<RequestResult<List<EpisodeItem>>> getTop8PodcastRead() {
-        return createRequestFuture("GET_TOP8_PODCAST_READ");
+        return createRequestFuture(RequestType.GET_PODCAST_READ_TOP8);
     }
 }

@@ -1,5 +1,6 @@
 package fr.github.ethanpod.view.event;
 
+import fr.github.ethanpod.core.thread.EventType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -10,7 +11,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class UIEventManager {
     private static final Logger logger = LogManager.getLogger(UIEventManager.class);
-    private final Map<String, List<UIEventHandler<? extends UIEvent>>> handlers;
+    private final Map<EventType, List<UIEventHandler<? extends UIEvent>>> handlers;
 
     private UIEventManager() {
         this.handlers = new ConcurrentHashMap<>();
@@ -20,7 +21,7 @@ public class UIEventManager {
         return UIEventManager.Holder.INSTANCE;
     }
 
-    public <T extends UIEvent> void registerHandler(String eventType, UIEventHandler<T> handler) {
+    public <T extends UIEvent> void registerHandler(EventType eventType, UIEventHandler<T> handler) {
         if (eventType == null || handler == null) {
             throw new IllegalArgumentException("Event type and handler cannot be null");
         }
@@ -30,7 +31,7 @@ public class UIEventManager {
 
     @SuppressWarnings("unchecked")
     public void publishEvent(UIEvent event) {
-        String eventType = event.getEventType();
+        EventType eventType = event.getEventType();
 
         List<UIEventHandler<? extends UIEvent>> eventHandlers = handlers.get(eventType);
         if (eventHandlers == null || eventHandlers.isEmpty()) {

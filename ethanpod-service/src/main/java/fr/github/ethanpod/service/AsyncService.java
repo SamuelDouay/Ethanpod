@@ -1,7 +1,8 @@
 package fr.github.ethanpod.service;
 
+import fr.github.ethanpod.core.thread.MessageCategory;
 import fr.github.ethanpod.core.thread.MessageRouter;
-import fr.github.ethanpod.core.thread.MessageType;
+import fr.github.ethanpod.core.thread.RequestType;
 import fr.github.ethanpod.core.thread.ThreadMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,7 +39,7 @@ public abstract class AsyncService {
     }
 
     public void refreshData() {
-        messageRouter.sendRequestToLogicFromView("REFRESH_DATA", generateRequestId(), MessageType.DATA_UPDATE, null);
+        // no content
     }
 
     public void stop() {
@@ -54,7 +55,7 @@ public abstract class AsyncService {
 
 
     public void handleResponse(ThreadMessage message) {
-        String requestId = message.getRequestId();
+        String requestId = message.getId();
         logger.debug("Service: Réception réponse pour ID: {}, Type: {}",
                 requestId, message.getType());
 
@@ -70,9 +71,9 @@ public abstract class AsyncService {
         }
 
         try {
-            if (message.getType() == MessageType.ERROR) {
-                logger.error("Service: Erreur reçue: {}", message.getContent());
-                future.completeExceptionally(new RuntimeException(message.getContent()));
+            if (message.getCategory() == MessageCategory.ERROR) {
+                logger.error("Service: Erreur reçue: {}", message.getType());
+                future.completeExceptionally(new RuntimeException(String.valueOf(message.getType())));
             } else {
                 logger.debug("Service: Completion du future avec succès");
                 future.complete(message.getData());
@@ -93,21 +94,21 @@ public abstract class AsyncService {
                 });
     }
 
-    private <T> CompletableFuture<RequestResult<T>> createFuture(String request, Object data) {
+    private <T> CompletableFuture<RequestResult<T>> createFuture(RequestType requestType, Object data) {
         CompletableFuture<T> future = new CompletableFuture<>();
         String requestId = generateRequestId();
-        logger.debug("Service: Création requête {} avec ID: {}", request, requestId);
+        logger.debug("Service: Création requête {} avec ID: {}", requestType, requestId);
         pendingRequests.put(requestId, future);
         futureTimeOut(future, requestId);
-        messageRouter.sendRequestToLogicFromView(request, requestId, MessageType.REQUEST, data);
+        messageRouter.sendRequest(requestType, requestId, data);
         return future.thenApply(donne -> new RequestResult<>(requestId, donne));
     }
 
-    protected <T> CompletableFuture<RequestResult<T>> createRequestFuture(String request) {
+    protected <T> CompletableFuture<RequestResult<T>> createRequestFuture(RequestType request) {
         return createFuture(request, null);
     }
 
-    protected <T> CompletableFuture<RequestResult<T>> createRequestFuture(String request, Object data) {
+    protected <T> CompletableFuture<RequestResult<T>> createRequestFuture(RequestType request, Object data) {
         return createFuture(request, data);
     }
 

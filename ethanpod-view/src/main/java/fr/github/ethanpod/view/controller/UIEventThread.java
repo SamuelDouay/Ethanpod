@@ -1,7 +1,7 @@
 package fr.github.ethanpod.view.controller;
 
 import fr.github.ethanpod.core.thread.MessageRouter;
-import fr.github.ethanpod.core.thread.MessageType;
+import fr.github.ethanpod.core.thread.NotificationType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,7 +22,7 @@ public class UIEventThread implements Runnable {
     public void run() {
         logger.info("Thread Event démarré - Event UI");
 
-        messageRouter.sendRequestToViewFromEvent("UI_EVENT_READY", null, MessageType.NOTIFICATION, null);
+        messageRouter.sendNotification(MessageRouter.UI_EVENT_THREAD, MessageRouter.VIEW_THREAD, NotificationType.UI_EVENT_READY);
         while (running.get()) {
             try {
                 uiEventHandle.processIncomingMessages();

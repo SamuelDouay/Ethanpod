@@ -1,5 +1,6 @@
 package fr.github.ethanpod.logic.service;
 
+import fr.github.ethanpod.core.thread.ResponseType;
 import fr.github.ethanpod.logic.sql.dao.PodcastDao;
 
 import java.util.concurrent.ExecutorService;
@@ -18,7 +19,7 @@ public class DataPodcastService extends DataService {
     }
 
     public void getTop8PodcastRead(String requestId) {
-        executeAsync(requestId, "PODCAST_READ_TOP8_RESPONSE",
+        executeAsync(requestId, ResponseType.PODCAST_READ_TOP8_RESULT,
                 podcastDao::getTop8PodcastRead,
                 "getting top 8 podcast");
     }

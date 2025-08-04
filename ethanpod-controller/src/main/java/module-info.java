@@ -4,4 +4,5 @@ module ethanpod.controller {
     requires ethanpod.service;
     requires org.apache.logging.log4j;
     requires ethanpod.util;
+    requires java.desktop;
 }

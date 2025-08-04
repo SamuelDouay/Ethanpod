@@ -1,7 +1,7 @@
 package fr.github.ethanpod.controller;
 
 import fr.github.ethanpod.core.thread.MessageRouter;
-import fr.github.ethanpod.core.thread.MessageType;
+import fr.github.ethanpod.core.thread.NotificationType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,7 +29,7 @@ public class ViewThread implements Runnable {
     public void run() {
         logger.info("Thread View démarré - Interface utilisateur");
 
-        messageRouter.sendRequestToLogicFromView("UI_READY", null, MessageType.NOTIFICATION, null);
+        messageRouter.sendNotification(MessageRouter.VIEW_THREAD, MessageRouter.LOGIC_THREAD, NotificationType.UI_READY);
         boolean shouldExit = false;
 
         while (running.get() && !shutdownRequested.get() && !shouldExit) {

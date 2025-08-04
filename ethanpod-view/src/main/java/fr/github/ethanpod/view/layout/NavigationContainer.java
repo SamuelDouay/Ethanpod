@@ -2,6 +2,7 @@ package fr.github.ethanpod.view.layout;
 
 import fr.github.ethanpod.core.item.ItemManager;
 import fr.github.ethanpod.core.item.NavigationItem;
+import fr.github.ethanpod.core.thread.EventType;
 import fr.github.ethanpod.view.component.navigation.NavigationComponent;
 import fr.github.ethanpod.view.context.FeedContext;
 import fr.github.ethanpod.view.event.InboxCountUpdatedEvent;
@@ -202,7 +203,7 @@ public class NavigationContainer {
         };
 
         // Enregistrement des handlers
-        eventManager.registerHandler(NavigationUpdatedEvent.EVENT_TYPE, navigationHandler);
-        eventManager.registerHandler(InboxCountUpdatedEvent.EVENT_TYPE, inboxHandler);
+        eventManager.registerHandler(EventType.NAVIGATION_UPDATED, navigationHandler);
+        eventManager.registerHandler(EventType.INBOX_COUNT_UPDATED, inboxHandler);
     }
 }

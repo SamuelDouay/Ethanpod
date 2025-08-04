@@ -1,8 +1,9 @@
 package fr.github.ethanpod.controller;
 
 
+import fr.github.ethanpod.core.thread.MessageCategory;
 import fr.github.ethanpod.core.thread.MessageRouter;
-import fr.github.ethanpod.core.thread.MessageType;
+import fr.github.ethanpod.core.thread.NotificationType;
 import fr.github.ethanpod.core.thread.ThreadMessage;
 import fr.github.ethanpod.service.AsyncServiceManager;
 import org.apache.logging.log4j.LogManager;
@@ -40,11 +41,11 @@ public class ViewHandle {
 
         if (message != null) {
             logger.debug(message);
-            switch (message.getType()) {
-                case MessageType.RESPONSE -> handleResponse(message);
-                case MessageType.DATA_UPDATE -> handleDataUpdate(message);
-                case MessageType.NOTIFICATION -> handleNotification(message);
-                case MessageType.ERROR -> handleError(message);
+            switch (message.getCategory()) {
+                case MessageCategory.RESPONSE -> handleResponse(message);
+                case MessageCategory.DATA_UPDATE -> handleDataUpdate(message);
+                case MessageCategory.NOTIFICATION -> handleNotification(message);
+                case MessageCategory.ERROR -> handleError(message);
                 default -> logger.warn("Type de message non géré: {}", message.getType());
             }
         }
@@ -56,10 +57,10 @@ public class ViewHandle {
 
     private void handleDataUpdate(ThreadMessage message) {
         if (shutdownRequested) {
-            logger.debug("Mise à jour ignorée (arrêt en cours): {}", message.getContent());
+            logger.debug("Mise à jour ignorée (arrêt en cours): {}", message.getType());
             return;
         }
-        String content = message.getContent();
+        String content = message.getType().toString();
 
         switch (content) {
             case "DATA_REFRESHED" -> logger.info("data refresh");
@@ -70,27 +71,29 @@ public class ViewHandle {
 
     private void handleNotification(ThreadMessage message) {
         if (shutdownRequested) {
-            logger.debug("Notification ignorée (arrêt en cours): {}", message.getContent());
+            logger.debug("Notification ignorée (arrêt en cours): {}", message.getType());
             return;
         }
-        logger.debug("Notification reçue: {}", message.getContent());
+        logger.debug("Notification reçue: {}", message.getType());
 
-        if ("LOGIC_READY".equals(message.getContent())) {
-            asyncServiceManager.initializeAllServices();
-            logger.debug("Logic ready");
-        }
-        if ("UI_EVENT_READY".equals(message.getContent())) {
-            logger.debug("Event ready");
+        NotificationType eventType = (NotificationType) message.getType();
 
-        }
-        if ("JAVAFX_READY".equals(message.getContent())) {
-            logger.debug("Javafx ready");
-            controllerManager.initializeAllServices();
+        switch (eventType) {
+            case NotificationType.JAVAFX_READY -> {
+                logger.debug("Javafx ready");
+                controllerManager.initializeAllServices();
+            }
+            case NotificationType.LOGIC_READY -> {
+                asyncServiceManager.initializeAllServices();
+                logger.debug("Logic ready");
+            }
+            case NotificationType.UI_EVENT_READY -> logger.debug("Event ready");
+            default -> throw new IllegalStateException("Unexpected value: " + message.getType());
         }
     }
 
     private void handleError(ThreadMessage message) {
-        logger.error("Erreur reçue du thread de logique: {}", message.getContent());
+        logger.error("Erreur reçue du thread de logique: {}", message.getType());
     }
 
     public void interruptProcessing() {
@@ -106,10 +109,10 @@ public class ViewHandle {
             while (!messageQueue.isEmpty() && processedCount < 10) { // Limite de sécurité
                 ThreadMessage message = messageQueue.poll();
                 if (message != null) {
-                    logger.debug("Message final: {}", message.getContent());
+                    logger.debug("Message final: {}", message.getType());
 
                     // Traiter seulement les responses critiques
-                    if (message.getType() == MessageType.RESPONSE) {
+                    if (message.getCategory() == MessageCategory.RESPONSE) {
                         handleResponse(message);
                     }
                     processedCount++;

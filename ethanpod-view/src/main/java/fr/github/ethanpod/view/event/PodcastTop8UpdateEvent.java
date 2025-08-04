@@ -1,16 +1,15 @@
 package fr.github.ethanpod.view.event;
 
 import fr.github.ethanpod.core.item.EpisodeItem;
+import fr.github.ethanpod.core.thread.EventType;
 
 import java.util.List;
 
 public class PodcastTop8UpdateEvent extends UIEvent {
-    public static final String EVENT_TYPE = "GET_TOP8_PODCAST_UPDATED";
-
     private final List<EpisodeItem> episodeItems;
 
     public PodcastTop8UpdateEvent(String source, List<EpisodeItem> episodeItems) {
-        super(source, EVENT_TYPE);
+        super(source, EventType.PODCAST_TOP8_UPDATED);
         this.episodeItems = List.copyOf(episodeItems); // Copie défensive
     }
 

@@ -1,7 +1,8 @@
 package fr.github.ethanpod.logic;
 
 import fr.github.ethanpod.core.thread.MessageRouter;
-import fr.github.ethanpod.core.thread.MessageType;
+import fr.github.ethanpod.core.thread.NotificationType;
+import fr.github.ethanpod.core.thread.RequestType;
 import fr.github.ethanpod.core.thread.ThreadMessage;
 import fr.github.ethanpod.logic.service.DataServiceManager;
 import org.apache.logging.log4j.LogManager;
@@ -27,7 +28,7 @@ public class LogicHandle {
 
         if (message != null) {
             logger.debug(message);
-            switch (message.getType()) {
+            switch (message.getCategory()) {
                 case REQUEST -> handleRequest(message);
                 case NOTIFICATION -> handleNotification(message);
                 default -> logger.warn("Type de message non géré: {}", message.getType());
@@ -36,28 +37,25 @@ public class LogicHandle {
     }
 
     private void handleRequest(ThreadMessage message) {
-        String content = message.getContent();
-        String requestId = message.getRequestId();
+        RequestType content = (RequestType) message.getType();
+        String requestId = message.getId();
 
         logger.debug("Traitement requête: {} avec ID: {}", content, requestId);
 
         switch (content) {
-            case "GET_NAVIGATION_LIST" -> serviceManager.getNavigationService().getNavigationListAsync(requestId);
-            case "GET_COUNT_INBOX" -> serviceManager.getInboxService().getInboxCountAsync(requestId);
-            case "GET_TOP8_INBOX" -> serviceManager.getInboxService().getTop8InInbox(requestId);
-            case "GET_TOP8_QUEUE" -> serviceManager.getQueueService().getQueueTop8(requestId);
-            case "GET_TOP8_PODCAST_READ" -> serviceManager.getPodcastService().getTop8PodcastRead(requestId);
-            case "REFRESH_DATA" -> serviceManager.refreshAllData();
-            default -> {
-                logger.warn("Requête non reconnue: {}", content);
-                messageRouter.sendRequestToViewFromLogic("ERROR", requestId, MessageType.ERROR, "Unknown request: " + content);
-            }
+            case GET_NAVIGATION_LIST -> serviceManager.getNavigationService().getNavigationListAsync(requestId);
+            case GET_INBOX_COUNT -> serviceManager.getInboxService().getInboxCountAsync(requestId);
+            case GET_INBOX_TOP8 -> serviceManager.getInboxService().getTop8InInbox(requestId);
+            case GET_QUEUE_TOP8 -> serviceManager.getQueueService().getQueueTop8(requestId);
+            case GET_PODCAST_READ_TOP8 -> serviceManager.getPodcastService().getTop8PodcastRead(requestId);
+            default -> logger.warn("Requête non reconnue: {}", content);
+
         }
     }
 
     private void handleNotification(ThreadMessage message) {
-        if ("UI_READY".equals(message.getContent())) {
-            messageRouter.sendRequestToViewFromLogic("LOGIC_READY", null, MessageType.NOTIFICATION, null);
+        if (message.getType().equals(NotificationType.UI_READY)) {
+            messageRouter.sendNotification(MessageRouter.LOGIC_THREAD, MessageRouter.VIEW_THREAD, NotificationType.LOGIC_READY);
         }
     }
 

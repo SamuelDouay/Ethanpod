@@ -1,6 +1,7 @@
 package fr.github.ethanpod.view.layout;
 
 import fr.github.ethanpod.core.item.EpisodeItem;
+import fr.github.ethanpod.core.thread.EventType;
 import fr.github.ethanpod.view.component.episode.EpisodeComponent;
 import fr.github.ethanpod.view.component.image.ImageComponent;
 import fr.github.ethanpod.view.component.surprise.SurpriseComponent;
@@ -193,9 +194,9 @@ public class HomeLayout extends Layout implements ContextualLayout {
         };
 
         // Enregistrement des handlers
-        eventManager.registerHandler(QueueTop8UpdateEvent.EVENT_TYPE, queueTop8UpdateEventUIEventHandler);
-        eventManager.registerHandler(InboxTop8UpdatedEvent.EVENT_TYPE, inboxTop8UpdatedEventUIEventHandler);
-        eventManager.registerHandler(PodcastTop8UpdateEvent.EVENT_TYPE, podcastTop8UpdateEventUIEventHandler);
+        eventManager.registerHandler(EventType.QUEUE_TOP8_UPDATED, queueTop8UpdateEventUIEventHandler);
+        eventManager.registerHandler(EventType.INBOX_TOP8_UPDATED, inboxTop8UpdatedEventUIEventHandler);
+        eventManager.registerHandler(EventType.PODCAST_TOP8_UPDATED, podcastTop8UpdateEventUIEventHandler);
     }
 
     private void updateTopQueue(List<EpisodeItem> episodeItems) {

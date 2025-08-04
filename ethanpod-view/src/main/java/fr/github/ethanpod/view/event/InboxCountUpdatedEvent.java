@@ -1,11 +1,12 @@
 package fr.github.ethanpod.view.event;
 
+import fr.github.ethanpod.core.thread.EventType;
+
 public class InboxCountUpdatedEvent extends UIEvent {
-    public static final String EVENT_TYPE = "INBOX_COUNT_UPDATED";
     private final Integer count;
 
     public InboxCountUpdatedEvent(String source, Integer count) {
-        super(source, EVENT_TYPE);
+        super(source, EventType.INBOX_COUNT_UPDATED);
         this.count = count;
     }
 

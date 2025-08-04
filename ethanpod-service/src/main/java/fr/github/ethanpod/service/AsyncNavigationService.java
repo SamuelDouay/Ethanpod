@@ -1,6 +1,7 @@
 package fr.github.ethanpod.service;
 
 import fr.github.ethanpod.core.item.NavigationItem;
+import fr.github.ethanpod.core.thread.RequestType;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -12,6 +13,6 @@ public class AsyncNavigationService extends AsyncService {
     }
 
     public CompletableFuture<RequestResult<List<NavigationItem>>> getListAsync() {
-        return createRequestFuture("GET_NAVIGATION_LIST");
+        return createRequestFuture(RequestType.GET_NAVIGATION_LIST);
     }
 }

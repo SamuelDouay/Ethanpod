@@ -1,7 +1,7 @@
 package fr.github.ethanpod.view;
 
 import fr.github.ethanpod.core.thread.MessageRouter;
-import fr.github.ethanpod.core.thread.MessageType;
+import fr.github.ethanpod.core.thread.NotificationType;
 import fr.github.ethanpod.view.layout.MainLayout;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -67,7 +67,7 @@ public class Main extends Application {
     }
 
     private void notifyViewThreadReady() {
-        MessageRouter.getInstance().sendRequestToViewFromEvent("JAVAFX_READY", null, MessageType.NOTIFICATION, null);
+        MessageRouter.getInstance().sendNotification(MessageRouter.UI_EVENT_THREAD, MessageRouter.VIEW_THREAD, NotificationType.JAVAFX_READY);
     }
 
     private void handleApplicationShutdown() {

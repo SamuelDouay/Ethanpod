@@ -1,7 +1,7 @@
 package fr.github.ethanpod.logic.service;
 
 import fr.github.ethanpod.core.thread.MessageRouter;
-import fr.github.ethanpod.core.thread.MessageType;
+import fr.github.ethanpod.core.thread.ResponseType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,7 +20,7 @@ public abstract class DataService {
 
     abstract void refreshData();
 
-    protected <T> void executeAsync(String requestId, String successMessageType,
+    protected <T> void executeAsync(String requestId, ResponseType responseType,
                                     Supplier<T> operation, String operationName) {
         CompletableFuture
                 .supplyAsync(() -> {
@@ -35,9 +35,9 @@ public abstract class DataService {
                 .whenComplete((result, throwable) -> {
                     if (throwable != null) {
                         logger.error("Erreur {}", operationName, throwable);
-                        messageRouter.sendRequestToViewFromLogic("ERROR", requestId, MessageType.ERROR, throwable.getMessage());
+                        messageRouter.sendResponse(requestId, ResponseType.ERROR, throwable.getMessage());
                     } else {
-                        messageRouter.sendRequestToViewFromLogic(successMessageType, requestId, MessageType.RESPONSE, result);
+                        messageRouter.sendResponse(requestId, responseType, result);
                     }
                 });
     }
