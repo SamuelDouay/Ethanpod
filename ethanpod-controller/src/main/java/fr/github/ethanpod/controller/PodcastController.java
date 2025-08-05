@@ -22,8 +22,6 @@ public class PodcastController extends Controller {
 
     @Override
     void initializeUI() {
-        CompletableFuture.allOf(
-                CompletableFuture.runAsync(this::loadTop8PodcastRead)
-        );
+        CompletableFuture.runAsync(this::loadTop8PodcastRead, UI_EXECUTOR).whenComplete((_, _) -> UI_EXECUTOR.shutdown());
     }
 }

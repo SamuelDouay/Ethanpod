@@ -2,7 +2,6 @@ package fr.github.ethanpod.controller;
 
 
 import fr.github.ethanpod.core.thread.MessageCategory;
-import fr.github.ethanpod.core.thread.MessageRouter;
 import fr.github.ethanpod.core.thread.NotificationType;
 import fr.github.ethanpod.core.thread.ThreadMessage;
 import fr.github.ethanpod.service.AsyncServiceManager;
@@ -10,44 +9,42 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ViewHandle {
     private static final Logger logger = LogManager.getLogger(ViewHandle.class);
     private final AsyncServiceManager asyncServiceManager;
     private final BlockingQueue<ThreadMessage> messageQueue;
     private final ControllerManager controllerManager;
-    private boolean shutdownRequested = false;
-    private boolean processingInterrupted = false;
+    private final AtomicBoolean shutdownRequested = new AtomicBoolean(false);
 
-    public ViewHandle() {
+    public ViewHandle(BlockingQueue<ThreadMessage> messageQueue) {
         this.asyncServiceManager = new AsyncServiceManager();
-        this.messageQueue = MessageRouter.getInstance().registerThread("ViewThread");
+        this.messageQueue = messageQueue;
         this.controllerManager = new ControllerManager(asyncServiceManager);
     }
 
     public void stopAllService() {
         logger.debug("Arrêt de tous les services ViewHandle");
-        shutdownRequested = true;  // Ajouter cette ligne
+        shutdownRequested.set(true);
         this.asyncServiceManager.stopAllServices();
     }
 
     public void processIncomingMessages() throws InterruptedException {
-        if (processingInterrupted || shutdownRequested) {
+        if (shutdownRequested.get()) {
             logger.debug("Arrêt en cours");
             return;
         }
-        ThreadMessage message = messageQueue.poll(500, TimeUnit.MILLISECONDS);
 
-        if (message != null) {
-            logger.debug(message);
-            switch (message.getCategory()) {
-                case MessageCategory.RESPONSE -> handleResponse(message);
-                case MessageCategory.DATA_UPDATE -> handleDataUpdate(message);
-                case MessageCategory.NOTIFICATION -> handleNotification(message);
-                case MessageCategory.ERROR -> handleError(message);
-                default -> logger.warn("Type de message non géré: {}", message.getType());
-            }
+        ThreadMessage message = messageQueue.take();
+
+        logger.debug(message);
+        switch (message.getCategory()) {
+            case MessageCategory.RESPONSE -> handleResponse(message);
+            case MessageCategory.DATA_UPDATE -> handleDataUpdate(message);
+            case MessageCategory.NOTIFICATION -> handleNotification(message);
+            case MessageCategory.ERROR -> handleError(message);
+            default -> logger.warn("Type de message non géré: {}", message.getType());
         }
     }
 
@@ -56,7 +53,7 @@ public class ViewHandle {
     }
 
     private void handleDataUpdate(ThreadMessage message) {
-        if (shutdownRequested) {
+        if (shutdownRequested.get()) {
             logger.debug("Mise à jour ignorée (arrêt en cours): {}", message.getType());
             return;
         }
@@ -70,7 +67,7 @@ public class ViewHandle {
     }
 
     private void handleNotification(ThreadMessage message) {
-        if (shutdownRequested) {
+        if (shutdownRequested.get()) {
             logger.debug("Notification ignorée (arrêt en cours): {}", message.getType());
             return;
         }
@@ -96,9 +93,8 @@ public class ViewHandle {
         logger.error("Erreur reçue du thread de logique: {}", message.getType());
     }
 
-    public void interruptProcessing() {
-        logger.debug("Interruption du traitement des messages demandée");
-        processingInterrupted = true;
+    public void sendShutdownSignal() {
+        shutdownRequested.set(true);
     }
 
     public void flushPendingMessages() {

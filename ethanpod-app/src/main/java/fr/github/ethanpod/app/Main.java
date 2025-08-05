@@ -1,6 +1,5 @@
 package fr.github.ethanpod.app;
 
-
 import fr.github.ethanpod.controller.ViewThread;
 import fr.github.ethanpod.logic.LogicThread;
 import fr.github.ethanpod.logic.sql.setting.DatabaseManager;
@@ -17,11 +16,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class Main {
     private static final Logger logger = LogManager.getLogger(Main.class);
     private static final AtomicBoolean isRunning = new AtomicBoolean(true);
-    private static final int SHUTDOWN_TIMEOUT_MS = 15000;
-    private static final int CHECK_INTERVAL_MS = 1000;
     private ExecutorService logicExecutor;
     private ExecutorService viewExecutor;
     private ExecutorService uiEventExecutor;
+    private ExecutorService javafxExecutor;
     private CountDownLatch terminationLatch;
     private LogicThread logicThread;
     private ViewThread viewThread;
@@ -58,13 +56,13 @@ public class Main {
         viewThread = new ViewThread();
         uiEventThread = new UIEventThread();
 
-
         DatabaseManager.getInstance().initialize();
 
         logicExecutor = createExecutor("LogicThread");
         viewExecutor = createExecutor("ViewThread");
         uiEventExecutor = createExecutor("UIEventThread");
-        terminationLatch = new CountDownLatch(3);
+        javafxExecutor = createExecutor("JavaFX-Thread");
+        terminationLatch = new CountDownLatch(4); // 4 threads maintenant
 
         logger.info("Système multithread initialisé");
     }
@@ -78,12 +76,14 @@ public class Main {
     }
 
     private void startThreads(String[] args) {
+        // Chaque thread utilise son propre executor
         CompletableFuture<Void> logicFuture = startLogicThread();
         CompletableFuture<Void> uiEventFuture = startUIEventThread();
-        CompletableFuture<Void> viewFuture = startViewThread(args);
+        CompletableFuture<Void> viewFuture = startViewThread();
+        CompletableFuture<Void> javafxFuture = startJavaFXThread(args);
 
         // Monitoring des threads
-        CompletableFuture.allOf(logicFuture, uiEventFuture, viewFuture)
+        CompletableFuture.allOf(logicFuture, uiEventFuture, viewFuture, javafxFuture)
                 .exceptionally(this::handleThreadException);
     }
 
@@ -117,106 +117,75 @@ public class Main {
         }, uiEventExecutor);
     }
 
-    private CompletableFuture<Void> startViewThread(String[] args) {
+    private CompletableFuture<Void> startViewThread() {
         return CompletableFuture.runAsync(() -> {
-            logger.info("Démarrage du thread d'interface utilisateur");
-
-            try {
-                Thread messageProcessingThread = startMessageProcessingThread();
-                Thread javafxThread = startJavaFXThread(args);
-                monitorThreads(javafxThread);
-                waitForThreadsCompletion(messageProcessingThread);
-
-            } catch (InterruptedException e) {
-                logger.error("Interruption du thread d'interface utilisateur", e);
-                Thread.currentThread().interrupt();
-            } catch (Exception e) {
-                logger.error("Erreur dans le thread d'interface utilisateur", e);
-            } finally {
-                cleanupViewThread();
-            }
-        }, viewExecutor);
-    }
-
-    private Thread startMessageProcessingThread() {
-        Thread messageProcessingThread = new Thread(() -> {
+            logger.info("Démarrage du thread de traitement des messages (ViewThread)");
             try {
                 viewThread.run();
             } catch (Exception e) {
                 logger.error("Erreur dans le ViewThread", e);
                 isRunning.set(false);
+            } finally {
+                logger.info("Fin du thread de traitement des messages");
+                terminationLatch.countDown();
             }
-        }, "ViewThread");
-
-        messageProcessingThread.setDaemon(false);
-        messageProcessingThread.start();
-
-        return messageProcessingThread;
+        }, viewExecutor);
     }
 
-    private Thread startJavaFXThread(String[] args) {
-        Thread javafxThread = new Thread(() -> {
+    private CompletableFuture<Void> startJavaFXThread(String[] args) {
+        return CompletableFuture.runAsync(() -> {
+            logger.info("Démarrage du thread JavaFX");
             try {
+                // Monitoring de l'état global pendant l'exécution de JavaFX
+                monitorApplicationState();
+
+                // Démarrage de JavaFX
                 fr.github.ethanpod.view.Main.main(args);
+
             } catch (Exception e) {
                 logger.error("Erreur lors du démarrage de JavaFX", e);
                 isRunning.set(false);
+            } finally {
+                logger.info("Fin du thread JavaFX");
+                cleanupApplication();
+                terminationLatch.countDown();
             }
-        }, "JavaFX-Thread");
-
-        javafxThread.setDaemon(false);
-        javafxThread.start();
-        return javafxThread;
+        }, javafxExecutor);
     }
 
-    private void monitorThreads(Thread javafxThread) {
-        logger.info("Surveillance des threads de l'interface utilisateur");
-
-        while (isRunning.get() && !Thread.currentThread().isInterrupted()) {
-            // Vérifier si JavaFX s'est terminé
-            if (!javafxThread.isAlive()) {
-                logger.info("JavaFX s'est terminé naturellement");
-                break;
+    private void monitorApplicationState() {
+        // Créer un thread de monitoring pour surveiller l'état de l'application
+        Thread monitorThread = new Thread(() -> {
+            while (isRunning.get() && !Thread.currentThread().isInterrupted()) {
+                try {
+                    Thread.sleep(1000); // Vérifier chaque seconde
+                    // Ici vous pouvez ajouter des vérifications d'état si nécessaire
+                } catch (InterruptedException _) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
             }
-        }
+        }, "ApplicationMonitor");
+
+        monitorThread.setDaemon(true);
+        monitorThread.start();
     }
 
-    private void waitForThreadsCompletion(Thread messageProcessingThread)
-            throws InterruptedException {
-
-        if (messageProcessingThread != null && messageProcessingThread.isAlive()) {
-            logger.info("Demande d'arrêt du thread de traitement...");
-            if (viewThread != null) {
-                viewThread.requestShutdown();
-            }
-
-            // Attendre avec vérification périodique
-            long startTime = System.currentTimeMillis();
-            while (messageProcessingThread.isAlive() &&
-                    (System.currentTimeMillis() - startTime) < SHUTDOWN_TIMEOUT_MS) {
-                Thread.sleep(CHECK_INTERVAL_MS);
-            }
-
-            if (messageProcessingThread.isAlive()) {
-                logger.warn("Interruption forcée du thread de traitement");
-                messageProcessingThread.interrupt();
-                messageProcessingThread.join(2000);
-            }
-        }
-    }
-
-    private void cleanupViewThread() {
+    private void cleanupApplication() {
         logger.info("Début de l'arrêt coordonné des threads");
         isRunning.set(false);
 
-        // 1. Arrêter UIEventThread en premier
+        // Arrêt gracieux des threads dans l'ordre approprié
         if (uiEventThread != null) {
+            logger.info("Arrêt du UIEventThread");
             uiEventThread.stop();
         }
 
-        // 2. Demander arrêt gracieux ViewThread
         if (viewThread != null) {
+            logger.info("Demande d'arrêt gracieux du ViewThread");
             viewThread.requestShutdown();
+
+            // Attendre un peu pour l'arrêt gracieux
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException _) {
@@ -224,18 +193,17 @@ public class Main {
             }
         }
 
-        // 3. Arrêter LogicThread en dernier
         if (logicThread != null) {
+            logger.info("Arrêt du LogicThread");
             logicThread.stop();
         }
-
-        terminationLatch.countDown();
-        logger.info("Fin du thread d'interface utilisateur");
     }
 
     private Void handleThreadException(Throwable e) {
         logger.error("Exception dans l'un des threads: {}", e.getMessage());
         isRunning.set(false);
+
+        // Arrêt d'urgence de tous les threads
         if (logicThread != null) logicThread.stop();
         if (uiEventThread != null) uiEventThread.stop();
         if (viewThread != null) viewThread.stop();
@@ -247,10 +215,15 @@ public class Main {
         boolean terminated = terminationLatch.await(1, TimeUnit.HOURS);
         if (!terminated) {
             logger.warn("Les threads ne se sont pas terminés dans le délai imparti");
-            if (logicThread != null) logicThread.stop();
-            if (uiEventThread != null) uiEventThread.stop();
-            if (viewThread != null) viewThread.stop();
+            forceShutdown();
         }
+    }
+
+    private void forceShutdown() {
+        logger.warn("Arrêt forcé de tous les threads");
+        if (logicThread != null) logicThread.stop();
+        if (uiEventThread != null) uiEventThread.stop();
+        if (viewThread != null) viewThread.stop();
     }
 
     private void handleFatalError(Exception e) {
@@ -272,13 +245,16 @@ public class Main {
             logger.warn("Erreur lors de l'arrêt de JavaFX", e);
         }
 
+        // Arrêt final des threads si pas encore fait
         if (logicThread != null) logicThread.stop();
         if (uiEventThread != null) uiEventThread.stop();
         if (viewThread != null) viewThread.stop();
 
+        // Arrêt des executors
         shutdownExecutor(logicExecutor, "Logique");
         shutdownExecutor(viewExecutor, "Vue");
         shutdownExecutor(uiEventExecutor, "Event");
+        shutdownExecutor(javafxExecutor, "JavaFX");
 
         logShutdown(startTime);
     }
@@ -299,7 +275,7 @@ public class Main {
                 logger.warn("Le thread {} ne s'est pas terminé proprement, forçage de l'arrêt", name);
                 executor.shutdownNow();
             }
-        } catch (InterruptedException _) {
+        } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             logger.warn("Interruption lors de l'arrêt du thread {}", name);
             executor.shutdownNow();

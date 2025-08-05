@@ -21,8 +21,6 @@ public class QueueController extends Controller {
 
     @Override
     void initializeUI() {
-        CompletableFuture.allOf(
-                CompletableFuture.runAsync(this::loadQueueTop8)
-        );
+        CompletableFuture.runAsync(this::loadQueueTop8, UI_EXECUTOR).whenComplete((_, _) -> UI_EXECUTOR.shutdown());
     }
 }

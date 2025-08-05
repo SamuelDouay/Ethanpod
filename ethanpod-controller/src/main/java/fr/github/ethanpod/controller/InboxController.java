@@ -33,9 +33,7 @@ public class InboxController extends Controller {
 
     @Override
     void initializeUI() {
-        CompletableFuture.allOf(
-                CompletableFuture.runAsync(this::loadInboxTop8),
-                CompletableFuture.runAsync(this::loadInboxCount)
-        );
+        CompletableFuture.runAsync(this::loadInboxTop8, UI_EXECUTOR).whenComplete((_, _) -> UI_EXECUTOR.shutdown());
+        CompletableFuture.runAsync(this::loadInboxCount, UI_EXECUTOR).whenComplete((_, _) -> UI_EXECUTOR.shutdown());
     }
 }

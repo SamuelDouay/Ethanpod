@@ -22,8 +22,6 @@ public class NavigationController extends Controller {
 
     @Override
     void initializeUI() {
-        CompletableFuture.allOf(
-                CompletableFuture.runAsync(this::loadNavigationData)
-        );
+        CompletableFuture.runAsync(this::loadNavigationData, UI_EXECUTOR).whenComplete((_, _) -> UI_EXECUTOR.shutdown());
     }
 }
