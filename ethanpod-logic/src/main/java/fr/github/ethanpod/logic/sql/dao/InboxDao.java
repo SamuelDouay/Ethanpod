@@ -1,6 +1,7 @@
 package fr.github.ethanpod.logic.sql.dao;
 
 import fr.github.ethanpod.core.item.EpisodeItem;
+import fr.github.ethanpod.logic.sql.setting.DatabaseManager;
 import fr.github.ethanpod.util.Converter;
 
 import java.util.ArrayList;
@@ -10,8 +11,8 @@ public class InboxDao extends BaseDao {
     private static final String NEWS_ITEMS_JOIN = "FROM FeedItems feed INNER JOIN FeedMedia fm ON fm.feeditem = feed.id ";
     private static final String LIMIT_8 = "LIMIT 8";
 
-    public InboxDao() {
-        // no parameter
+    public InboxDao(DatabaseManager databaseManager) {
+        super(databaseManager);
     }
 
     public int getNumberOfInbox() {

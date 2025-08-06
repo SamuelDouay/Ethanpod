@@ -52,11 +52,12 @@ public class Main {
     }
 
     private void initializeSystem() {
-        logicThread = new LogicThread();
+        DatabaseManager databaseManager = new DatabaseManager();
+        databaseManager.initialize();
+
+        logicThread = new LogicThread(databaseManager);
         viewThread = new ViewThread();
         uiEventThread = new UIEventThread();
-
-        DatabaseManager.getInstance().initialize();
 
         logicExecutor = createExecutor("LogicThread");
         viewExecutor = createExecutor("ViewThread");

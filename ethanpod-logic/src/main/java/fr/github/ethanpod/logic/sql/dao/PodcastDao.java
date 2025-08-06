@@ -1,6 +1,7 @@
 package fr.github.ethanpod.logic.sql.dao;
 
 import fr.github.ethanpod.core.item.EpisodeItem;
+import fr.github.ethanpod.logic.sql.setting.DatabaseManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,8 +10,8 @@ public class PodcastDao extends BaseDao {
     private static final String FEED_ITEMS_JOIN = "INNER JOIN FeedItems ON FeedItems.feed = Feeds.id ";
     private static final String LIMIT_8 = "LIMIT 8";
 
-    public PodcastDao() {
-        // no param
+    public PodcastDao(DatabaseManager databaseManager) {
+        super(databaseManager);
     }
 
     public List<EpisodeItem> getTop8PodcastRead() {

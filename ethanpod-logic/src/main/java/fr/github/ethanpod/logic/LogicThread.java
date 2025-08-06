@@ -28,11 +28,13 @@ public class LogicThread implements Runnable {
                 }
             }
     );
+    private final DatabaseManager databaseManager;
 
-    public LogicThread() {
+    public LogicThread(DatabaseManager databaseManager) {
         MessageRouter messageRouter = MessageRouter.getInstance();
+        this.databaseManager = databaseManager;
         BlockingQueue<ThreadMessage> messageQueue = messageRouter.registerThread("LogicThread");
-        this.logicHandler = new LogicHandle(messageQueue, asyncExecutor);
+        this.logicHandler = new LogicHandle(messageQueue, asyncExecutor, databaseManager);
     }
 
     @Override
@@ -74,7 +76,7 @@ public class LogicThread implements Runnable {
         running.set(false);
         scheduler.shutdown();
         asyncExecutor.shutdown();
-        DatabaseManager.getInstance().shutdown();
+        this.databaseManager.shutdown();
     }
 
 }

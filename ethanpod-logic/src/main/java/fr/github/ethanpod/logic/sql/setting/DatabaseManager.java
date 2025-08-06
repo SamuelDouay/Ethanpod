@@ -16,12 +16,8 @@ public class DatabaseManager {
     private boolean initialized = false;
     private boolean initializing = false;
 
-    private DatabaseManager() {
+    public DatabaseManager() {
         // no param
-    }
-
-    public static synchronized DatabaseManager getInstance() {
-        return DatabaseManager.Holder.instance;
     }
 
     public synchronized void initialize() {
@@ -161,9 +157,5 @@ public class DatabaseManager {
             logger.debug("Shutdown hook - Fermeture du DatabaseManager");
             shutdown();
         }));
-    }
-
-    private static final class Holder {
-        private static final DatabaseManager instance = new DatabaseManager();
     }
 }

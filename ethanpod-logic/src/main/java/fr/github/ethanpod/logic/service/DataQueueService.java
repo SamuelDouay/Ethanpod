@@ -2,15 +2,16 @@ package fr.github.ethanpod.logic.service;
 
 import fr.github.ethanpod.core.thread.ResponseType;
 import fr.github.ethanpod.logic.sql.dao.QueueDao;
+import fr.github.ethanpod.logic.sql.setting.DatabaseManager;
 
 import java.util.concurrent.ExecutorService;
 
 public class DataQueueService extends DataService {
     private final QueueDao queueDao;
 
-    public DataQueueService(ExecutorService executor) {
+    public DataQueueService(ExecutorService executor, DatabaseManager databaseManager) {
         super(executor);
-        this.queueDao = new QueueDao();
+        this.queueDao = new QueueDao(databaseManager);
     }
 
     @Override

@@ -11,6 +11,11 @@ import java.sql.SQLException;
 
 public abstract class BaseDao {
     protected static final Logger logger = LogManager.getLogger(BaseDao.class);
+    private final DatabaseManager databaseManager;
+
+    protected BaseDao(DatabaseManager databaseManager) {
+        this.databaseManager = databaseManager;
+    }
 
     private void logMetrics(String sql, long startTime) {
         long executionTime = System.currentTimeMillis() - startTime;
@@ -23,7 +28,7 @@ public abstract class BaseDao {
 
     protected <T> T executeQuery(String sql, ResultSetMapper<T> mapper, T defaultValue) {
         long startTime = System.currentTimeMillis();
-        try (Connection con = DatabaseManager.getInstance().getConnection();
+        try (Connection con = databaseManager.getConnection();
              PreparedStatement stmt = con.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
             T result = mapper.map(rs);
@@ -42,7 +47,7 @@ public abstract class BaseDao {
 
     protected <T> T executeQueryWithParams(String sql, ResultSetMapper<T> mapper, T defaultValue, Object... params) {
         long startTime = System.currentTimeMillis();
-        try (Connection con = DatabaseManager.getInstance().getConnection();
+        try (Connection con = databaseManager.getConnection();
              PreparedStatement stmt = con.prepareStatement(sql)) {
 
             // Paramètres
@@ -65,7 +70,7 @@ public abstract class BaseDao {
 
     protected int executeUpdate(String sql, Object... params) {
         long startTime = System.currentTimeMillis();
-        try (Connection con = DatabaseManager.getInstance().getConnection();
+        try (Connection con = databaseManager.getConnection();
              PreparedStatement stmt = con.prepareStatement(sql)) {
 
             for (int i = 0; i < params.length; i++) {

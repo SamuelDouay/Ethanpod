@@ -1,5 +1,6 @@
 package fr.github.ethanpod.logic.service;
 
+import fr.github.ethanpod.logic.sql.setting.DatabaseManager;
 import fr.github.ethanpod.util.manager.BaseServiceManager;
 import fr.github.ethanpod.util.manager.ServiceConstants;
 import org.apache.logging.log4j.LogManager;
@@ -11,16 +12,16 @@ public class DataServiceManager extends BaseServiceManager<DataService> {
     private static final Logger logger = LogManager.getLogger(DataServiceManager.class);
     private final ExecutorService executor;
 
-    public DataServiceManager(ExecutorService executor) {
+    public DataServiceManager(ExecutorService executor, DatabaseManager databaseManager) {
         this.executor = executor;
-        initializeServices();
+        initializeServices(databaseManager);
     }
 
-    private void initializeServices() {
-        registerService(ServiceConstants.NAVIGATION_SERVICE, new DataNavigationService(executor));
-        registerService(ServiceConstants.INBOX_SERVICE, new DataInboxService(executor));
-        registerService(ServiceConstants.QUEUE_SERVICE, new DataQueueService(executor));
-        registerService(ServiceConstants.PODCAST_SERVICE, new DataPodcastService(executor));
+    private void initializeServices(DatabaseManager databaseManager) {
+        registerService(ServiceConstants.NAVIGATION_SERVICE, new DataNavigationService(executor, databaseManager));
+        registerService(ServiceConstants.INBOX_SERVICE, new DataInboxService(executor, databaseManager));
+        registerService(ServiceConstants.QUEUE_SERVICE, new DataQueueService(executor, databaseManager));
+        registerService(ServiceConstants.PODCAST_SERVICE, new DataPodcastService(executor, databaseManager));
     }
 
     public DataNavigationService getNavigationService() {

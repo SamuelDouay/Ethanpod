@@ -1,6 +1,7 @@
 package fr.github.ethanpod.logic.sql.dao;
 
 import fr.github.ethanpod.core.item.EpisodeItem;
+import fr.github.ethanpod.logic.sql.setting.DatabaseManager;
 import fr.github.ethanpod.util.Converter;
 
 import java.util.ArrayList;
@@ -10,8 +11,8 @@ public class QueueDao extends BaseDao {
     private static final String QUEUE_ITEMS_JOIN = "FROM FeedItems AS items INNER JOIN Queue queue ON queue.feeditem = items.id ";
     private static final String LIMIT_8 = "LIMIT 8";
 
-    public QueueDao() {
-        // no parameter
+    public QueueDao(DatabaseManager databaseManager) {
+        super(databaseManager);
     }
 
     public List<EpisodeItem> getTop8InQueue() {

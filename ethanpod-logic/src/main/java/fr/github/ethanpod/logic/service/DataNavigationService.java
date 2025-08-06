@@ -2,15 +2,16 @@ package fr.github.ethanpod.logic.service;
 
 import fr.github.ethanpod.core.thread.ResponseType;
 import fr.github.ethanpod.logic.sql.dao.NavigationDao;
+import fr.github.ethanpod.logic.sql.setting.DatabaseManager;
 
 import java.util.concurrent.ExecutorService;
 
 public class DataNavigationService extends DataService {
     private final NavigationDao navigationDao;
 
-    public DataNavigationService(ExecutorService executor) {
+    public DataNavigationService(ExecutorService executor, DatabaseManager databaseManager) {
         super(executor);
-        this.navigationDao = new NavigationDao();
+        this.navigationDao = new NavigationDao(databaseManager);
     }
 
     @Override

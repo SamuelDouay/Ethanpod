@@ -5,6 +5,7 @@ import fr.github.ethanpod.core.thread.NotificationType;
 import fr.github.ethanpod.core.thread.RequestType;
 import fr.github.ethanpod.core.thread.ThreadMessage;
 import fr.github.ethanpod.logic.service.DataServiceManager;
+import fr.github.ethanpod.logic.sql.setting.DatabaseManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,9 +19,9 @@ public class LogicHandle {
     private final BlockingQueue<ThreadMessage> messageQueue;
     private final DataServiceManager serviceManager;
 
-    public LogicHandle(BlockingQueue<ThreadMessage> messageQueue, ExecutorService service) {
+    public LogicHandle(BlockingQueue<ThreadMessage> messageQueue, ExecutorService service, DatabaseManager databaseManager) {
         this.messageQueue = messageQueue;
-        this.serviceManager = new DataServiceManager(service);
+        this.serviceManager = new DataServiceManager(service, databaseManager);
     }
 
     public void processIncomingMessages() throws InterruptedException {
