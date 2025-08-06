@@ -55,9 +55,8 @@ public class UIEventHandle {
                     uiControllerManager.getInboxService().updateInboxTop8((List<EpisodeItem>) message.getData());
             case PODCAST_TOP8_UPDATED ->
                     uiControllerManager.getPodcastService().updatePodcastTop8UI((List<EpisodeItem>) message.getData());
-            default -> {
-                logger.warn("Requête non reconnue: {}", content);
-            }
+            default -> logger.warn("Requête non reconnue: {}", content);
+
         }
     }
 }

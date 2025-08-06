@@ -47,11 +47,6 @@ public class ThreadMessage {
         return data;
     }
 
-    public LocalDateTime getTimestamp() {
-        return timestamp;
-    }
-
-
     @Override
     public String toString() {
         return String.format("%s -> %s (%s): %s avec l'ID %s",

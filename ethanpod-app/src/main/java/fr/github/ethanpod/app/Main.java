@@ -275,7 +275,7 @@ public class Main {
                 logger.warn("Le thread {} ne s'est pas terminé proprement, forçage de l'arrêt", name);
                 executor.shutdownNow();
             }
-        } catch (InterruptedException e) {
+        } catch (InterruptedException _) {
             Thread.currentThread().interrupt();
             logger.warn("Interruption lors de l'arrêt du thread {}", name);
             executor.shutdownNow();

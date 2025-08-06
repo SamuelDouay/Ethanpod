@@ -27,13 +27,7 @@ public class HomeLayout extends Layout implements ContextualLayout {
     public static final ImageComponent IMAGE_COMPONENT = new ImageComponent();
     public static final EpisodeComponent EPISODE_COMPONENT = new EpisodeComponent();
     public static final SurpriseComponent SURPRISE_COMPONENT = new SurpriseComponent();
-    // Constants for image paths
-    //public static final String IMAGE_EX = String.valueOf(HomeLayout.class.getResource("/images/ex.jpeg"));
     public static final String IMAGE_HDM = String.valueOf(HomeLayout.class.getResource("/images/heure_du_monde.png"));
-    //public static final String IMAGE_SMLTLK = String.valueOf(HomeLayout.class.getResource("/images/small_talk.jpg"));
-    //public static final String IMAGE_UNDERSCORE = String.valueOf(HomeLayout.class.getResource("/images/underscore.jpeg"));
-    //public static final String IMAGE_ZERL = String.valueOf(HomeLayout.class.getResource("/images/zerl.jpg"));
-    // Constants for example data
     public static final String TITLE_EXAMPLE = "Lil Nas X, une icône noire, et gay et flamboyante [REDIF]";
     private static final Logger log = LogManager.getLogger(HomeLayout.class);
     private final UIEventManager eventManager = UIEventManager.getInstance();
