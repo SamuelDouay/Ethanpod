@@ -28,17 +28,17 @@ public class LogicHandle {
 
         if (message != null) {
             logger.debug(message);
-            switch (message.getCategory()) {
+            switch (message.category()) {
                 case REQUEST -> handleRequest(message);
                 case NOTIFICATION -> handleNotification(message);
-                default -> logger.warn("Type de message non géré: {}", message.getType());
+                default -> logger.warn("Type de message non géré: {}", message.type());
             }
         }
     }
 
     private void handleRequest(ThreadMessage message) {
-        RequestType content = (RequestType) message.getType();
-        String requestId = message.getId();
+        RequestType content = (RequestType) message.type();
+        String requestId = message.id();
 
         logger.debug("Traitement requête: {} avec ID: {}", content, requestId);
 
@@ -54,7 +54,7 @@ public class LogicHandle {
     }
 
     private void handleNotification(ThreadMessage message) {
-        if (message.getType().equals(NotificationType.UI_READY)) {
+        if (message.type().equals(NotificationType.UI_READY)) {
             messageRouter.sendNotification(MessageRouter.LOGIC_THREAD, MessageRouter.VIEW_THREAD, NotificationType.LOGIC_READY);
         }
     }

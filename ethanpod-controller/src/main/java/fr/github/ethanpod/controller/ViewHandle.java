@@ -41,12 +41,12 @@ public class ViewHandle {
 
         if (message != null) {
             logger.debug(message);
-            switch (message.getCategory()) {
+            switch (message.category()) {
                 case MessageCategory.RESPONSE -> handleResponse(message);
                 case MessageCategory.DATA_UPDATE -> handleDataUpdate(message);
                 case MessageCategory.NOTIFICATION -> handleNotification(message);
                 case MessageCategory.ERROR -> handleError(message);
-                default -> logger.warn("Type de message non géré: {}", message.getType());
+                default -> logger.warn("Type de message non géré: {}", message.type());
             }
         }
     }
@@ -57,10 +57,10 @@ public class ViewHandle {
 
     private void handleDataUpdate(ThreadMessage message) {
         if (shutdownRequested) {
-            logger.debug("Mise à jour ignorée (arrêt en cours): {}", message.getType());
+            logger.debug("Mise à jour ignorée (arrêt en cours): {}", message.type());
             return;
         }
-        String content = message.getType().toString();
+        String content = message.type().toString();
 
         switch (content) {
             case "DATA_REFRESHED" -> logger.info("data refresh");
@@ -71,12 +71,12 @@ public class ViewHandle {
 
     private void handleNotification(ThreadMessage message) {
         if (shutdownRequested) {
-            logger.debug("Notification ignorée (arrêt en cours): {}", message.getType());
+            logger.debug("Notification ignorée (arrêt en cours): {}", message.type());
             return;
         }
-        logger.debug("Notification reçue: {}", message.getType());
+        logger.debug("Notification reçue: {}", message.type());
 
-        NotificationType eventType = (NotificationType) message.getType();
+        NotificationType eventType = (NotificationType) message.type();
 
         switch (eventType) {
             case NotificationType.JAVAFX_READY -> {
@@ -88,12 +88,12 @@ public class ViewHandle {
                 logger.debug("Logic ready");
             }
             case NotificationType.UI_EVENT_READY -> logger.debug("Event ready");
-            default -> throw new IllegalStateException("Unexpected value: " + message.getType());
+            default -> throw new IllegalStateException("Unexpected value: " + message.type());
         }
     }
 
     private void handleError(ThreadMessage message) {
-        logger.error("Erreur reçue du thread de logique: {}", message.getType());
+        logger.error("Erreur reçue du thread de logique: {}", message.type());
     }
 
     public void interruptProcessing() {
@@ -109,10 +109,10 @@ public class ViewHandle {
             while (!messageQueue.isEmpty() && processedCount < 10) { // Limite de sécurité
                 ThreadMessage message = messageQueue.poll();
                 if (message != null) {
-                    logger.debug("Message final: {}", message.getType());
+                    logger.debug("Message final: {}", message.type());
 
                     // Traiter seulement les responses critiques
-                    if (message.getCategory() == MessageCategory.RESPONSE) {
+                    if (message.category() == MessageCategory.RESPONSE) {
                         handleResponse(message);
                     }
                     processedCount++;

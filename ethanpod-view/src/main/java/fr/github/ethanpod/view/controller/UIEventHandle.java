@@ -29,32 +29,32 @@ public class UIEventHandle {
 
         if (message != null) {
             logger.debug(message);
-            if (message.getCategory() == MessageCategory.EVENT) {
+            if (message.category() == MessageCategory.EVENT) {
                 handleEvent(message);
             } else {
-                logger.warn("Type de message non géré: {}", message.getType());
+                logger.warn("Type de message non géré: {}", message.type());
             }
         }
     }
 
     private void handleEvent(ThreadMessage message) {
-        EventType content = (EventType) message.getType();
-        String requestId = message.getId();
+        EventType content = (EventType) message.type();
+        String requestId = message.id();
 
         logger.debug("Traitement requête: {} avec ID: {}", content, requestId);
 
 
         switch (content) {
             case NAVIGATION_UPDATED ->
-                    uiControllerManager.getNavigationService().updateNavigationUI((List<NavigationItem>) message.getData());
+                    uiControllerManager.getNavigationService().updateNavigationUI((List<NavigationItem>) message.data());
             case INBOX_COUNT_UPDATED ->
-                    uiControllerManager.getInboxService().updateInboxCount((Integer) message.getData());
+                    uiControllerManager.getInboxService().updateInboxCount((Integer) message.data());
             case QUEUE_TOP8_UPDATED ->
-                    uiControllerManager.getQueueService().updateQueueTop8UI((List<EpisodeItem>) message.getData());
+                    uiControllerManager.getQueueService().updateQueueTop8UI((List<EpisodeItem>) message.data());
             case INBOX_TOP8_UPDATED ->
-                    uiControllerManager.getInboxService().updateInboxTop8((List<EpisodeItem>) message.getData());
+                    uiControllerManager.getInboxService().updateInboxTop8((List<EpisodeItem>) message.data());
             case PODCAST_TOP8_UPDATED ->
-                    uiControllerManager.getPodcastService().updatePodcastTop8UI((List<EpisodeItem>) message.getData());
+                    uiControllerManager.getPodcastService().updatePodcastTop8UI((List<EpisodeItem>) message.data());
             default -> logger.warn("Requête non reconnue: {}", content);
 
         }

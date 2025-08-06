@@ -37,34 +37,34 @@ public class MessageRouter {
 
     public void routeMessage(ThreadMessage message) {
         logger.debug("Service: Envoi {} de {} vers {}, ID: {}",
-                message.getType(), message.getSender(), message.getReceiver(), message.getId());
+                message.type(), message.sender(), message.receiver(), message.id());
 
-        if (message.getType() == MessageCategory.REQUEST && message.getId() != null) {
-            requestSenders.put(message.getId(), message.getSender());
+        if (message.type() == MessageCategory.REQUEST && message.id() != null) {
+            requestSenders.put(message.id(), message.sender());
             logger.debug("Requête tracée - ID: {}, Expéditeur: {}",
-                    message.getId(), message.getSender());
+                    message.id(), message.sender());
         }
 
-        if (message.getType() == MessageCategory.RESPONSE && message.getId() != null) {
+        if (message.type() == MessageCategory.RESPONSE && message.id() != null) {
             logger.debug("Réponse reroutée vers l'expéditeur original - ID: {}, Vers: {}",
-                    message.getId(), message.getReceiver());
-            requestSenders.remove(message.getId());
+                    message.id(), message.receiver());
+            requestSenders.remove(message.id());
 
         }
 
-        BlockingQueue<ThreadMessage> targetQueue = threadQueues.get(message.getReceiver());
+        BlockingQueue<ThreadMessage> targetQueue = threadQueues.get(message.receiver());
 
         if (targetQueue == null) {
-            logger.error("Thread destinataire {} non trouvé pour le message: {}", message.getReceiver(), message);
+            logger.error("Thread destinataire {} non trouvé pour le message: {}", message.receiver(), message);
             return;
         }
 
         try {
             targetQueue.put(message);
-            logger.debug("Message de {} routé vers {}: {}", message.getSender(), message.getReceiver(), message.getId());
+            logger.debug("Message de {} routé vers {}: {}", message.sender(), message.receiver(), message.id());
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            logger.error("Erreur lors du routage du message vers {}", message.getReceiver(), e);
+            logger.error("Erreur lors du routage du message vers {}", message.receiver(), e);
         }
     }
 

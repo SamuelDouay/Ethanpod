@@ -55,9 +55,9 @@ public abstract class AsyncService {
 
 
     public void handleResponse(ThreadMessage message) {
-        String requestId = message.getId();
+        String requestId = message.id();
         logger.debug("Service: Réception réponse pour ID: {}, Type: {}",
-                requestId, message.getType());
+                requestId, message.type());
 
         if (requestId == null) {
             logger.warn("Message sans requestId, impossible de router");
@@ -71,12 +71,12 @@ public abstract class AsyncService {
         }
 
         try {
-            if (message.getCategory() == MessageCategory.ERROR) {
-                logger.error("Service: Erreur reçue: {}", message.getType());
-                future.completeExceptionally(new RuntimeException(String.valueOf(message.getType())));
+            if (message.category() == MessageCategory.ERROR) {
+                logger.error("Service: Erreur reçue: {}", message.type());
+                future.completeExceptionally(new RuntimeException(String.valueOf(message.type())));
             } else {
                 logger.debug("Service: Completion du future avec succès");
-                future.complete(message.getData());
+                future.complete(message.data());
             }
         } catch (Exception e) {
             logger.error("Service: Erreur lors de la completion du future", e);

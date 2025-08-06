@@ -52,7 +52,7 @@ public class AsyncServiceManager extends BaseServiceManager<AsyncService> {
     }
 
     private ServiceConstants extractServiceId(ThreadMessage message) {
-        String requestId = message.getId();
+        String requestId = message.id();
         if (requestId != null) {
             Matcher matcher = SERVICE_ID_PATTERN.matcher(requestId);
             if (matcher.find()) {
