@@ -1,11 +1,12 @@
 package fr.github.ethanpod.view.layout;
 
+import fr.github.ethanpod.view.event.UIEventManager;
 import javafx.scene.layout.VBox;
 
 public class DownloadLayout extends Layout {
 
-    public DownloadLayout() {
-        super("Download");
+    public DownloadLayout(UIEventManager uiEventManager) {
+        super("Download", uiEventManager);
     }
 
     @Override

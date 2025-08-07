@@ -33,19 +33,16 @@ public class NavigationContainer {
     private static final Logger log = LogManager.getLogger(NavigationContainer.class);
     private final ItemManager manager;
     private final List<HBox> listNav;
-    private final UIEventManager eventManager = UIEventManager.getInstance();
-    private LayoutManager layoutManager;
+    private final UIEventManager eventManager;
+    private final LayoutManager layoutManager;
     private VBox scrollBox;
 
-    public NavigationContainer() {
+    public NavigationContainer(LayoutManager layoutManager, UIEventManager uiEventManager) {
+        this.layoutManager = layoutManager;
+        this.eventManager = uiEventManager;
         this.manager = new ItemManager();
         this.listNav = new ArrayList<>();
         registerEventHandlers();
-    }
-
-    public NavigationContainer(LayoutManager layoutManager) {
-        this();
-        this.layoutManager = layoutManager;
     }
 
     public VBox createMenu() {

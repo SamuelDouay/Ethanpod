@@ -1,11 +1,12 @@
 package fr.github.ethanpod.view.layout;
 
+import fr.github.ethanpod.view.event.UIEventManager;
 import javafx.scene.layout.VBox;
 
 public class EpisodesLayout extends Layout {
 
-    public EpisodesLayout() {
-        super("Episodes");
+    public EpisodesLayout(UIEventManager uiEventManager) {
+        super("Episodes", uiEventManager);
     }
 
     @Override

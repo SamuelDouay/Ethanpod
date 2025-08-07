@@ -1,5 +1,6 @@
 package fr.github.ethanpod.view.layout;
 
+import fr.github.ethanpod.view.event.UIEventManager;
 import fr.github.ethanpod.view.util.ColorThemeConstants;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -12,9 +13,11 @@ import javafx.scene.text.FontWeight;
 public abstract class Layout {
     private static final String FONT_FAMILY = "Inter";
     protected final StringProperty titleProperty;
+    protected final UIEventManager eventManager;
 
-    protected Layout(String initialTitle) {
+    protected Layout(String initialTitle, UIEventManager eventManager) {
         this.titleProperty = new SimpleStringProperty(initialTitle);
+        this.eventManager = eventManager;
     }
 
     public final StringProperty titleProperty() {

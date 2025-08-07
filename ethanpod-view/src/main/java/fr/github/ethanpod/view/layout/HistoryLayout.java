@@ -1,11 +1,12 @@
 package fr.github.ethanpod.view.layout;
 
+import fr.github.ethanpod.view.event.UIEventManager;
 import javafx.scene.layout.VBox;
 
 public class HistoryLayout extends Layout {
 
-    public HistoryLayout() {
-        super("History");
+    public HistoryLayout(UIEventManager uiEventManager) {
+        super("History", uiEventManager);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package fr.github.ethanpod.view.layout;
 
 import fr.github.ethanpod.view.component.SearchComponent;
+import fr.github.ethanpod.view.event.UIEventManager;
 import fr.github.ethanpod.view.util.ColorThemeConstants;
 import fr.github.ethanpod.view.util.LayoutType;
 import javafx.geometry.Insets;
@@ -8,17 +9,18 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 
 public class MainLayout {
+    private final UIEventManager uiEventManager;
     private LayoutManager layoutManager;
 
     public MainLayout() {
-        // no parameters
+        this.uiEventManager = new UIEventManager();
     }
 
     public AnchorPane createInterface() {
         AnchorPane root = new AnchorPane();
 
         ScrollPane scrollPane = createMainContainer();
-        layoutManager = new LayoutManager(scrollPane);
+        layoutManager = new LayoutManager(scrollPane, uiEventManager);
         layoutManager.setLayout(LayoutType.HOME);
 
         root.getChildren().addAll(scrollPane, createHeader(), createNavigationMenu(), createFooter());
@@ -30,7 +32,7 @@ public class MainLayout {
         VBox menu = new VBox();
         menu.setPrefWidth(240.0);
 
-        menu.getChildren().add(new NavigationContainer(layoutManager).createMenu());
+        menu.getChildren().add(new NavigationContainer(layoutManager, uiEventManager).createMenu());
         menu.setBorder(new Border(new BorderStroke(ColorThemeConstants.getMain950(), BorderStrokeStyle.SOLID, null, new BorderWidths(0, 1, 0, 0), null)));
         menu.setBackground(new Background(new BackgroundFill(ColorThemeConstants.getMain500(), null, null)));
 

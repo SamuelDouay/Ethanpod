@@ -1,11 +1,12 @@
 package fr.github.ethanpod.view.layout;
 
+import fr.github.ethanpod.view.event.UIEventManager;
 import javafx.scene.layout.VBox;
 
-public class QueueLayout extends Layout{
+public class QueueLayout extends Layout {
 
-    public QueueLayout() {
-        super("Queue");
+    public QueueLayout(UIEventManager uiEventManager) {
+        super("Queue", uiEventManager);
     }
 
     @Override

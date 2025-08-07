@@ -30,14 +30,13 @@ public class HomeLayout extends Layout implements ContextualLayout {
     public static final String IMAGE_HDM = String.valueOf(HomeLayout.class.getResource("/images/heure_du_monde.png"));
     public static final String TITLE_EXAMPLE = "Lil Nas X, une icône noire, et gay et flamboyante [REDIF]";
     private static final Logger log = LogManager.getLogger(HomeLayout.class);
-    private final UIEventManager eventManager = UIEventManager.getInstance();
     private HBox topQueue;
     private HBox classicContainer;
     private VBox inboxContainer;
     private VBox mainContainer;
 
-    public HomeLayout() {
-        super("Home");
+    public HomeLayout(UIEventManager uiEventManager) {
+        super("Home", uiEventManager);
         registerEventHandlers();
     }
 

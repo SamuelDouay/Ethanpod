@@ -1,11 +1,12 @@
 package fr.github.ethanpod.view.layout;
 
+import fr.github.ethanpod.view.event.UIEventManager;
 import javafx.scene.layout.VBox;
 
 public class InboxLayout extends Layout {
 
-    public InboxLayout() {
-        super("Inbox");
+    public InboxLayout(UIEventManager uiEventManager) {
+        super("Inbox", uiEventManager);
     }
 
     @Override

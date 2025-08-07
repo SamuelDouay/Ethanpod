@@ -1,6 +1,7 @@
 package fr.github.ethanpod.view.layout;
 
 import fr.github.ethanpod.view.component.image.ImageComponent;
+import fr.github.ethanpod.view.event.UIEventManager;
 import javafx.geometry.Orientation;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Region;
@@ -8,8 +9,8 @@ import javafx.scene.layout.VBox;
 
 public class SubscriptionLayout extends Layout {
 
-    public SubscriptionLayout() {
-        super("Subscription");// no param
+    public SubscriptionLayout(UIEventManager uiEventManager) {
+        super("Subscription", uiEventManager);// no param
     }
 
     @Override

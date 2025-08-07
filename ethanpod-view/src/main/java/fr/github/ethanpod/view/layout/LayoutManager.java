@@ -2,6 +2,7 @@ package fr.github.ethanpod.view.layout;
 
 import fr.github.ethanpod.view.context.ContextualLayout;
 import fr.github.ethanpod.view.context.LayoutContext;
+import fr.github.ethanpod.view.event.UIEventManager;
 import fr.github.ethanpod.view.util.LayoutType;
 import javafx.scene.control.ScrollPane;
 import org.apache.logging.log4j.LogManager;
@@ -17,12 +18,14 @@ public class LayoutManager {
     private final ScrollPane scrollPane;
     private final Map<LayoutType, Layout> layoutCache;
     private final Map<LayoutType, LayoutContext> contextCache;
+    private final UIEventManager uiEventManager;
     private LayoutType currentLayoutType;
 
-    public LayoutManager(ScrollPane scrollPane) {
+    public LayoutManager(ScrollPane scrollPane, UIEventManager eventManager) {
         this.scrollPane = Objects.requireNonNull(scrollPane, "ScrollPane cannot be null");
         this.layoutCache = new EnumMap<>(LayoutType.class);
         this.contextCache = new ConcurrentHashMap<>();
+        this.uiEventManager = eventManager;
         initializeLayouts();
     }
 
@@ -35,15 +38,15 @@ public class LayoutManager {
 
     private Layout createLayoutInstance(LayoutType type) {
         return switch (type) {
-            case HOME -> new HomeLayout();
-            case QUEUE -> new QueueLayout();
-            case INBOX -> new InboxLayout();
-            case EPISODES -> new EpisodesLayout();
-            case SUBSCRIPTION -> new SubscriptionLayout();
-            case DOWNLOAD -> new DownloadLayout();
-            case HISTORY -> new HistoryLayout();
-            case ADD -> new AddLayout();
-            case FEED -> new FeedLayout();
+            case HOME -> new HomeLayout(uiEventManager);
+            case QUEUE -> new QueueLayout(uiEventManager);
+            case INBOX -> new InboxLayout(uiEventManager);
+            case EPISODES -> new EpisodesLayout(uiEventManager);
+            case SUBSCRIPTION -> new SubscriptionLayout(uiEventManager);
+            case DOWNLOAD -> new DownloadLayout(uiEventManager);
+            case HISTORY -> new HistoryLayout(uiEventManager);
+            case ADD -> new AddLayout(uiEventManager);
+            case FEED -> new FeedLayout(uiEventManager);
         };
     }
 

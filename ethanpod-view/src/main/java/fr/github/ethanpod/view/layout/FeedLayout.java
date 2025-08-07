@@ -3,14 +3,15 @@ package fr.github.ethanpod.view.layout;
 import fr.github.ethanpod.view.context.ContextualLayout;
 import fr.github.ethanpod.view.context.FeedContext;
 import fr.github.ethanpod.view.context.LayoutContext;
+import fr.github.ethanpod.view.event.UIEventManager;
 import javafx.application.Platform;
 import javafx.scene.layout.VBox;
 
 public class FeedLayout extends Layout implements ContextualLayout {
     private static final String DEFAULT_TITLE = "Feed";
 
-    public FeedLayout() {
-        super(DEFAULT_TITLE);
+    public FeedLayout(UIEventManager uiEventManager) {
+        super(DEFAULT_TITLE, uiEventManager);
     }
 
     @Override

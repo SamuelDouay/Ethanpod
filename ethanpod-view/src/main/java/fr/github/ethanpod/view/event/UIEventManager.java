@@ -11,14 +11,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class UIEventManager {
     private static final Logger logger = LogManager.getLogger(UIEventManager.class);
-    private final Map<EventType, List<UIEventHandler<? extends UIEvent>>> handlers;
+    private static final Map<EventType, List<UIEventHandler<? extends UIEvent>>> handlers = new ConcurrentHashMap<>();
 
-    private UIEventManager() {
-        this.handlers = new ConcurrentHashMap<>();
-    }
-
-    public static UIEventManager getInstance() {
-        return UIEventManager.Holder.INSTANCE;
+    public UIEventManager() {
+        // no param
     }
 
     public <T extends UIEvent> void registerHandler(EventType eventType, UIEventHandler<T> handler) {
@@ -51,9 +47,5 @@ public class UIEventManager {
                         eventType, handler.getClass().getSimpleName(), e.getMessage(), e);
             }
         }
-    }
-
-    private static class Holder {
-        private static final UIEventManager INSTANCE = new UIEventManager();
     }
 }
