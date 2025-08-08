@@ -6,6 +6,10 @@ import fr.github.ethanpod.exception.technical.DatabaseException;
 import java.sql.SQLException;
 
 public class ExceptionConverter {
+    private ExceptionConverter() {
+        // no param
+    }
+
     public static DatabaseException fromSQLException(SQLException sqlEx, String context) {
         return DatabaseException.queryFailed(context, sqlEx);
     }

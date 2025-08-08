@@ -78,9 +78,6 @@ public class DatabaseManager {
             return jdbcUrl;
 
         } catch (Exception e) {
-            if (e instanceof EthanpodRuntimeException) {
-                throw e;
-            }
             throw EthanpodRuntimeException.configurationError("Erreur lors de la construction de l'URL JDBC: " + e.getMessage());
         }
     }

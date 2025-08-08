@@ -2,7 +2,7 @@ package fr.github.ethanpod.exception;
 
 public abstract class EthanpodException extends Exception {
     private final String errorCode;
-    private final Object[] parameters;
+    private final transient Object[] parameters;
 
     protected EthanpodException(String errorCode, String message) {
         super(message);
