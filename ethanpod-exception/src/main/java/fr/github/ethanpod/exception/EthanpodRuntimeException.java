@@ -1,4 +1,4 @@
-package fr.github.ethanpod.core.exception;
+package fr.github.ethanpod.exception;
 
 public class EthanpodRuntimeException extends RuntimeException {
     private final String errorCode;

@@ -1,6 +1,6 @@
-package fr.github.ethanpod.core.exception.thread;
+package fr.github.ethanpod.exception.thread;
 
-import fr.github.ethanpod.core.exception.EthanpodException;
+import fr.github.ethanpod.exception.EthanpodException;
 
 public class ThreadTimeoutException extends EthanpodException {
 

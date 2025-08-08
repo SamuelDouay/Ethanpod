@@ -1,6 +1,6 @@
 package fr.github.ethanpod.logic.sql.dao;
 
-import fr.github.ethanpod.core.exception.technical.DatabaseException;
+import fr.github.ethanpod.exception.technical.DatabaseException;
 import fr.github.ethanpod.logic.sql.setting.DatabaseManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

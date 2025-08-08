@@ -5,6 +5,7 @@ module ethanpod.logic {
     requires org.apache.logging.log4j;
     requires com.zaxxer.hikari;
     requires org.xerial.sqlitejdbc;
+    requires ethanpod.exception;
 
     exports fr.github.ethanpod.logic;
     exports fr.github.ethanpod.logic.sql.dao;

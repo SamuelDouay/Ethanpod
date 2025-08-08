@@ -1,6 +1,6 @@
 package fr.github.ethanpod.logic.service;
 
-import fr.github.ethanpod.core.exception.EthanpodRuntimeException;
+import fr.github.ethanpod.exception.EthanpodRuntimeException;
 import fr.github.ethanpod.logic.sql.setting.DatabaseManager;
 import fr.github.ethanpod.util.manager.BaseServiceManager;
 import fr.github.ethanpod.util.manager.ServiceConstants;

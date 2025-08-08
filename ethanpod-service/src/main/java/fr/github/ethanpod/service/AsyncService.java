@@ -1,13 +1,13 @@
 package fr.github.ethanpod.service;
 
-import fr.github.ethanpod.core.exception.EthanpodRuntimeException;
-import fr.github.ethanpod.core.exception.future.FutureException;
-import fr.github.ethanpod.core.exception.thread.ThreadCommunicationException;
-import fr.github.ethanpod.core.exception.thread.ThreadTimeoutException;
 import fr.github.ethanpod.core.thread.MessageCategory;
 import fr.github.ethanpod.core.thread.MessageRouter;
 import fr.github.ethanpod.core.thread.RequestType;
 import fr.github.ethanpod.core.thread.ThreadMessage;
+import fr.github.ethanpod.exception.EthanpodRuntimeException;
+import fr.github.ethanpod.exception.future.FutureException;
+import fr.github.ethanpod.exception.thread.ThreadCommunicationException;
+import fr.github.ethanpod.exception.thread.ThreadTimeoutException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

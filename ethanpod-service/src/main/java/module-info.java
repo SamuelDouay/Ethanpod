@@ -4,4 +4,5 @@ module ethanpod.service {
     requires ethanpod.logic;
     requires org.apache.logging.log4j;
     requires ethanpod.util;
+    requires ethanpod.exception;
 }

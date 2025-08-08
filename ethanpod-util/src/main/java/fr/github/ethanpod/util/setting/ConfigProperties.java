@@ -1,6 +1,6 @@
 package fr.github.ethanpod.util.setting;
 
-import fr.github.ethanpod.core.exception.EthanpodRuntimeException;
+import fr.github.ethanpod.exception.EthanpodRuntimeException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

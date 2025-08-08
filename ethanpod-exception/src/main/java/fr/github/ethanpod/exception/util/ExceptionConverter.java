@@ -1,7 +1,7 @@
-package fr.github.ethanpod.core.exception.util;
+package fr.github.ethanpod.exception.util;
 
-import fr.github.ethanpod.core.exception.technical.ConnectionPoolException;
-import fr.github.ethanpod.core.exception.technical.DatabaseException;
+import fr.github.ethanpod.exception.technical.ConnectionPoolException;
+import fr.github.ethanpod.exception.technical.DatabaseException;
 
 import java.sql.SQLException;
 

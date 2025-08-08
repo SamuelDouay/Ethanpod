@@ -1,6 +1,6 @@
-package fr.github.ethanpod.core.exception.future;
+package fr.github.ethanpod.exception.future;
 
-import fr.github.ethanpod.core.exception.EthanpodException;
+import fr.github.ethanpod.exception.EthanpodException;
 
 public class FutureException extends EthanpodException {
     public FutureException(String message) {

@@ -7,6 +7,8 @@
     <file url="file://$PROJECT_DIR$/ethanpod-controller/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ethanpod-core/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ethanpod-core/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ethanpod-exception/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ethanpod-exception/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ethanpod-logic/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ethanpod-logic/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ethanpod-service/src/main/java" charset="UTF-8" />

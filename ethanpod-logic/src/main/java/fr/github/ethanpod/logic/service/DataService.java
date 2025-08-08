@@ -1,8 +1,8 @@
 package fr.github.ethanpod.logic.service;
 
-import fr.github.ethanpod.core.exception.EthanpodRuntimeException;
 import fr.github.ethanpod.core.thread.MessageRouter;
 import fr.github.ethanpod.core.thread.ResponseType;
+import fr.github.ethanpod.exception.EthanpodRuntimeException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

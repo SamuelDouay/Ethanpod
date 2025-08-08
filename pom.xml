@@ -19,6 +19,7 @@
         <module>ethanpod-view</module>
         <module>ethanpod-app</module>
         <module>ethanpod-controller</module>
+        <module>ethanpod-exception</module>
     </modules>
 
     <properties>
@@ -76,6 +77,11 @@
             <dependency>
                 <groupId>fr.github</groupId>
                 <artifactId>ethanpod-view</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>fr.github</groupId>
+                <artifactId>ethanpod-exception</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

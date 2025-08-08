@@ -1,8 +1,8 @@
 package fr.github.ethanpod.service;
 
-import fr.github.ethanpod.core.exception.EthanpodRuntimeException;
-import fr.github.ethanpod.core.exception.thread.ThreadCommunicationException;
 import fr.github.ethanpod.core.thread.ThreadMessage;
+import fr.github.ethanpod.exception.EthanpodRuntimeException;
+import fr.github.ethanpod.exception.thread.ThreadCommunicationException;
 import fr.github.ethanpod.util.manager.BaseServiceManager;
 import fr.github.ethanpod.util.manager.ServiceConstants;
 import org.apache.logging.log4j.LogManager;

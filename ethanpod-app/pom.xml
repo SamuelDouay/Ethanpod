@@ -41,6 +41,10 @@
             <groupId>fr.github</groupId>
             <artifactId>ethanpod-view</artifactId>
         </dependency>
+        <dependency>
+            <groupId>fr.github</groupId>
+            <artifactId>ethanpod-exception</artifactId>
+        </dependency>
 
         <!-- JavaFX (nécessaire pour l'exécution) -->
         <dependency>

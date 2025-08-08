@@ -1,4 +1,4 @@
-package fr.github.ethanpod.core.exception;
+package fr.github.ethanpod.exception;
 
 public abstract class EthanpodException extends Exception {
     private final String errorCode;

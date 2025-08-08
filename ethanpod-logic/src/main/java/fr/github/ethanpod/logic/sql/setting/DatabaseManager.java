@@ -2,10 +2,10 @@ package fr.github.ethanpod.logic.sql.setting;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import fr.github.ethanpod.core.exception.EthanpodRuntimeException;
-import fr.github.ethanpod.core.exception.technical.ConnectionPoolException;
-import fr.github.ethanpod.core.exception.technical.DatabaseException;
-import fr.github.ethanpod.core.exception.util.ExceptionConverter;
+import fr.github.ethanpod.exception.EthanpodRuntimeException;
+import fr.github.ethanpod.exception.technical.ConnectionPoolException;
+import fr.github.ethanpod.exception.technical.DatabaseException;
+import fr.github.ethanpod.exception.util.ExceptionConverter;
 import fr.github.ethanpod.util.setting.ConfigProperties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

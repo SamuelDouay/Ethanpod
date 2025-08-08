@@ -1,6 +1,6 @@
-package fr.github.ethanpod.core.exception.technical;
+package fr.github.ethanpod.exception.technical;
 
-import fr.github.ethanpod.core.exception.EthanpodException;
+import fr.github.ethanpod.exception.EthanpodException;
 
 public class DatabaseException extends EthanpodException {
 
