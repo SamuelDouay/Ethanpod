@@ -22,16 +22,17 @@ public class NavigationDao extends BaseDao {
                 "ORDER BY unread_count DESC, feed.title ASC";
 
         return executeQuery(sql, rs -> {
-            List<NavigationItem> result = new ArrayList<>();
-            while (rs.next()) {
-                result.add(new NavigationItem(
-                        rs.getString("image_url"),
-                        rs.getString("title"),
-                        rs.getInt("unread_count"),
-                        false
-                ));
-            }
-            return result;
-        }, new ArrayList<>());
+                    List<NavigationItem> result = new ArrayList<>();
+                    while (rs.next()) {
+                        result.add(new NavigationItem(
+                                rs.getString("image_url"),
+                                rs.getString("title"),
+                                rs.getInt("unread_count"),
+                                false
+                        ));
+                    }
+                    return result;
+                }, new ArrayList<>(),
+                "GET LIT OF PODCASTS");
     }
 }

@@ -1,5 +1,6 @@
 package fr.github.ethanpod.util.setting;
 
+import fr.github.ethanpod.core.exception.EthanpodRuntimeException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,7 +31,7 @@ public class ConfigProperties {
             this.properties.load(getClass().getResourceAsStream("/setting/application.properties"));
             logger.debug("Load config properties file");
         } catch (IOException e) {
-            logger.error("Error load properties : {}", e.getMessage());
+            throw EthanpodRuntimeException.configurationError(e.getMessage());
         }
     }
 

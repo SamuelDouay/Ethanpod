@@ -1,5 +1,6 @@
 package fr.github.ethanpod.logic.service;
 
+import fr.github.ethanpod.core.exception.EthanpodRuntimeException;
 import fr.github.ethanpod.logic.sql.setting.DatabaseManager;
 import fr.github.ethanpod.util.manager.BaseServiceManager;
 import fr.github.ethanpod.util.manager.ServiceConstants;
@@ -47,6 +48,7 @@ public class DataServiceManager extends BaseServiceManager<DataService> {
                 service.refreshData();
             } catch (Exception e) {
                 logger.error("Erreur lors du rafraîchissement du service", e);
+                throw new EthanpodRuntimeException("Erreur lors du rafraîchissement du service", e.getMessage());
             }
         });
     }

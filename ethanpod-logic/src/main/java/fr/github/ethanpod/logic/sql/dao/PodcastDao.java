@@ -23,19 +23,20 @@ public class PodcastDao extends BaseDao {
                 LIMIT_8;
 
         return executeQuery(sql, rs -> {
-            List<EpisodeItem> result = new ArrayList<>();
-            while (rs.next()) {
-                result.add(new EpisodeItem(
-                        rs.getString("image_url"),
-                        false,
-                        rs.getString("title"),
-                        null,
-                        null,
-                        null,
-                        false
-                ));
-            }
-            return result;
-        }, new ArrayList<>());
+                    List<EpisodeItem> result = new ArrayList<>();
+                    while (rs.next()) {
+                        result.add(new EpisodeItem(
+                                rs.getString("image_url"),
+                                false,
+                                rs.getString("title"),
+                                null,
+                                null,
+                                null,
+                                false
+                        ));
+                    }
+                    return result;
+                }, new ArrayList<>(),
+                "GET TOP 8 IN PODCAST READ");
     }
 }

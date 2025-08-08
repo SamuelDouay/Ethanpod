@@ -1,5 +1,9 @@
 package fr.github.ethanpod.service;
 
+import fr.github.ethanpod.core.exception.EthanpodRuntimeException;
+import fr.github.ethanpod.core.exception.future.FutureException;
+import fr.github.ethanpod.core.exception.thread.ThreadCommunicationException;
+import fr.github.ethanpod.core.exception.thread.ThreadTimeoutException;
 import fr.github.ethanpod.core.thread.MessageCategory;
 import fr.github.ethanpod.core.thread.MessageRouter;
 import fr.github.ethanpod.core.thread.RequestType;
@@ -54,42 +58,43 @@ public abstract class AsyncService {
     }
 
 
-    public void handleResponse(ThreadMessage message) {
+    public void handleResponse(ThreadMessage message) throws ThreadCommunicationException, FutureException {
         String requestId = message.id();
         logger.debug("Service: Réception réponse pour ID: {}, Type: {}",
                 requestId, message.type());
 
         if (requestId == null) {
             logger.warn("Message sans requestId, impossible de router");
-            return;
+            throw ThreadCommunicationException.messageRoutingFailed(message.sender(), message.receiver(), "Id null");
         }
 
         CompletableFuture<Object> future = (CompletableFuture<Object>) pendingRequests.remove(requestId);
         if (future == null) {
             logger.warn("Service: Aucun future en attente pour ID: {}", requestId);
-            return;
+            throw FutureException.futureNotFound(requestId);
         }
 
         try {
             if (message.category() == MessageCategory.ERROR) {
                 logger.error("Service: Erreur reçue: {}", message.type());
-                future.completeExceptionally(new RuntimeException(String.valueOf(message.type())));
+                future.completeExceptionally(ThreadCommunicationException.messageErrorReceive(String.valueOf(message.type())));
             } else {
                 logger.debug("Service: Completion du future avec succès");
                 future.complete(message.data());
             }
         } catch (Exception e) {
             logger.error("Service: Erreur lors de la completion du future", e);
-            future.completeExceptionally(e);
+            future.completeExceptionally(EthanpodRuntimeException.systemError("Service: Erreur lors de la completion du future", e));
         }
     }
 
     private void futureTimeOut(CompletableFuture<?> future, String requestId) {
         logger.debug("Service: Requête enregistrée, total en attente: {}", pendingRequests.size());
-        future.orTimeout(this.timeoutSeconds, TimeUnit.SECONDS)
+        future.orTimeout(timeoutSeconds, TimeUnit.SECONDS)
                 .exceptionally(_ -> {
                     logger.error("Service: Timeout pour requête ID: {}", requestId);
                     pendingRequests.remove(requestId);
+                    ThreadTimeoutException.requestTimeout(requestId, timeoutSeconds);
                     return null;
                 });
     }

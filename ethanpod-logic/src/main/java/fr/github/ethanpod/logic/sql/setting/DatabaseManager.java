@@ -2,6 +2,10 @@ package fr.github.ethanpod.logic.sql.setting;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import fr.github.ethanpod.core.exception.EthanpodRuntimeException;
+import fr.github.ethanpod.core.exception.technical.ConnectionPoolException;
+import fr.github.ethanpod.core.exception.technical.DatabaseException;
+import fr.github.ethanpod.core.exception.util.ExceptionConverter;
 import fr.github.ethanpod.util.setting.ConfigProperties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,89 +41,127 @@ public class DatabaseManager {
                 registerShutdownHook();
                 this.initialized = true;
                 logger.debug("DatabaseManager initialisé avec succès");
-            } catch (Exception e) {
+            } catch (DatabaseException | ConnectionPoolException e) {
                 cleanup();
                 logger.error("Erreur lors de l'initialisation du DatabaseManager: {}", e.getMessage(), e);
-                throw new RuntimeException("Database initialization failed", e);
+                throw EthanpodRuntimeException.systemError("Database initialization failed", e);
             } finally {
                 initializing = false;
             }
         }
     }
 
-    private void loadSQLiteDriver() throws ClassNotFoundException {
+    private void loadSQLiteDriver() throws DatabaseException {
         try {
             Class.forName("org.sqlite.JDBC");
             logger.debug("Driver SQLite chargé avec succès");
         } catch (ClassNotFoundException e) {
             logger.error("Driver SQLite non trouvé dans le classpath");
-            throw e;
+            throw new DatabaseException("Driver SQLite non disponible", e);
         }
     }
 
     private String buildJdbcUrl() {
-        String jdbcPrefix = ConfigProperties.getInstance().getProperty("jdbc.database");
+        try {
+            String jdbcPrefix = ConfigProperties.getInstance().getProperty("jdbc.database");
+            if (jdbcPrefix == null || jdbcPrefix.trim().isEmpty()) {
+                throw EthanpodRuntimeException.configurationError("Propriété 'jdbc.database' manquante ou vide");
+            }
 
-        URL dbResource = DatabaseManager.class.getResource("/data/data_240825.db");
-        if (dbResource == null) {
-            throw new RuntimeException("Fichier de base de données non trouvé: /data/data_240825.db");
+            URL dbResource = DatabaseManager.class.getResource("/data/data_240825.db");
+            if (dbResource == null) {
+                throw EthanpodRuntimeException.configurationError("Fichier de base de données non trouvé: /data/data_240825.db");
+            }
+
+            String jdbcUrl = jdbcPrefix + dbResource;
+            logger.debug("URL JDBC construite: {}", jdbcUrl);
+            return jdbcUrl;
+
+        } catch (Exception e) {
+            if (e instanceof EthanpodRuntimeException) {
+                throw e;
+            }
+            throw EthanpodRuntimeException.configurationError("Erreur lors de la construction de l'URL JDBC: " + e.getMessage());
         }
-
-        String jdbcUrl = jdbcPrefix + dbResource;
-
-        logger.debug("URL JDBC construite: {}", jdbcUrl);
-        return jdbcUrl;
     }
 
-    private HikariDataSource createDataSource(String jdbcUrl) {
-        HikariConfig config = new HikariConfig();
-        config.setJdbcUrl(jdbcUrl);
-        config.setDriverClassName("org.sqlite.JDBC");
+    private HikariDataSource createDataSource(String jdbcUrl) throws ConnectionPoolException {
+        try {
+            HikariConfig config = new HikariConfig();
+            config.setJdbcUrl(jdbcUrl);
+            config.setDriverClassName("org.sqlite.JDBC");
 
-        // Configuration optimisée pour SQLite
-        config.setMaximumPoolSize(5);
-        config.setMinimumIdle(1);
-        config.setConnectionTimeout(5000);
-        config.setIdleTimeout(300000);
-        config.setMaxLifetime(1800000); // 30 minutes
-        config.setKeepaliveTime(120000);
-        config.setPoolName("SQLitePool");
+            // Configuration optimisée pour SQLite
+            config.setMaximumPoolSize(5);
+            config.setMinimumIdle(1);
+            config.setConnectionTimeout(5000);
+            config.setIdleTimeout(300000);
+            config.setMaxLifetime(1800000); // 30 minutes
+            config.setKeepaliveTime(120000);
+            config.setPoolName("SQLitePool");
 
-        // Propriétés SQLite pour performance
-        config.addDataSourceProperty("journal_mode", "WAL");
-        config.addDataSourceProperty("synchronous", "NORMAL");
-        config.addDataSourceProperty("cache_size", "10000");
-        config.addDataSourceProperty("foreign_keys", "true");
-        config.addDataSourceProperty("busy_timeout", "5000");
-        config.addDataSourceProperty("temp_store", "MEMORY");
+            // Propriétés SQLite pour performance
+            config.addDataSourceProperty("journal_mode", "WAL");
+            config.addDataSourceProperty("synchronous", "NORMAL");
+            config.addDataSourceProperty("cache_size", "10000");
+            config.addDataSourceProperty("foreign_keys", "true");
+            config.addDataSourceProperty("busy_timeout", "5000");
+            config.addDataSourceProperty("temp_store", "MEMORY");
 
-        logger.debug("Configuration HikariCP créée pour SQLite");
-        return new HikariDataSource(config);
+            logger.debug("Configuration HikariCP créée pour SQLite");
+            return new HikariDataSource(config);
+
+        } catch (Exception e) {
+            logger.error("Erreur lors de la création du DataSource: {}", e.getMessage(), e);
+            throw ConnectionPoolException.configurationError("Échec de la configuration HikariCP: " + e.getMessage());
+        }
     }
 
-    private void testConnection() throws SQLException {
+    private void testConnection() throws DatabaseException {
         try (Connection testConnection = getConnection()) {
             if (!testConnection.isValid(5)) {
-                throw new SQLException("Validation de connexion échouée");
+                throw new DatabaseException("Validation de connexion échouée - connexion invalide");
             }
             logger.debug("Test de connexion réussi");
+
+        } catch (SQLException e) {
+            logger.error("Test de connexion échoué: {}", e.getMessage(), e);
+            throw ExceptionConverter.fromSQLException(e, "test de connexion");
+
+        } catch (DatabaseException e) {
+            throw e;
+        } catch (Exception e) {
+            logger.error("Erreur inattendue lors du test de connexion: {}", e.getMessage(), e);
+            throw new DatabaseException("Erreur inattendue lors du test de connexion", e);
         }
     }
 
-    public Connection getConnection() throws SQLException {
+    public Connection getConnection() throws DatabaseException {
         if ((!initialized && !initializing) || dataSource == null) {
-            throw new IllegalStateException("DatabaseManager non initialisé. Appelez initialize() d'abord.");
+            throw new DatabaseException("DatabaseManager non initialisé - appelez initialize() d'abord");
         }
 
         if (dataSource.isClosed()) {
-            throw new SQLException("DataSource fermé");
+            throw new DatabaseException("DataSource fermé - impossible d'obtenir une connexion");
         }
 
-        return dataSource.getConnection();
-    }
+        try {
+            Connection connection = dataSource.getConnection();
+            if (connection == null) {
+                throw new DatabaseException("Le pool a retourné une connexion null");
+            }
+            return connection;
 
-    public boolean isInitialized() {
-        return initialized && dataSource != null && !dataSource.isClosed();
+        } catch (SQLException e) {
+            logger.error("Erreur lors de l'obtention d'une connexion: {}", e.getMessage(), e);
+
+            // Vérifier si c'est un problème de pool épuisé
+            if (e.getMessage() != null && e.getMessage().contains("timeout")) {
+                throw new DatabaseException("Timeout lors de l'obtention d'une connexion - pool épuisé", e);
+            }
+
+            throw ExceptionConverter.fromSQLException(e, "obtention de connexion");
+        }
     }
 
     public String getPoolStats() {
@@ -157,5 +199,22 @@ public class DatabaseManager {
             logger.debug("Shutdown hook - Fermeture du DatabaseManager");
             shutdown();
         }));
+    }
+
+    public <T> T executeWithConnection(DatabaseAction<T> action, String context) throws DatabaseException {
+        try (Connection conn = getConnection()) {
+            return action.execute(conn);
+        } catch (SQLException e) {
+            throw ExceptionConverter.fromSQLException(e, context);
+        } catch (DatabaseException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new DatabaseException("Erreur inattendue lors de " + context, e);
+        }
+    }
+
+    @FunctionalInterface
+    public interface DatabaseAction<T> {
+        T execute(Connection connection) throws SQLException, DatabaseException;
     }
 }

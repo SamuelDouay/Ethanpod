@@ -1,5 +1,7 @@
 package fr.github.ethanpod.service;
 
+import fr.github.ethanpod.core.exception.EthanpodRuntimeException;
+import fr.github.ethanpod.core.exception.thread.ThreadCommunicationException;
 import fr.github.ethanpod.core.thread.ThreadMessage;
 import fr.github.ethanpod.util.manager.BaseServiceManager;
 import fr.github.ethanpod.util.manager.ServiceConstants;
@@ -41,55 +43,76 @@ public class AsyncServiceManager extends BaseServiceManager<AsyncService> {
     }
 
     public void handleResponse(ThreadMessage message) {
-        ServiceConstants serviceId = extractServiceId(message);
-        AsyncService service = services.get(serviceId);
+        try {
+            ServiceConstants serviceId = extractServiceId(message);
+            AsyncService service = services.get(serviceId);
 
-        if (service != null) {
-            service.handleResponse(message);
-        } else {
-            logger.warn("Aucun service trouvé pour: {}", serviceId);
+            if (service != null) {
+                service.handleResponse(message);
+            } else {
+                assert serviceId != null;
+                throw ThreadCommunicationException.messageRoutingFailed(
+                        "AsyncServiceManager",
+                        serviceId.name(),
+                        message.id()
+                );
+            }
+        } catch (ThreadCommunicationException e) {
+            logger.error("Erreur de communication inter-thread: {}", e.getMessage(), e);
+        } catch (Exception e) {
+            throw EthanpodRuntimeException.systemError(
+                    "Erreur inattendue lors du traitement de la réponse",
+                    e
+            );
         }
     }
 
-    private ServiceConstants extractServiceId(ThreadMessage message) {
+    private ServiceConstants extractServiceId(ThreadMessage message) throws ThreadCommunicationException {
         String requestId = message.id();
         if (requestId != null) {
             Matcher matcher = SERVICE_ID_PATTERN.matcher(requestId);
             if (matcher.find()) {
                 String serviceIdString = matcher.group(1).toLowerCase();
                 return ServiceConstants.fromName(serviceIdString);
+            } else {
+                throw ThreadCommunicationException.messageServiceUnknow(requestId);
             }
         }
-        throw new IllegalArgumentException("Invalid requestId format: " + requestId);
+        return null;
     }
 
     public void refreshAllData() {
         logger.debug("Rafraîchissement de toutes les données des services");
-        performOperationOnAllServices("refresh", AsyncService::refreshData);
+        performOperationOnAllServices("rafraîchissement", AsyncService::refreshData);
     }
 
     public void initializeAllServices() {
         logger.debug("Initialisation de tous les services");
-        performOperationOnAllServices("initialization", AsyncService::initialize);
+        performOperationOnAllServices("initialisation", AsyncService::initialize);
     }
 
     public void stopAllServices() {
         logger.debug("Arrêt de tous les services");
-        performOperationOnAllServices("stop", AsyncService::stop);
+        performOperationOnAllServices("arrêt", AsyncService::stop);
     }
 
     private void performOperationOnAllServices(String operationName, ServiceOperation operation) {
         getAllServices().forEach(service -> {
             try {
                 operation.execute(service);
-            } catch (Exception _) {
-                logger.error("Erreur lors de {} du service", operationName);
+            } catch (ThreadCommunicationException e) {
+                logger.error("Erreur de communication lors de {} du service {}", operationName, service.getClass().getSimpleName(), e);
+            } catch (Exception e) {
+                throw EthanpodRuntimeException.systemError(
+                        "Erreur inattendue lors de " + operationName + " du service " + service.getClass().getSimpleName(),
+                        e
+                );
             }
         });
     }
 
     @FunctionalInterface
     private interface ServiceOperation {
-        void execute(AsyncService service) throws Exception;
+        void execute(AsyncService service) throws ThreadCommunicationException;
     }
 }

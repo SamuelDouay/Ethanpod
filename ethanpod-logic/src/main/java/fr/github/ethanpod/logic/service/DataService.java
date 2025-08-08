@@ -1,5 +1,6 @@
 package fr.github.ethanpod.logic.service;
 
+import fr.github.ethanpod.core.exception.EthanpodRuntimeException;
 import fr.github.ethanpod.core.thread.MessageRouter;
 import fr.github.ethanpod.core.thread.ResponseType;
 import org.apache.logging.log4j.LogManager;
@@ -29,7 +30,7 @@ public abstract class DataService {
                         logger.debug("{} completed successfully", operationName);
                         return result;
                     } catch (Exception e) {
-                        throw new RuntimeException("Error in " + operationName, e);
+                        throw EthanpodRuntimeException.systemError(operationName, e);
                     }
                 }, executor)
                 .whenComplete((result, throwable) -> {

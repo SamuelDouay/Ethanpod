@@ -19,7 +19,7 @@ public class InboxDao extends BaseDao {
         String sql = "SELECT COUNT(*) as unread_count " +
                 "FROM FeedItems AS items " +
                 "WHERE items.read = -1 ";
-        return executeQuery(sql, rs -> rs.next() ? rs.getInt("unread_count") : 0, 0);
+        return executeQuery(sql, rs -> rs.next() ? rs.getInt("unread_count") : 0, 0, "GET NUMBER IN INBOX");
     }
 
     public List<EpisodeItem> getTop8InInbox() {
@@ -30,17 +30,18 @@ public class InboxDao extends BaseDao {
                 LIMIT_8;
 
         return executeQuery(sql, rs -> {
-            List<EpisodeItem> result = new ArrayList<>();
-            while (rs.next()) {
-                result.add(new EpisodeItem(rs.getString("image_url"),
-                        false,
-                        rs.getString("title"),
-                        Converter.timestampToDate(rs.getLong("date")),
-                        Converter.timestampToDate(rs.getLong("date")),
-                        Converter.getSize(rs.getLong("size")),
-                        false));
-            }
-            return result;
-        }, new ArrayList<>());
+                    List<EpisodeItem> result = new ArrayList<>();
+                    while (rs.next()) {
+                        result.add(new EpisodeItem(rs.getString("image_url"),
+                                false,
+                                rs.getString("title"),
+                                Converter.timestampToDate(rs.getLong("date")),
+                                Converter.timestampToDate(rs.getLong("date")),
+                                Converter.getSize(rs.getLong("size")),
+                                false));
+                    }
+                    return result;
+                }, new ArrayList<>(),
+                "GET TOP 8 IN INBOX");
     }
 }

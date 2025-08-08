@@ -1,10 +1,10 @@
 package fr.github.ethanpod.logic.sql.dao;
 
+import fr.github.ethanpod.core.exception.technical.DatabaseException;
 import fr.github.ethanpod.logic.sql.setting.DatabaseManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,63 +26,77 @@ public abstract class BaseDao {
         }
     }
 
-    protected <T> T executeQuery(String sql, ResultSetMapper<T> mapper, T defaultValue) {
+    protected <T> T executeQuery(String sql, ResultSetMapper<T> mapper, T defaultValue, String context) {
         long startTime = System.currentTimeMillis();
-        try (Connection con = databaseManager.getConnection();
-             PreparedStatement stmt = con.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-            T result = mapper.map(rs);
-            logMetrics(sql, startTime);
-            return result;
+        try {
+            return databaseManager.executeWithConnection(conn -> {
+                try (PreparedStatement stmt = conn.prepareStatement(sql);
+                     ResultSet rs = stmt.executeQuery()) {
 
-        } catch (SQLException e) {
-            logger.error("Erreur SQL [{}]: {}", sql, e.getMessage(), e);
+                    T result = mapper.map(rs);
+                    logMetrics(sql, startTime);
+                    return result;
+
+                } catch (SQLException e) {
+                    logger.error("Erreur SQL [{}]: {}", sql, e.getMessage(), e);
+                    return defaultValue;
+                }
+            }, context);
+
+        } catch (DatabaseException e) {
+            logger.error("Erreur base de données lors de [{}]: {}", sql, e.getMessage(), e);
             return defaultValue;
         }
     }
 
-    protected <T> T executeQueryWithParams(String sql, ResultSetMapper<T> mapper, Object... params) {
-        return executeQueryWithParams(sql, mapper, null, params);
+    protected <T> T executeQueryWithParams(String sql, ResultSetMapper<T> mapper, String context, Object... params) {
+        return executeQueryWithParams(sql, mapper, null, context, params);
     }
 
-    protected <T> T executeQueryWithParams(String sql, ResultSetMapper<T> mapper, T defaultValue, Object... params) {
+    protected <T> T executeQueryWithParams(String sql, ResultSetMapper<T> mapper, T defaultValue, String context, Object... params) {
         long startTime = System.currentTimeMillis();
-        try (Connection con = databaseManager.getConnection();
-             PreparedStatement stmt = con.prepareStatement(sql)) {
+        try {
+            return databaseManager.executeWithConnection(conn -> {
+                try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            // Paramètres
-            for (int i = 0; i < params.length; i++) {
-                stmt.setObject(i + 1, params[i]);
-            }
+                    // Paramètres
+                    for (int i = 0; i < params.length; i++) {
+                        stmt.setObject(i + 1, params[i]);
+                    }
 
-            try (ResultSet rs = stmt.executeQuery()) {
-                T result = mapper.map(rs);
+                    try (ResultSet rs = stmt.executeQuery()) {
+                        T result = mapper.map(rs);
+                        logMetrics(sql, startTime);
+                        return result;
+                    }
+                }
+            }, context);
 
-                logMetrics(sql, startTime);
-                return result;
-            }
-
-        } catch (SQLException e) {
-            logger.error("Erreur SQL avec params [{}]: {}", sql, e.getMessage(), e);
+        } catch (DatabaseException e) {
+            logger.error("Erreur lors de la requête [{}]: {}", sql, e.getMessage(), e);
             return defaultValue;
         }
     }
 
-    protected int executeUpdate(String sql, Object... params) {
+    protected int executeUpdate(String sql, String context, Object... params) {
         long startTime = System.currentTimeMillis();
-        try (Connection con = databaseManager.getConnection();
-             PreparedStatement stmt = con.prepareStatement(sql)) {
+        try {
+            return databaseManager.executeWithConnection(conn -> {
+                try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            for (int i = 0; i < params.length; i++) {
-                stmt.setObject(i + 1, params[i]);
-            }
+                    // Paramètres
+                    for (int i = 0; i < params.length; i++) {
+                        stmt.setObject(i + 1, params[i]);
+                    }
 
-            int rowsAffected = stmt.executeUpdate();
-            logMetrics(sql, startTime);
-            return rowsAffected;
+                    int rowsAffected = stmt.executeUpdate();
+                    logMetrics(sql, startTime);
+                    return rowsAffected;
+                }
+            }, context);
 
-        } catch (SQLException e) {
-            logger.error("Erreur update SQL [{}]: {}", sql, e.getMessage(), e);
+        } catch (DatabaseException e) {
+            logger.error("Erreur lors de la requête [{}]: {}", sql, e.getMessage(), e);
             return 0;
         }
     }
