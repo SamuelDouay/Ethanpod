@@ -2,7 +2,6 @@ package fr.github.ethanpod.event.controller;
 
 import fr.github.ethanpod.core.item.NavigationItem;
 import fr.github.ethanpod.event.NavigationUpdatedEvent;
-import javafx.application.Platform;
 
 import java.util.List;
 
@@ -13,11 +12,8 @@ public class NavigationUIController extends UIController {
     }
 
     public void updateNavigationUI(List<NavigationItem> navigationList) {
-        Platform.runLater(() -> {
-            NavigationUpdatedEvent event = new NavigationUpdatedEvent(
-                    "NavigationController", navigationList
-            );
-            eventManager.publishEvent(event);
-        });
+        if (!isValidList(navigationList)) return;
+        
+        publishEvent(() -> new NavigationUpdatedEvent(controllerName, navigationList));
     }
 }
