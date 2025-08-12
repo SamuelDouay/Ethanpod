@@ -1,6 +1,6 @@
 package fr.github.ethanpod.view.layout;
 
-import fr.github.ethanpod.view.event.UIEventManager;
+import fr.github.ethanpod.event.UIEventManager;
 import fr.github.ethanpod.view.util.ColorThemeConstants;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;

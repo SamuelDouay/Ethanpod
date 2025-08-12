@@ -1,4 +1,4 @@
-package fr.github.ethanpod.view.controller;
+package fr.github.ethanpod.event.controller;
 
 import fr.github.ethanpod.core.thread.MessageRouter;
 import fr.github.ethanpod.core.thread.NotificationType;

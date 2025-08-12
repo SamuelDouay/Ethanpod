@@ -1,7 +1,7 @@
-package fr.github.ethanpod.view.controller;
+package fr.github.ethanpod.event.controller;
 
 import fr.github.ethanpod.core.item.EpisodeItem;
-import fr.github.ethanpod.view.event.PodcastTop8UpdateEvent;
+import fr.github.ethanpod.event.PodcastTop8UpdateEvent;
 import javafx.application.Platform;
 
 import java.util.List;

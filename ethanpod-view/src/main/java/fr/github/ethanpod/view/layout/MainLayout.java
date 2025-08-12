@@ -1,7 +1,7 @@
 package fr.github.ethanpod.view.layout;
 
+import fr.github.ethanpod.event.UIEventManager;
 import fr.github.ethanpod.view.component.SearchComponent;
-import fr.github.ethanpod.view.event.UIEventManager;
 import fr.github.ethanpod.view.util.ColorThemeConstants;
 import fr.github.ethanpod.view.util.LayoutType;
 import javafx.geometry.Insets;

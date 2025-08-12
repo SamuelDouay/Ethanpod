@@ -1,8 +1,8 @@
-package fr.github.ethanpod.view.controller;
+package fr.github.ethanpod.event.controller;
 
 import fr.github.ethanpod.core.item.EpisodeItem;
-import fr.github.ethanpod.view.event.InboxCountUpdatedEvent;
-import fr.github.ethanpod.view.event.InboxTop8UpdatedEvent;
+import fr.github.ethanpod.event.InboxCountUpdatedEvent;
+import fr.github.ethanpod.event.InboxTop8UpdatedEvent;
 import javafx.application.Platform;
 
 import java.util.List;

@@ -2,13 +2,13 @@ package fr.github.ethanpod.view.layout;
 
 import fr.github.ethanpod.core.item.EpisodeItem;
 import fr.github.ethanpod.core.thread.EventType;
+import fr.github.ethanpod.event.*;
 import fr.github.ethanpod.view.component.episode.EpisodeComponent;
 import fr.github.ethanpod.view.component.image.ImageComponent;
 import fr.github.ethanpod.view.component.surprise.SurpriseComponent;
 import fr.github.ethanpod.view.context.ContextualLayout;
 import fr.github.ethanpod.view.context.HomeContext;
 import fr.github.ethanpod.view.context.LayoutContext;
-import fr.github.ethanpod.view.event.*;
 import fr.github.ethanpod.view.util.ColorThemeConstants;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;

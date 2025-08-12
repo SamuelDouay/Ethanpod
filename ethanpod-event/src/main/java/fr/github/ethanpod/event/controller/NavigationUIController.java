@@ -1,7 +1,7 @@
-package fr.github.ethanpod.view.controller;
+package fr.github.ethanpod.event.controller;
 
 import fr.github.ethanpod.core.item.NavigationItem;
-import fr.github.ethanpod.view.event.NavigationUpdatedEvent;
+import fr.github.ethanpod.event.NavigationUpdatedEvent;
 import javafx.application.Platform;
 
 import java.util.List;

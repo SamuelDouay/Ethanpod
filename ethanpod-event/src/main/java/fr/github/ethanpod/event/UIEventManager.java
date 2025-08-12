@@ -1,4 +1,4 @@
-package fr.github.ethanpod.view.event;
+package fr.github.ethanpod.event;
 
 import fr.github.ethanpod.core.thread.EventType;
 import org.apache.logging.log4j.LogManager;

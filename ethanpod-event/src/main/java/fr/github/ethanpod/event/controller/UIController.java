@@ -1,6 +1,6 @@
-package fr.github.ethanpod.view.controller;
+package fr.github.ethanpod.event.controller;
 
-import fr.github.ethanpod.view.event.UIEventManager;
+import fr.github.ethanpod.event.UIEventManager;
 
 public class UIController {
     protected final UIEventManager eventManager = new UIEventManager();
