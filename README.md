@@ -15,7 +15,7 @@ EthanPod is a Java application for managing and listening to podcasts.
 
 ---
 
-## About the Project 🎧
+### About the Project 🎧
 
 EthanPod is a desktop application built in Java with JavaFX. It allows you to easily manage and listen to your favorite
 podcasts. You can subscribe to podcast RSS feeds, download episodes, and play them directly within the application.
@@ -23,9 +23,9 @@ podcasts. You can subscribe to podcast RSS feeds, download episodes, and play th
 
 ---
 
-# EthanPod Architecture - Maven Modules
+## EthanPod Architecture - Maven Modules
 
-## Overview
+### Overview
 
 The EthanPod application follows a modular Maven architecture with a clear separation of responsibilities using a
 layered pattern. The project is organized around 9 main modules managed by a parent POM.
