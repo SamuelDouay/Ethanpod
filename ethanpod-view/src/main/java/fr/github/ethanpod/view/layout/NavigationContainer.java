@@ -12,195 +12,215 @@ import fr.github.ethanpod.view.context.FeedContext;
 import fr.github.ethanpod.view.util.ColorThemeConstants;
 import fr.github.ethanpod.view.util.LayoutType;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
-import javafx.scene.text.FontWeight;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign2.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class NavigationContainer {
-    private static final String FONT = "Inter";
     private static final Logger log = LogManager.getLogger(NavigationContainer.class);
-    private final ItemManager manager;
-    private final List<HBox> listNav;
-    private final UIEventManager eventManager;
+
+    // Réutilisation d'objets pour éviter les allocations
+    private static final Background MAIN_BG = new Background(
+            new BackgroundFill(ColorThemeConstants.getMain000(), null, null)
+    );
+    private static final Background PRESSED_BG = new Background(
+            new BackgroundFill(ColorThemeConstants.getMain050(), null, null)
+    );
+    private static final Border SCROLL_BORDER = new Border(
+            new BorderStroke(ColorThemeConstants.getGrey950(), BorderStrokeStyle.SOLID, null, new BorderWidths(1.0, 0, 0, 0))
+    );
+    private static final Insets LIST_PADDING = new Insets(8.0);
+
+    private final ItemManager manager = new ItemManager();
     private final LayoutManager layoutManager;
+    private final NavigationComponent navComponent = new NavigationComponent();
+
+    // Arrays fixes pour éviter les listes dynamiques
+    private final HBox[] fixedNavBoxes = new HBox[8];
+    private final NavigationItem[] fixedItems = new NavigationItem[8];
+    private Label inboxBadgeLabel;
     private VBox scrollBox;
+    private HBox selectedBox;
 
     public NavigationContainer(LayoutManager layoutManager, UIEventManager uiEventManager) {
         this.layoutManager = layoutManager;
-        this.eventManager = uiEventManager;
-        this.manager = new ItemManager();
-        this.listNav = new ArrayList<>();
-        registerEventHandlers();
+        registerEventHandlers(uiEventManager);
+        createFixedItems();
     }
 
     public VBox createMenu() {
-        VBox mainContainer = new VBox();
-        mainContainer.setBackground(new Background(new BackgroundFill(ColorThemeConstants.getMain000(), null, null)));
+        VBox mainContainer = new VBox(createFixedList(), createScrollList());
+        mainContainer.setBackground(MAIN_BG);
         VBox.setVgrow(mainContainer, Priority.ALWAYS);
-        mainContainer.getChildren().addAll(createFixedList(), createScrollList());
         return mainContainer;
     }
 
-    private VBox createList() {
-        VBox box = new VBox();
-        box.setPadding(new Insets(8.0));
-        box.setBackground(new Background(new BackgroundFill(ColorThemeConstants.getMain000(), null, null)));
-        box.setMinWidth(Region.USE_PREF_SIZE);
-        return box;
+    private void createFixedItems() {
+        fixedItems[0] = new NavigationItem(MaterialDesignH.HOME.getDescription(), "Home", true);
+        fixedItems[0].setSelected(true);
+        fixedItems[1] = new NavigationItem(MaterialDesignP.PLAYLIST_PLAY.getDescription(), "Queue", true);
+        fixedItems[2] = new NavigationItem(MaterialDesignI.INBOX.getDescription(), "Inbox", true);
+        fixedItems[3] = new NavigationItem(MaterialDesignR.RSS.getDescription(), "Episodes", true);
+        fixedItems[4] = new NavigationItem(MaterialDesignV.VIEW_GRID_OUTLINE.getDescription(), "Subscription", true);
+        fixedItems[5] = new NavigationItem(MaterialDesignD.DOWNLOAD.getDescription(), "Downloads", true);
+        fixedItems[6] = new NavigationItem(MaterialDesignH.HISTORY.getDescription(), "Playback history", true);
+        fixedItems[7] = new NavigationItem(MaterialDesignP.PLUS.getDescription(), "Add podcast", true);
+
+        for (NavigationItem item : fixedItems) {
+            manager.addItem(item);
+        }
     }
 
     private VBox createFixedList() {
-        VBox box = createList();
+        VBox box = createListContainer();
 
-        NavigationItem homeItem = new NavigationItem(MaterialDesignH.HOME.getDescription(), "Home", true);
-        homeItem.setSelected(true);
-        NavigationItem playlistItem = new NavigationItem(MaterialDesignP.PLAYLIST_PLAY.getDescription(), "Queue", true);
-        NavigationItem inboxItem = new NavigationItem(MaterialDesignI.INBOX.getDescription(), "Inbox", 120, true);
-        NavigationItem episodesItem = new NavigationItem(MaterialDesignR.RSS.getDescription(), "Episodes", true);
-        NavigationItem subscriptionsItem = new NavigationItem(MaterialDesignV.VIEW_GRID_OUTLINE.getDescription(), "Subscription", 120, true);
-        NavigationItem downloadsItem = new NavigationItem(MaterialDesignD.DOWNLOAD.getDescription(), "Downloads", 123, true);
-        NavigationItem historyItem = new NavigationItem(MaterialDesignH.HISTORY.getDescription(), "Playback history", true);
-        NavigationItem addPodcastItem = new NavigationItem(MaterialDesignP.PLUS.getDescription(), "Add podcast", true);
+        LayoutType[] layoutTypes = {
+                LayoutType.HOME, LayoutType.QUEUE, LayoutType.INBOX, LayoutType.EPISODES,
+                LayoutType.SUBSCRIPTION, LayoutType.DOWNLOAD, LayoutType.HISTORY, LayoutType.ADD
+        };
 
-        listNav.add(createNavigationComponent(homeItem, LayoutType.HOME));
-        listNav.add(createNavigationComponent(playlistItem, LayoutType.QUEUE));
-        listNav.add(createNavigationComponent(inboxItem, LayoutType.INBOX));
-        listNav.add(createNavigationComponent(episodesItem, LayoutType.EPISODES));
-        listNav.add(createNavigationComponent(subscriptionsItem, LayoutType.SUBSCRIPTION));
-        listNav.add(createNavigationComponent(downloadsItem, LayoutType.DOWNLOAD));
-        listNav.add(createNavigationComponent(historyItem, LayoutType.HISTORY));
-        listNav.add(createNavigationComponent(addPodcastItem, LayoutType.ADD));
 
-        box.getChildren().addAll(listNav);
+        for (int i = 0; i < fixedItems.length; i++) {
+            fixedNavBoxes[i] = createOptimizedNavigationBox(fixedItems[i], layoutTypes[i]);
+            if (fixedItems[i].isSelected()) {
+                selectedBox = fixedNavBoxes[i];
+            }
 
+            if (i == 2 && fixedItems[i].getNumber() > 0) {
+                inboxBadgeLabel = findBadgeLabel(fixedNavBoxes[i]);
+            }
+        }
+
+        box.getChildren().addAll(fixedNavBoxes);
         return box;
     }
 
     private ScrollPane createScrollList() {
-        scrollBox = createList();
-        ScrollPane scrollPane = getScrollPane(scrollBox);
+        scrollBox = createListContainer();
+        ScrollPane scrollPane = createOptimizedScrollPane(scrollBox);
         VBox.setVgrow(scrollPane, Priority.ALWAYS);
         return scrollPane;
     }
 
-    private ScrollPane getScrollPane(VBox box) {
+    private VBox createListContainer() {
+        VBox box = new VBox();
+        box.setPadding(LIST_PADDING);
+        box.setBackground(MAIN_BG);
+        box.setMinWidth(Region.USE_PREF_SIZE);
+        return box;
+    }
+
+    private ScrollPane createOptimizedScrollPane(VBox box) {
         ScrollPane scrollPane = new ScrollPane(box);
         scrollPane.setFitToWidth(true);
         scrollPane.setFitToHeight(true);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        scrollPane.setBackground(new Background(new BackgroundFill(ColorThemeConstants.getMain000(), null, null)));
-        scrollPane.setBorder(new Border(new BorderStroke(ColorThemeConstants.getGrey950(), BorderStrokeStyle.SOLID, null, new BorderWidths(1.0, 0, 0, 0))));
+        scrollPane.setBackground(MAIN_BG);
+        scrollPane.setBorder(SCROLL_BORDER);
         return scrollPane;
     }
 
-    private HBox createNavigationComponent(NavigationItem item, LayoutType layoutType) {
-        manager.addItem(item);
-        NavigationComponent container = new NavigationComponent();
-        HBox box = container.createNavigationCard(item);
+    private HBox createOptimizedNavigationBox(NavigationItem item, LayoutType layoutType) {
+        HBox box = navComponent.createNavigationCard(item);
 
-        box.setOnMouseClicked(_ -> {
-            manager.setItemState(true, item.getUuid());
-            for (HBox hBox : listNav) {
-                updateAppearance(hBox, hBox.equals(box));
-            }
-            if (layoutType != null && layoutManager != null) {
-                if (layoutType.equals(LayoutType.FEED)) {
-                    FeedContext context = new FeedContext(item.getTitle(), item.getUuid().toString(), item.getNumber());
-                    layoutManager.setLayout(layoutType, context);
 
-                } else {
-                    layoutManager.setLayout(layoutType);
-                }
-            }
-        });
-        box.setOnMouseEntered(_ -> updateAppearance(box, true));
-        box.setOnMouseExited(_ -> updateAppearance(box, item.isSelected()));
-        box.setOnMousePressed(_ -> box.setBackground(new Background(new BackgroundFill(ColorThemeConstants.getMain050(), null, null))));
-        box.setOnMouseReleased(_ -> updateAppearance(box, item.isSelected()));
+        box.setOnMouseClicked(_ -> handleNavClick(box, item, layoutType));
+        box.setOnMouseEntered(_ -> NavigationComponent.updateAppearance(box, true, true));
+        box.setOnMouseExited(_ -> NavigationComponent.updateAppearance(box, item.isSelected(), false));
+        box.setOnMousePressed(_ -> box.setBackground(PRESSED_BG));
+        box.setOnMouseReleased(_ -> NavigationComponent.updateAppearance(box, item.isSelected(), false));
 
         return box;
     }
 
-    private void updateAppearance(HBox mainBox, boolean isSelected) {
-        Label titleLabel = (Label) ((HBox) mainBox.getChildren().getFirst()).getChildren().get(1);
-        Node icon = ((HBox) mainBox.getChildren().getFirst()).getChildren().get(0);
+    private void handleNavClick(HBox clickedBox, NavigationItem item, LayoutType layoutType) {
+        manager.setItemState(true, item.getUuid());
 
-        Background background = new Background(new BackgroundFill(
-                isSelected ? ColorThemeConstants.getMain100() : Color.TRANSPARENT,
-                new CornerRadii(2.0),
-                null
-        ));
-        updateBackgroundIfNeeded(mainBox, background);
 
-        if (isSelected) {
-            titleLabel.setTextFill(ColorThemeConstants.getMain950());
-            titleLabel.setFont(Font.font(FONT, FontWeight.BOLD, 12));
-            if (!(icon instanceof FontIcon)) {
-                return;
+        if (selectedBox != null && selectedBox != clickedBox) {
+            NavigationComponent.updateAppearance(selectedBox, false, false);
+        }
+        selectedBox = clickedBox;
+        NavigationComponent.updateAppearance(clickedBox, true, false);
+
+
+        if (layoutType != null && layoutManager != null) {
+            if (layoutType == LayoutType.FEED) {
+                FeedContext context = new FeedContext(item.getTitle(), item.getUuid().toString(), item.getNumber());
+                layoutManager.setLayout(layoutType, context);
+            } else {
+                layoutManager.setLayout(layoutType);
             }
-            ((FontIcon) icon).setIconColor(ColorThemeConstants.getMain950());
-        } else {
-            titleLabel.setTextFill(ColorThemeConstants.getGrey800());
-            titleLabel.setFont(Font.font(FONT, FontPosture.REGULAR, 12));
-            if (!(icon instanceof FontIcon)) {
-                return;
-            }
-            ((FontIcon) icon).setIconColor(ColorThemeConstants.getGrey800());
         }
     }
-
 
     private void updateNavigationList(List<NavigationItem> navigationList) {
         scrollBox.getChildren().clear();
-        for (NavigationItem navigationItem : navigationList) {
+
+        for (NavigationItem item : navigationList) {
             try {
-                Node component = createNavigationComponent(navigationItem, LayoutType.FEED);
+                HBox component = createOptimizedNavigationBox(item, LayoutType.FEED);
                 scrollBox.getChildren().add(component);
             } catch (Exception e) {
-                log.error("Erreur création composant pour {}", navigationItem, e);
+                log.error("Erreur création composant pour {}", item, e);
             }
-        }
-    }
-
-    private void updateBackgroundIfNeeded(Region region, Background newBackground) {
-        Background current = region.getBackground();
-        if (current == null || !current.equals(newBackground)) {
-            region.setBackground(newBackground);
         }
     }
 
     private void updateInboxCount(Integer count) {
-        log.info(count);
+        if (count != null && count > 0) {
+            fixedItems[2].setNumber(count);
+
+            // Mise à jour directe du badge existant
+            if (inboxBadgeLabel != null) {
+                inboxBadgeLabel.setText(String.valueOf(count));
+            } else {
+                // Création du badge si il n'existait pas
+                HBox oldBox = fixedNavBoxes[2];
+                HBox newBox = createOptimizedNavigationBox(fixedItems[2], LayoutType.INBOX);
+
+                VBox parent = (VBox) oldBox.getParent();
+                int index = parent.getChildren().indexOf(oldBox);
+                parent.getChildren().set(index, newBox);
+
+                fixedNavBoxes[2] = newBox;
+                inboxBadgeLabel = findBadgeLabel(newBox);
+
+                if (selectedBox == oldBox) {
+                    selectedBox = newBox;
+                }
+            }
+
+            log.debug("Inbox count updated: {}", count);
+        }
     }
 
-    private void registerEventHandlers() {
-        // Créer des handlers spécifiques pour chaque type d'événement
-        UIEventHandler<NavigationUpdatedEvent> navigationHandler = event -> {
-            log.info("Mise à jour de la navigation avec {} éléments", event.getItemCount());
-            updateNavigationList(event.getNavigationItems());
-        };
+    private Label findBadgeLabel(HBox navBox) {
+        if (navBox.getChildren().size() >= 3) {
+            return (Label) navBox.getChildren().get(2);
+        }
+        return null;
+    }
 
-        UIEventHandler<InboxCountUpdatedEvent> inboxHandler = event -> {
-            log.info("Mise à jour du compteur inbox: {}",
-                    event.getCount());
-            updateInboxCount(event.getCount());
-        };
+    private void registerEventHandlers(UIEventManager eventManager) {
+        eventManager.registerHandler(EventType.NAVIGATION_UPDATED,
+                (UIEventHandler<NavigationUpdatedEvent>) event -> {
+                    log.info("Navigation update: {} items", event.getItemCount());
+                    updateNavigationList(event.getNavigationItems());
+                }
+        );
 
-        // Enregistrement des handlers
-        eventManager.registerHandler(EventType.NAVIGATION_UPDATED, navigationHandler);
-        eventManager.registerHandler(EventType.INBOX_COUNT_UPDATED, inboxHandler);
+        eventManager.registerHandler(EventType.INBOX_COUNT_UPDATED,
+                (UIEventHandler<InboxCountUpdatedEvent>) event -> {
+                    log.info("Inbox count update: {}", event.getCount());
+                    updateInboxCount(event.getCount());
+                }
+        );
     }
 }

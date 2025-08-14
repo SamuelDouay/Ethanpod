@@ -3,8 +3,8 @@ package fr.github.ethanpod.core.item;
 public class NavigationItem extends Item {
     private final boolean icon;
     private final String title;
-    private final int number;
     private final String name;
+    private int number;
 
     public NavigationItem(String name, String title, boolean icon) {
         super();
@@ -32,6 +32,10 @@ public class NavigationItem extends Item {
 
     public int getNumber() {
         return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
     }
 
     public String getName() {
