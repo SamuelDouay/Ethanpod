@@ -16,6 +16,14 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         logger.info("Initialisation de l'interface utilisateur principale (Main)");
+        
+        System.setProperty("javafx.animation.pulse", "false");
+        System.setProperty("javafx.embed.singleThread", "true");
+        System.setProperty("prism.order", "sw");
+        System.setProperty("prism.text", "t2k");
+        System.setProperty("javafx.animation.pulse", "false");
+        System.setProperty("prism.subpixeltext", "false");
+        System.setProperty("prism.lcdtext", "false");
 
         // Configurer le comportement de fermeture de JavaFX
         Platform.setImplicitExit(false);
@@ -58,6 +66,9 @@ public class Main extends Application {
 
             // Notifier le ViewThread que JavaFX est prêt
             notifyViewThreadReady();
+
+            // Nettoie les objets temporaires du setup
+            Platform.runLater(System::gc);
 
         } catch (Exception e) {
             logger.error("Erreur lors de l'initialisation de l'interface", e);

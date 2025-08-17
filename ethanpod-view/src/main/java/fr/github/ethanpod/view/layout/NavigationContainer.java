@@ -7,7 +7,7 @@ import fr.github.ethanpod.event.InboxCountUpdatedEvent;
 import fr.github.ethanpod.event.NavigationUpdatedEvent;
 import fr.github.ethanpod.event.UIEventHandler;
 import fr.github.ethanpod.event.UIEventManager;
-import fr.github.ethanpod.view.component.navigation.NavigationComponent;
+import fr.github.ethanpod.view.component.NavigationComponent;
 import fr.github.ethanpod.view.context.FeedContext;
 import fr.github.ethanpod.view.util.ColorThemeConstants;
 import fr.github.ethanpod.view.util.LayoutType;
@@ -195,6 +195,13 @@ public class NavigationContainer {
                 if (selectedBox == oldBox) {
                     selectedBox = newBox;
                 }
+
+                // Nettoyage explicite de l'ancien composant
+                oldBox.setOnMouseClicked(null);
+                oldBox.setOnMouseEntered(null);
+                oldBox.setOnMouseExited(null);
+                oldBox.setOnMousePressed(null);
+                oldBox.setOnMouseReleased(null);
             }
 
             log.debug("Inbox count updated: {}", count);

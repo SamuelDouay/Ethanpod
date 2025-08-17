@@ -1,4 +1,4 @@
-package fr.github.ethanpod.view.component.navigation;
+package fr.github.ethanpod.view.component;
 
 import fr.github.ethanpod.core.item.NavigationItem;
 import fr.github.ethanpod.view.util.ColorThemeConstants;
