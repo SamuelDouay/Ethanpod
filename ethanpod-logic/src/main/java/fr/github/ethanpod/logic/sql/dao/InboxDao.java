@@ -37,7 +37,7 @@ public class InboxDao extends BaseDao {
                         result.add(new EpisodeItem(imageUrl,
                                 false,
                                 rs.getString("title"),
-                                Converter.timestampToDate(rs.getLong("date")),
+                                Converter.convertToHHMMSS(rs.getLong("duration")),
                                 Converter.timestampToDate(rs.getLong("date")),
                                 Converter.getSize(rs.getLong("size")),
                                 false));

@@ -23,6 +23,7 @@ public class DataServiceManager extends BaseServiceManager<DataService> {
         registerService(ServiceConstants.INBOX_SERVICE, new DataInboxService(executor, databaseManager));
         registerService(ServiceConstants.QUEUE_SERVICE, new DataQueueService(executor, databaseManager));
         registerService(ServiceConstants.PODCAST_SERVICE, new DataPodcastService(executor, databaseManager));
+        registerService(ServiceConstants.DOWNLOAD_SERVICE, new DataDownloadService(executor, databaseManager));
     }
 
     public DataNavigationService getNavigationService() {
@@ -40,6 +41,11 @@ public class DataServiceManager extends BaseServiceManager<DataService> {
     public DataPodcastService getPodcastService() {
         return getService(ServiceConstants.PODCAST_SERVICE, DataPodcastService.class);
     }
+
+    public DataDownloadService getDownloadService() {
+        return getService(ServiceConstants.DOWNLOAD_SERVICE, DataDownloadService.class);
+    }
+
 
     public void refreshAllData() {
         logger.info("Rafraîchissement de toutes les données des services");

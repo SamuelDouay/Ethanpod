@@ -49,6 +49,7 @@ public class LogicHandle {
             case GET_INBOX_TOP8 -> serviceManager.getInboxService().getTop8InInbox(requestId);
             case GET_QUEUE_TOP8 -> serviceManager.getQueueService().getQueueTop8(requestId);
             case GET_PODCAST_READ_TOP8 -> serviceManager.getPodcastService().getTop8PodcastRead(requestId);
+            case GET_DOWNLOAD_TOP8 -> serviceManager.getDownloadService().getQueueTop8(requestId);
             default -> logger.warn("Requête non reconnue: {}", content);
 
         }

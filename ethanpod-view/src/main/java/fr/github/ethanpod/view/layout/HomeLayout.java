@@ -31,6 +31,7 @@ public class HomeLayout extends Layout implements ContextualLayout {
     public static final String TITLE_EXAMPLE = "Lil Nas X, une icône noire, et gay et flamboyante [REDIF]";
     private static final Logger log = LogManager.getLogger(HomeLayout.class);
     private HBox topQueue;
+    private VBox topDownload;
     private HBox classicContainer;
     private VBox inboxContainer;
     private VBox mainContainer;
@@ -67,6 +68,7 @@ public class HomeLayout extends Layout implements ContextualLayout {
     private VBox getDownloadSection() {
         VBox box = getMainBox();
         box.getChildren().add(getTitleSection("Manage downloads"));
+        box.getChildren().add(getDownload());
         return box;
     }
 
@@ -152,6 +154,11 @@ public class HomeLayout extends Layout implements ContextualLayout {
         return scrollPane;
     }
 
+    private VBox getDownload() {
+        topDownload = new VBox();
+        return topDownload;
+    }
+
     @Override
     public VBox getLayout() {
         mainContainer = getContainer();
@@ -194,11 +201,23 @@ public class HomeLayout extends Layout implements ContextualLayout {
             newLabel.setText(tet + " (" + event.getCount() + ")");
         };
 
+        UIEventHandler<DownloadTop8UpdatedEvent> downloadTop8UpdatedEventUIEventHandler = event -> {
+            log.info("Mise à jour download avec {} éléments", event.getEpisodeItems().size());
+            updateTopDownload(event.getEpisodeItems());
+        };
         // Enregistrement des handlers
         eventManager.registerHandler(EventType.QUEUE_TOP8_UPDATED, queueTop8UpdateEventUIEventHandler);
         eventManager.registerHandler(EventType.INBOX_TOP8_UPDATED, inboxTop8UpdatedEventUIEventHandler);
         eventManager.registerHandler(EventType.PODCAST_TOP8_UPDATED, podcastTop8UpdateEventUIEventHandler);
         eventManager.registerHandler(EventType.INBOX_COUNT_UPDATED, inboxCountUpdatedEventUIEventHandler);
+        eventManager.registerHandler(EventType.DOWNLOAD_TOP8_UPDATED, downloadTop8UpdatedEventUIEventHandler);
+    }
+
+    private void updateTopDownload(List<EpisodeItem> episodeItems) {
+        topDownload.getChildren().clear();
+        for (EpisodeItem episodeItem : episodeItems) {
+            topDownload.getChildren().add(EPISODE_COMPONENT.createInboxEpisode(episodeItem));
+        }
     }
 
     private void updateTopQueue(List<EpisodeItem> episodeItems) {

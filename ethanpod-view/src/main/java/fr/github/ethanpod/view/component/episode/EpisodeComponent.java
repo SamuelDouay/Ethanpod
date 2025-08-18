@@ -14,7 +14,7 @@ public class EpisodeComponent {
 
     public HBox createInboxEpisode(EpisodeItem item) {
         return new EpisodeBuilder().withEpisodeItem(item)
-                .withButton(new ButtonComponent().createPrimaryButton("Télécharger"))
+                .withButton(new ButtonComponent().createPrimaryButton("Download"))
                 .withBadge(new BadgeComponent().createBlueBadge(new FontIcon(MaterialDesignI.INBOX)))
                 .build();
     }

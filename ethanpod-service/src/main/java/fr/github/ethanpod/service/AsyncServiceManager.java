@@ -24,6 +24,7 @@ public class AsyncServiceManager extends BaseServiceManager<AsyncService> {
         registerService(ServiceConstants.INBOX_SERVICE, new AsyncInboxService());
         registerService(ServiceConstants.QUEUE_SERVICE, new AsyncQueueService());
         registerService(ServiceConstants.PODCAST_SERVICE, new AsyncPodcastService());
+        registerService(ServiceConstants.DOWNLOAD_SERVICE, new AsyncDownloadService());
     }
 
     public AsyncNavigationService getNavigationService() {
@@ -40,6 +41,10 @@ public class AsyncServiceManager extends BaseServiceManager<AsyncService> {
 
     public AsyncPodcastService getPodcastService() {
         return getService(ServiceConstants.PODCAST_SERVICE, AsyncPodcastService.class);
+    }
+
+    public AsyncDownloadService getDownloadService() {
+        return getService(ServiceConstants.DOWNLOAD_SERVICE, AsyncDownloadService.class);
     }
 
     public void handleResponse(ThreadMessage message) {

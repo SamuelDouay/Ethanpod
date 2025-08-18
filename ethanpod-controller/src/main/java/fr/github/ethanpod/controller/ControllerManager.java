@@ -17,6 +17,7 @@ public class ControllerManager extends BaseServiceManager<Controller> {
         registerService(ServiceConstants.INBOX_SERVICE, new InboxController(asyncServiceManager));
         registerService(ServiceConstants.QUEUE_SERVICE, new QueueController(asyncServiceManager));
         registerService(ServiceConstants.PODCAST_SERVICE, new PodcastController(asyncServiceManager));
+        registerService(ServiceConstants.DOWNLOAD_SERVICE, new DownloadController(asyncServiceManager));
     }
 
     public void initializeAllServices() {
