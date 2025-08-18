@@ -2,6 +2,7 @@ package fr.github.ethanpod.view;
 
 import fr.github.ethanpod.core.thread.MessageRouter;
 import fr.github.ethanpod.core.thread.NotificationType;
+import fr.github.ethanpod.util.setting.ConfigProperties;
 import fr.github.ethanpod.view.layout.MainLayout;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -12,18 +13,18 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class Main extends Application {
+    public static final ConfigProperties CONFIG_PROPERTIES = ConfigProperties.getInstance();
     public static final Logger logger = LogManager.getLogger(Main.class);
 
     public static void main(String[] args) {
         logger.info("Initialisation de l'interface utilisateur principale (Main)");
-        
-        System.setProperty("javafx.animation.pulse", "false");
-        System.setProperty("javafx.embed.singleThread", "true");
-        System.setProperty("prism.order", "sw");
-        System.setProperty("prism.text", "t2k");
-        System.setProperty("javafx.animation.pulse", "false");
-        System.setProperty("prism.subpixeltext", "false");
-        System.setProperty("prism.lcdtext", "false");
+
+        System.setProperty("javafx.animation.pulse", CONFIG_PROPERTIES.getProperty("javafx.animation.pulse"));
+        System.setProperty("javafx.embed.singleThread", CONFIG_PROPERTIES.getProperty("javafx.embed.singleThread"));
+        System.setProperty("prism.order", CONFIG_PROPERTIES.getProperty("prism.order"));
+        System.setProperty("prism.text", CONFIG_PROPERTIES.getProperty("prism.text"));
+        System.setProperty("prism.subpixeltext", CONFIG_PROPERTIES.getProperty("prism.subpixeltext"));
+        System.setProperty("prism.lcdtext", CONFIG_PROPERTIES.getProperty("prism.lcdtext"));
 
         // Configurer le comportement de fermeture de JavaFX
         Platform.setImplicitExit(false);

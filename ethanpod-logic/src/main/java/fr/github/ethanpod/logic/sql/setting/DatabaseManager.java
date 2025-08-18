@@ -15,6 +15,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public class DatabaseManager {
+    public static final ConfigProperties CONFIG_PROPERTIES = ConfigProperties.getInstance();
     private static final Logger logger = LogManager.getLogger();
     private HikariDataSource dataSource;
     private boolean initialized = false;
@@ -63,7 +64,7 @@ public class DatabaseManager {
 
     private String buildJdbcUrl() {
         try {
-            String jdbcPrefix = ConfigProperties.getInstance().getProperty("jdbc.database");
+            String jdbcPrefix = CONFIG_PROPERTIES.getProperty("jdbc.database");
             if (jdbcPrefix == null || jdbcPrefix.trim().isEmpty()) {
                 throw EthanpodRuntimeException.configurationError("Propriété 'jdbc.database' manquante ou vide");
             }
@@ -86,24 +87,25 @@ public class DatabaseManager {
         try {
             HikariConfig config = new HikariConfig();
             config.setJdbcUrl(jdbcUrl);
-            config.setDriverClassName("org.sqlite.JDBC");
+            config.setDriverClassName(CONFIG_PROPERTIES.getProperty("driverClassName"));
 
             // Configuration optimisée pour SQLite
-            config.setMaximumPoolSize(5);
-            config.setMinimumIdle(1);
-            config.setConnectionTimeout(5000);
-            config.setIdleTimeout(300000);
-            config.setMaxLifetime(1800000); // 30 minutes
-            config.setKeepaliveTime(120000);
-            config.setPoolName("SQLitePool");
+
+            config.setMaximumPoolSize(Integer.parseInt(CONFIG_PROPERTIES.getProperty("maximumPoolSize")));
+            config.setMinimumIdle(Integer.parseInt(CONFIG_PROPERTIES.getProperty("minimumIdle")));
+            config.setConnectionTimeout(Integer.parseInt(CONFIG_PROPERTIES.getProperty("connectionTimeout")));
+            config.setIdleTimeout(Integer.parseInt(CONFIG_PROPERTIES.getProperty("idleTimeout")));
+            config.setMaxLifetime(Integer.parseInt(CONFIG_PROPERTIES.getProperty("maxLifetime"))); // 30 minutes
+            config.setKeepaliveTime(Integer.parseInt(CONFIG_PROPERTIES.getProperty("keepaliveTime")));
+            config.setPoolName(CONFIG_PROPERTIES.getProperty("poolName"));
 
             // Propriétés SQLite pour performance
-            config.addDataSourceProperty("journal_mode", "WAL");
-            config.addDataSourceProperty("synchronous", "NORMAL");
-            config.addDataSourceProperty("cache_size", "10000");
-            config.addDataSourceProperty("foreign_keys", "true");
-            config.addDataSourceProperty("busy_timeout", "5000");
-            config.addDataSourceProperty("temp_store", "MEMORY");
+            config.addDataSourceProperty("journal_mode", CONFIG_PROPERTIES.getProperty("dataSource.journal_mode"));
+            config.addDataSourceProperty("synchronous", CONFIG_PROPERTIES.getProperty("dataSource.synchronous"));
+            config.addDataSourceProperty("cache_size", CONFIG_PROPERTIES.getProperty("dataSource.cache_size"));
+            config.addDataSourceProperty("foreign_keys", CONFIG_PROPERTIES.getProperty("dataSource.foreign_keys"));
+            config.addDataSourceProperty("busy_timeout", CONFIG_PROPERTIES.getProperty("dataSource.busy_timeout"));
+            config.addDataSourceProperty("temp_store", CONFIG_PROPERTIES.getProperty("dataSource.temp_store"));
 
             logger.debug("Configuration HikariCP créée pour SQLite");
             return new HikariDataSource(config);
