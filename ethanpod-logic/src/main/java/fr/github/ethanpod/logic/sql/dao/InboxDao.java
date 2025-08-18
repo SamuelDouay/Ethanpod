@@ -23,8 +23,9 @@ public class InboxDao extends BaseDao {
     }
 
     public List<EpisodeItem> getTop8InInbox() {
-        String sql = "SELECT feed.title as title, feed.pubDate as date, feed.image_url as image_url, fm.filesize as size, fm.duration as duration " +
+        String sql = "SELECT feed.title as title, feed.pubDate as date, feed.image_url as items_image, feeds.image_url as feed_image, fm.filesize as size, fm.duration as duration " +
                 NEWS_ITEMS_JOIN + " " +
+                "INNER JOIN Feeds feeds ON feeds.id  = feed.feed " +
                 "WHERE feed.read = -1 " +
                 "ORDER BY feed.pubDate DESC " +
                 LIMIT_8;
@@ -32,7 +33,8 @@ public class InboxDao extends BaseDao {
         return executeQuery(sql, rs -> {
                     List<EpisodeItem> result = new ArrayList<>();
                     while (rs.next()) {
-                        result.add(new EpisodeItem(rs.getString("image_url"),
+                        String imageUrl = rs.getString("items_image") != null ? rs.getString("items_image") : rs.getString("feed_image");
+                        result.add(new EpisodeItem(imageUrl,
                                 false,
                                 rs.getString("title"),
                                 Converter.timestampToDate(rs.getLong("date")),

@@ -16,15 +16,17 @@ public class QueueDao extends BaseDao {
     }
 
     public List<EpisodeItem> getTop8InQueue() {
-        String sql = "SELECT items.title as title, items.pubDate as date, items.image_url as image_url " +
+        String sql = "SELECT items.title as title, items.pubDate as date, items.image_url as items_image, feeds.image_url as feed_image " +
                 QUEUE_ITEMS_JOIN +
+                "INNER JOIN Feeds feeds ON feeds.id  = items.feed " +
                 LIMIT_8;
 
         return executeQuery(sql, rs -> {
                     List<EpisodeItem> result = new ArrayList<>();
                     while (rs.next()) {
+                        String imageUrl = rs.getString("items_image") != null ? rs.getString("items_image") : rs.getString("feed_image");
                         result.add(new EpisodeItem(
-                                rs.getString("image_url"),
+                                imageUrl,
                                 false,
                                 rs.getString("title"),
                                 null,

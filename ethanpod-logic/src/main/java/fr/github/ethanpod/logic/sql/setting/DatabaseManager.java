@@ -68,9 +68,9 @@ public class DatabaseManager {
                 throw EthanpodRuntimeException.configurationError("Propriété 'jdbc.database' manquante ou vide");
             }
 
-            URL dbResource = DatabaseManager.class.getResource("/data/data_240825.db");
+            URL dbResource = DatabaseManager.class.getResource("/data/data_140825.db");
             if (dbResource == null) {
-                throw EthanpodRuntimeException.configurationError("Fichier de base de données non trouvé: /data/data_240825.db");
+                throw EthanpodRuntimeException.configurationError("Fichier de base de données non trouvé: /data/data_140825.db");
             }
 
             String jdbcUrl = jdbcPrefix + dbResource;

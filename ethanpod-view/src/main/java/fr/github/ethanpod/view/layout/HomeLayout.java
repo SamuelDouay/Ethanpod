@@ -34,6 +34,7 @@ public class HomeLayout extends Layout implements ContextualLayout {
     private HBox classicContainer;
     private VBox inboxContainer;
     private VBox mainContainer;
+    private Label newLabel;
 
     public HomeLayout(UIEventManager uiEventManager) {
         super("Home", uiEventManager);
@@ -42,7 +43,8 @@ public class HomeLayout extends Layout implements ContextualLayout {
 
     private VBox getNewsSection() {
         VBox box = getMainBox();
-        box.getChildren().add(getTitleSection("See what's news"));
+        newLabel = getTitleSection("See what's news");
+        box.getChildren().add(newLabel);
         box.getChildren().add(getNewsTable());
         return box;
     }
@@ -186,10 +188,17 @@ public class HomeLayout extends Layout implements ContextualLayout {
             updateTopPodcast(event.getEpisodeItems());
         };
 
+        UIEventHandler<InboxCountUpdatedEvent> inboxCountUpdatedEventUIEventHandler = event -> {
+            log.info("Inbox count update: {}", event.getCount());
+            String tet = newLabel.getText();
+            newLabel.setText(tet + " (" + event.getCount() + ")");
+        };
+
         // Enregistrement des handlers
         eventManager.registerHandler(EventType.QUEUE_TOP8_UPDATED, queueTop8UpdateEventUIEventHandler);
         eventManager.registerHandler(EventType.INBOX_TOP8_UPDATED, inboxTop8UpdatedEventUIEventHandler);
         eventManager.registerHandler(EventType.PODCAST_TOP8_UPDATED, podcastTop8UpdateEventUIEventHandler);
+        eventManager.registerHandler(EventType.INBOX_COUNT_UPDATED, inboxCountUpdatedEventUIEventHandler);
     }
 
     private void updateTopQueue(List<EpisodeItem> episodeItems) {
