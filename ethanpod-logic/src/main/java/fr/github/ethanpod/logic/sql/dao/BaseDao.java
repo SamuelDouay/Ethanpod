@@ -49,10 +49,6 @@ public abstract class BaseDao {
         }
     }
 
-    protected <T> T executeQueryWithParams(String sql, ResultSetMapper<T> mapper, String context, Object... params) {
-        return executeQueryWithParams(sql, mapper, null, context, params);
-    }
-
     protected <T> T executeQueryWithParams(String sql, ResultSetMapper<T> mapper, T defaultValue, String context, Object... params) {
         long startTime = System.currentTimeMillis();
         try {
