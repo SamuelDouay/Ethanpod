@@ -66,13 +66,13 @@ public class NavigationComponent {
         // Icône/Image - création directe
         Node graphic;
         if (item.isIcon()) {
-            FontIcon icon = new FontIcon(item.getName());
+            FontIcon icon = new FontIcon(item.getUrlImage());
             icon.setIconSize((int) NAVIGATION_ICON_SIZE);
             icon.setIconColor(item.isSelected() ?
                     ColorThemeConstants.getMain950() : ColorThemeConstants.getGrey800());
             graphic = icon;
         } else {
-            ImageView img = new ImageView(ImageCache.getImage(item.getName()));
+            ImageView img = new ImageView(ImageCache.getImage(item.getUrlImage()));
             img.setFitWidth(NAVIGATION_ICON_SIZE);
             img.setFitHeight(NAVIGATION_ICON_SIZE);
             graphic = img;

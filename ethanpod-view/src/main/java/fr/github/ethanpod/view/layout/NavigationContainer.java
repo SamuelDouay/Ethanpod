@@ -61,15 +61,15 @@ public class NavigationContainer {
     }
 
     private void createFixedItems() {
-        fixedItems[0] = new NavigationItem(MaterialDesignH.HOME.getDescription(), "Home", true);
+        fixedItems[0] = new NavigationItem(MaterialDesignH.HOME.getDescription(), "Home", true, 0);
         fixedItems[0].setSelected(true);
-        fixedItems[1] = new NavigationItem(MaterialDesignP.PLAYLIST_PLAY.getDescription(), "Queue", true);
-        fixedItems[2] = new NavigationItem(MaterialDesignI.INBOX.getDescription(), "Inbox", true);
-        fixedItems[3] = new NavigationItem(MaterialDesignR.RSS.getDescription(), "Episodes", true);
-        fixedItems[4] = new NavigationItem(MaterialDesignV.VIEW_GRID_OUTLINE.getDescription(), "Subscription", true);
-        fixedItems[5] = new NavigationItem(MaterialDesignD.DOWNLOAD.getDescription(), "Downloads", true);
-        fixedItems[6] = new NavigationItem(MaterialDesignH.HISTORY.getDescription(), "Playback history", true);
-        fixedItems[7] = new NavigationItem(MaterialDesignP.PLUS.getDescription(), "Add podcast", true);
+        fixedItems[1] = new NavigationItem(MaterialDesignP.PLAYLIST_PLAY.getDescription(), "Queue", true, 0);
+        fixedItems[2] = new NavigationItem(MaterialDesignI.INBOX.getDescription(), "Inbox", true, 0);
+        fixedItems[3] = new NavigationItem(MaterialDesignR.RSS.getDescription(), "Episodes", true, 0);
+        fixedItems[4] = new NavigationItem(MaterialDesignV.VIEW_GRID_OUTLINE.getDescription(), "Subscription", true, 0);
+        fixedItems[5] = new NavigationItem(MaterialDesignD.DOWNLOAD.getDescription(), "Downloads", true, 0);
+        fixedItems[6] = new NavigationItem(MaterialDesignH.HISTORY.getDescription(), "Playback history", true, 0);
+        fixedItems[7] = new NavigationItem(MaterialDesignP.PLUS.getDescription(), "Add podcast", true, 0);
 
         for (NavigationItem item : fixedItems) {
             manager.addItem(item);
@@ -152,7 +152,7 @@ public class NavigationContainer {
 
         if (layoutType != null && layoutManager != null) {
             if (layoutType == LayoutType.FEED) {
-                FeedContext context = new FeedContext(item.getTitle(), item.getUuid().toString(), item.getNumber());
+                FeedContext context = new FeedContext(item.getTitle(), item.getUuid().toString(), item.getNumber(), item.getId());
                 layoutManager.setLayout(layoutType, context);
             } else {
                 layoutManager.setLayout(layoutType);

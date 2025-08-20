@@ -79,7 +79,7 @@ public class Main extends Application {
     }
 
     private void notifyViewThreadReady() {
-        MessageRouter.getInstance().sendNotification(MessageRouter.UI_EVENT_THREAD, MessageRouter.VIEW_THREAD, NotificationType.JAVAFX_READY);
+        MessageRouter.getInstance().sendNotification(MessageRouter.JAVAFX_THREAD, MessageRouter.VIEW_THREAD, NotificationType.JAVAFX_READY);
     }
 
     private void handleApplicationShutdown() {

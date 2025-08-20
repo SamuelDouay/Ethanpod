@@ -12,7 +12,7 @@ public class NavigationDao extends BaseDao {
     }
 
     public List<NavigationItem> getList() {
-        String sql = "SELECT f.title, f.image_url, " +
+        String sql = "SELECT f.id, f.title, f.image_url, " +
                 "(SELECT COUNT(*) FROM FeedItems fi WHERE fi.feed = f.id AND fi.read = -1) as unread_count " +
                 " FROM Feeds f ORDER BY unread_count DESC, f.title ASC";
 
@@ -23,7 +23,8 @@ public class NavigationDao extends BaseDao {
                                 rs.getString("image_url"),
                                 rs.getString("title"),
                                 rs.getInt("unread_count"),
-                                false
+                                false,
+                                rs.getInt("id")
                         ));
                     }
                     return result;

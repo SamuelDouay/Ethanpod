@@ -11,6 +11,7 @@ public class MessageRouter {
     public static final String UI_EVENT_THREAD = "UIEventThread";
     public static final String VIEW_THREAD = "ViewThread";
     public static final String LOGIC_THREAD = "LogicThread";
+    public static final String JAVAFX_THREAD = "JavaFX Application Thread";
     private static final Logger logger = LogManager.getLogger(MessageRouter.class);
     private final ConcurrentHashMap<String, BlockingQueue<ThreadMessage>> threadQueues;
     private final ConcurrentHashMap<String, String> requestSenders;
@@ -69,23 +70,23 @@ public class MessageRouter {
     }
 
     public void sendRequest(RequestType requestType, String requestId, Object data) {
-        ThreadMessage message = MessageBuilder.request(requestType, requestId, data);
-        routeMessage(message);
+        routeMessage(MessageBuilder.request(requestType, requestId, data));
     }
 
     public void sendResponse(String requestId, ResponseType responseType, Object data) {
-        ThreadMessage message = MessageBuilder.response(requestId, responseType, data);
-        routeMessage(message);
+        routeMessage(MessageBuilder.response(requestId, responseType, data));
     }
 
     public void sendEvent(EventType eventType, String requestId, Object data) {
-        ThreadMessage message = MessageBuilder.event(eventType, requestId, data);
-        routeMessage(message);
+        routeMessage(MessageBuilder.event(eventType, requestId, data));
     }
 
     public void sendNotification(String senderId, String receiverId, NotificationType notificationType) {
-        ThreadMessage message = MessageBuilder.notification(senderId, receiverId, notificationType);
-        routeMessage(message);
+        routeMessage(MessageBuilder.notification(senderId, receiverId, notificationType));
+    }
+
+    public void userRequest(UserRequestType type, String requestId, Object data) {
+        routeMessage(MessageBuilder.userRequest(type, requestId, data));
     }
 
     private static class Holder {

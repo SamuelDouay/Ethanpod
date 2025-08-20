@@ -24,4 +24,10 @@ public class DataPodcastService extends DataService {
                 podcastDao::getTop8PodcastRead,
                 "getting top 8 podcast");
     }
+
+    public void getPodcastById(String requestId, Integer id) {
+        executeAsync(requestId, ResponseType.PODCAST_BY_ID_RESULT,
+                () -> podcastDao.getPodcastById(id),
+                "getting podcast n°" + id);
+    }
 }

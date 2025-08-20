@@ -40,7 +40,6 @@ public abstract class DataService {
                     } else {
                         messageRouter.sendResponse(requestId, responseType, result);
                     }
-                    executor.shutdown();
                 });
     }
 }

@@ -20,6 +20,15 @@ public class PodcastController extends Controller {
         );
     }
 
+    public void getPodcastById(Integer id) {
+        executeAsyncOperation(
+                "Find podcast n°" + id,
+                () -> asyncServiceManager.getPodcastService().getPodcastById(id),
+                EventType.PODCAST_BY_ID_UPDATED,
+                "Podcast not found n°" + id
+        );
+    }
+
     @Override
     void initializeUI() {
         CompletableFuture.runAsync(this::loadTop8PodcastRead, UI_EXECUTOR).whenComplete((_, _) -> UI_EXECUTOR.shutdown());

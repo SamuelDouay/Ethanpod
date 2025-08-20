@@ -21,11 +21,10 @@ public class MessageBuilder {
     }
 
     public static ThreadMessage notification(String senderId, String receiverId, NotificationType type) {
-        String id = generateId(type.name());
-        return new ThreadMessage(id, senderId, receiverId, MessageCategory.NOTIFICATION, type, null);
+        return new ThreadMessage(type.name(), senderId, receiverId, MessageCategory.NOTIFICATION, type, null);
     }
 
-    private static String generateId(String typeName) {
-        return String.format("(%s)%s", "NOT", typeName);
+    public static ThreadMessage userRequest(UserRequestType type, String requestId, Object data) {
+        return new ThreadMessage(requestId, JAVAFX_THREAD, VIEW_THREAD, MessageCategory.USER_REQUEST, type, data);
     }
 }

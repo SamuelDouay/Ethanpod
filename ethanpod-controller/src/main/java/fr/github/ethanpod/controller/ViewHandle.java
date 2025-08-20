@@ -43,12 +43,17 @@ public class ViewHandle {
             logger.debug(message);
             switch (message.category()) {
                 case MessageCategory.RESPONSE -> handleResponse(message);
+                case MessageCategory.USER_REQUEST -> handleUserRequest(message);
                 case MessageCategory.DATA_UPDATE -> handleDataUpdate(message);
                 case MessageCategory.NOTIFICATION -> handleNotification(message);
                 case MessageCategory.ERROR -> handleError(message);
-                default -> logger.warn("Type de message non géré: {}", message.type());
+                default -> logger.warn("Category not found : {}", message.category());
             }
         }
+    }
+
+    private void handleUserRequest(ThreadMessage message) {
+        controllerManager.handleUserRequest(message);
     }
 
     private void handleResponse(ThreadMessage message) {

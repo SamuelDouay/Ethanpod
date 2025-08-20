@@ -3,6 +3,7 @@ package fr.github.ethanpod.event.controller;
 
 import fr.github.ethanpod.core.item.EpisodeItem;
 import fr.github.ethanpod.core.item.NavigationItem;
+import fr.github.ethanpod.core.item.PodcastItem;
 import fr.github.ethanpod.core.thread.EventType;
 import fr.github.ethanpod.core.thread.MessageCategory;
 import fr.github.ethanpod.core.thread.MessageRouter;
@@ -57,6 +58,8 @@ public class UIEventHandle {
                     uiControllerManager.getPodcastService().updatePodcastTop8UI((List<EpisodeItem>) message.data());
             case DOWNLOAD_TOP8_UPDATED ->
                     uiControllerManager.getDownloadService().updateDownloadTop8UI((List<EpisodeItem>) message.data());
+            case PODCAST_BY_ID_UPDATED ->
+                    uiControllerManager.getPodcastService().updatePodcastById((PodcastItem) message.data());
             default -> logger.warn("Requête non reconnue: {}", content);
 
         }

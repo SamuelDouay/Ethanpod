@@ -1,6 +1,7 @@
 package fr.github.ethanpod.logic.sql.dao;
 
 import fr.github.ethanpod.core.item.EpisodeItem;
+import fr.github.ethanpod.core.item.PodcastItem;
 import fr.github.ethanpod.logic.sql.setting.DatabaseManager;
 
 import java.util.ArrayList;
@@ -38,5 +39,26 @@ public class PodcastDao extends BaseDao {
                     return result;
                 }, new ArrayList<>(),
                 "GET TOP 8 IN PODCAST READ");
+    }
+
+    public PodcastItem getPodcastById(Integer id) {
+        String sql = "SELECT feed.title, feed.author, feed.description, feed.image_url " +
+                "FROM Feeds feed " +
+                "WHERE feed.id = ?";
+
+        return executeQueryWithParams(sql, rs -> {
+                    if (rs.next()) {
+                        return new PodcastItem(
+                                rs.getString("title"),
+                                rs.getString("description"),
+                                rs.getString("author"),
+                                rs.getString("image_url")
+                        );
+                    }
+                    return null;
+                },
+                new PodcastItem(null, null, null, null),
+                "GET PODCAST NUMBER " + id,
+                id);
     }
 }
