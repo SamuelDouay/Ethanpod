@@ -3,8 +3,6 @@ package fr.github.ethanpod.controller;
 import fr.github.ethanpod.core.thread.EventType;
 import fr.github.ethanpod.service.AsyncServiceManager;
 
-import java.util.concurrent.CompletableFuture;
-
 public class PodcastController extends Controller {
 
     public PodcastController(AsyncServiceManager asyncServiceManager) {
@@ -27,10 +25,5 @@ public class PodcastController extends Controller {
                 EventType.PODCAST_BY_ID_UPDATED,
                 "Podcast not found n°" + id
         );
-    }
-
-    @Override
-    void initializeUI() {
-        CompletableFuture.runAsync(this::loadTop8PodcastRead, UI_EXECUTOR).whenComplete((_, _) -> UI_EXECUTOR.shutdown());
     }
 }

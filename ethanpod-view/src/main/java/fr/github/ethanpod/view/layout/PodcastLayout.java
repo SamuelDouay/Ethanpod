@@ -23,7 +23,6 @@ public class PodcastLayout extends Layout implements ContextualLayout {
     private static final EpisodeComponent EPISODE_COMPONENT = new EpisodeComponent();
     private static final Logger log = LogManager.getLogger(PodcastLayout.class);
     private static final String DEFAULT_TITLE = "Feed";
-    private VBox box;
     private VBox episodeBox;
     private VBox subtitle;
 
@@ -34,7 +33,7 @@ public class PodcastLayout extends Layout implements ContextualLayout {
 
     @Override
     public VBox getLayout() {
-        box = getContainer();
+        VBox box = getContainer();
         episodeBox = new VBox();
         subtitle = new VBox();
 

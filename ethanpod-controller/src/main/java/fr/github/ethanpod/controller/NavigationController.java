@@ -3,8 +3,6 @@ package fr.github.ethanpod.controller;
 import fr.github.ethanpod.core.thread.EventType;
 import fr.github.ethanpod.service.AsyncServiceManager;
 
-import java.util.concurrent.CompletableFuture;
-
 public class NavigationController extends Controller {
 
     public NavigationController(AsyncServiceManager asyncServiceManager) {
@@ -18,10 +16,5 @@ public class NavigationController extends Controller {
                 EventType.NAVIGATION_UPDATED,
                 "Erreur lors du chargement de la navigation"
         );
-    }
-
-    @Override
-    void initializeUI() {
-        CompletableFuture.runAsync(this::loadNavigationData, UI_EXECUTOR).whenComplete((_, _) -> UI_EXECUTOR.shutdown());
     }
 }

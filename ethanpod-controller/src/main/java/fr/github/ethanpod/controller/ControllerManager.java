@@ -34,6 +34,22 @@ public class ControllerManager extends BaseServiceManager<Controller> {
         return getService(ServiceConstants.EPISODE_SERVICE, EpisodeController.class);
     }
 
+    private NavigationController getNavigationController() {
+        return getService(ServiceConstants.NAVIGATION_SERVICE, NavigationController.class);
+    }
+
+    private InboxController getInboxController() {
+        return getService(ServiceConstants.INBOX_SERVICE, InboxController.class);
+    }
+
+    private QueueController getQueueController() {
+        return getService(ServiceConstants.QUEUE_SERVICE, QueueController.class);
+    }
+
+    private DownloadController getDownloadController() {
+        return getService(ServiceConstants.DOWNLOAD_SERVICE, DownloadController.class);
+    }
+
     public void handleUserRequest(ThreadMessage message) {
         UserRequestType type = (UserRequestType) message.type();
 
@@ -41,12 +57,13 @@ public class ControllerManager extends BaseServiceManager<Controller> {
             case UserRequestType.GET_PODCAST_BY_ID -> getPodcastController().getPodcastById((Integer) message.data());
             case UserRequestType.GET_EPISODE_BY_PODCAST_ID ->
                     getEpisodeController().getEpisodeByPodcastId((Integer) message.data());
+            case UserRequestType.GET_NAVIGATION_LIST -> getNavigationController().loadNavigationData();
+            case UserRequestType.GET_INBOX_COUNT -> getInboxController().loadInboxCount();
+            case UserRequestType.GET_INBOX_TOP8 -> getInboxController().loadInboxTop8();
+            case UserRequestType.GET_DOWNLOAD_TOP8 -> getDownloadController().loadDownloadTop8();
+            case UserRequestType.GET_QUEUE_TOP8 -> getQueueController().loadQueueTop8();
+            case UserRequestType.GET_PODCAST_READ_TOP8 -> getPodcastController().loadTop8PodcastRead();
             default -> logger.warn("Type de message non géré: {}", message.type());
         }
-    }
-
-
-    public void initializeAllServices() {
-        getAllServices().forEach(Controller::initializeUI);
     }
 }

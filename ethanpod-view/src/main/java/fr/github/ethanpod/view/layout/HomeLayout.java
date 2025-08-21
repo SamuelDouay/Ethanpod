@@ -2,6 +2,8 @@ package fr.github.ethanpod.view.layout;
 
 import fr.github.ethanpod.core.item.EpisodeItem;
 import fr.github.ethanpod.core.thread.EventType;
+import fr.github.ethanpod.core.thread.MessageRouter;
+import fr.github.ethanpod.core.thread.UserRequestType;
 import fr.github.ethanpod.event.*;
 import fr.github.ethanpod.view.component.episode.EpisodeComponent;
 import fr.github.ethanpod.view.component.image.ImageComponent;
@@ -40,6 +42,10 @@ public class HomeLayout extends Layout implements ContextualLayout {
     public HomeLayout(UIEventManager uiEventManager) {
         super("Home", uiEventManager);
         registerEventHandlers();
+        MessageRouter.getInstance().userRequest(UserRequestType.GET_INBOX_TOP8, "[INBOX]", null);
+        MessageRouter.getInstance().userRequest(UserRequestType.GET_DOWNLOAD_TOP8, "[DOWNLOAD]", null);
+        MessageRouter.getInstance().userRequest(UserRequestType.GET_QUEUE_TOP8, "[QUEUE", null);
+        MessageRouter.getInstance().userRequest(UserRequestType.GET_PODCAST_READ_TOP8, "[PODCAST]", null);
     }
 
     private VBox getNewsSection() {
@@ -243,7 +249,6 @@ public class HomeLayout extends Layout implements ContextualLayout {
 
     @Override
     public void updateContext(LayoutContext context) {
-        // no
     }
 
     @Override

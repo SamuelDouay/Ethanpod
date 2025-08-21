@@ -15,26 +15,25 @@ public class LogicThread implements Runnable {
     private final AtomicBoolean running = new AtomicBoolean(true);
     private final LogicHandle logicHandler;
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
-    private final ExecutorService asyncExecutor = Executors.newCachedThreadPool(
-            new ThreadFactory() {
-                private final AtomicInteger threadNumber = new AtomicInteger(1);
-
-                @Override
-                public Thread newThread(Runnable r) {
-                    Thread thread = new Thread(r);
-                    thread.setName("Logic-" + threadNumber.getAndIncrement());
-                    thread.setDaemon(false);
-                    return thread;
-                }
-            }
-    );
+    private final ExecutorService asyncExecutor;
     private final DatabaseManager databaseManager;
 
+
     public LogicThread(DatabaseManager databaseManager) {
-        MessageRouter messageRouter = MessageRouter.getInstance();
         this.databaseManager = databaseManager;
-        BlockingQueue<ThreadMessage> messageQueue = messageRouter.registerThread("LogicThread");
+        this.asyncExecutor = createVirtualThreadExecutor();
+        BlockingQueue<ThreadMessage> messageQueue = MessageRouter.getInstance().registerThread("LogicThread");
         this.logicHandler = new LogicHandle(messageQueue, asyncExecutor, databaseManager);
+    }
+
+    private ExecutorService createVirtualThreadExecutor() {
+        AtomicInteger threadCounter = new AtomicInteger(1);
+
+        return Executors.newThreadPerTaskExecutor(
+                Thread.ofVirtual()
+                        .name("Logic-", threadCounter.getAndIncrement())
+                        .factory()
+        );
     }
 
     @Override

@@ -3,6 +3,8 @@ package fr.github.ethanpod.view.layout;
 import fr.github.ethanpod.core.item.ItemManager;
 import fr.github.ethanpod.core.item.NavigationItem;
 import fr.github.ethanpod.core.thread.EventType;
+import fr.github.ethanpod.core.thread.MessageRouter;
+import fr.github.ethanpod.core.thread.UserRequestType;
 import fr.github.ethanpod.event.InboxCountUpdatedEvent;
 import fr.github.ethanpod.event.NavigationUpdatedEvent;
 import fr.github.ethanpod.event.UIEventHandler;
@@ -51,6 +53,8 @@ public class NavigationContainer {
         this.layoutManager = layoutManager;
         registerEventHandlers(uiEventManager);
         createFixedItems();
+        MessageRouter.getInstance().userRequest(UserRequestType.GET_NAVIGATION_LIST, "[NAVIGATION]", null);
+        MessageRouter.getInstance().userRequest(UserRequestType.GET_INBOX_COUNT, "[INBOX]", null);
     }
 
     public VBox createMenu() {

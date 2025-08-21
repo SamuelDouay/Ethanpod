@@ -84,10 +84,7 @@ public class ViewHandle {
         NotificationType eventType = (NotificationType) message.type();
 
         switch (eventType) {
-            case NotificationType.JAVAFX_READY -> {
-                logger.debug("Javafx ready");
-                controllerManager.initializeAllServices();
-            }
+            case NotificationType.JAVAFX_READY -> logger.debug("Javafx ready");
             case NotificationType.LOGIC_READY -> {
                 asyncServiceManager.initializeAllServices();
                 logger.debug("Logic ready");

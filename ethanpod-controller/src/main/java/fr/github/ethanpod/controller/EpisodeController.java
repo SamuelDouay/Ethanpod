@@ -8,11 +8,6 @@ public class EpisodeController extends Controller {
         super(asyncServiceManager);
     }
 
-    @Override
-    void initializeUI() {
-        // no
-    }
-
     public void getEpisodeByPodcastId(Integer id) {
         executeAsyncOperation(
                 "Getting episode by podcast n° " + id,
