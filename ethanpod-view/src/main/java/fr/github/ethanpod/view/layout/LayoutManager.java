@@ -46,7 +46,7 @@ public class LayoutManager {
             case DOWNLOAD -> new DownloadLayout(uiEventManager);
             case HISTORY -> new HistoryLayout(uiEventManager);
             case ADD -> new AddLayout(uiEventManager);
-            case FEED -> new FeedLayout(uiEventManager);
+            case FEED -> new PodcastLayout(uiEventManager);
         };
     }
 

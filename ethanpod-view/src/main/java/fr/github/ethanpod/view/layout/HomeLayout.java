@@ -24,11 +24,11 @@ import org.apache.logging.log4j.Logger;
 import java.util.List;
 
 public class HomeLayout extends Layout implements ContextualLayout {
-    public static final ImageComponent IMAGE_COMPONENT = new ImageComponent();
-    public static final EpisodeComponent EPISODE_COMPONENT = new EpisodeComponent();
-    public static final SurpriseComponent SURPRISE_COMPONENT = new SurpriseComponent();
-    public static final String IMAGE_HDM = String.valueOf(HomeLayout.class.getResource("/images/heure_du_monde.png"));
-    public static final String TITLE_EXAMPLE = "Lil Nas X, une icône noire, et gay et flamboyante [REDIF]";
+    private static final String TITLE_EXAMPLE = "Lil Nas X, une icône noire, et gay et flamboyante [REDIF]";
+    private static final String IMAGE_HDM = String.valueOf(HomeLayout.class.getResource("/images/heure_du_monde.png"));
+    private static final SurpriseComponent SURPRISE_COMPONENT = new SurpriseComponent();
+    private static final EpisodeComponent EPISODE_COMPONENT = new EpisodeComponent();
+    private static final ImageComponent IMAGE_COMPONENT = new ImageComponent();
     private static final Logger log = LogManager.getLogger(HomeLayout.class);
     private HBox topQueue;
     private VBox topDownload;

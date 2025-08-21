@@ -1,6 +1,5 @@
 package fr.github.ethanpod.event.controller;
 
-
 import fr.github.ethanpod.core.item.EpisodeItem;
 import fr.github.ethanpod.core.item.NavigationItem;
 import fr.github.ethanpod.core.item.PodcastItem;
@@ -60,6 +59,8 @@ public class UIEventHandle {
                     uiControllerManager.getDownloadService().updateDownloadTop8UI((List<EpisodeItem>) message.data());
             case PODCAST_BY_ID_UPDATED ->
                     uiControllerManager.getPodcastService().updatePodcastById((PodcastItem) message.data());
+            case EPISODE_BY_PODCAST_ID_UPDATED ->
+                    uiControllerManager.getEpisodeService().updateEpisodeByPodcastId((List<EpisodeItem>) message.data());
             default -> logger.warn("Requête non reconnue: {}", content);
 
         }

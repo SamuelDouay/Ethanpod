@@ -50,8 +50,10 @@ public class LogicHandle {
             case GET_QUEUE_TOP8 -> serviceManager.getQueueService().getQueueTop8(requestId);
             case GET_PODCAST_READ_TOP8 -> serviceManager.getPodcastService().getTop8PodcastRead(requestId);
             case GET_DOWNLOAD_TOP8 -> serviceManager.getDownloadService().getQueueTop8(requestId);
-            case GET_FEED_BY_ID ->
+            case GET_PODCAST_BY_ID ->
                     serviceManager.getPodcastService().getPodcastById(requestId, (Integer) message.data());
+            case GET_EPISODE_BY_PODCAST_ID ->
+                    serviceManager.getEpisodeService().getEpisodeByPodcastId(requestId, (Integer) message.data());
             default -> logger.warn("Requête non reconnue: {}", content);
 
         }

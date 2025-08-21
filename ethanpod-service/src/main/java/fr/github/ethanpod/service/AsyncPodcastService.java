@@ -18,6 +18,6 @@ public class AsyncPodcastService extends AsyncService {
     }
 
     public CompletableFuture<RequestResult<PodcastItem>> getPodcastById(Integer id) {
-        return createRequestFuture(RequestType.GET_FEED_BY_ID, id);
+        return createRequestFuture(RequestType.GET_PODCAST_BY_ID, id);
     }
 }
