@@ -229,7 +229,7 @@ public class HomeLayout extends Layout implements ContextualLayout {
     private void updateTopQueue(List<EpisodeItem> episodeItems) {
         topQueue.getChildren().clear();
         for (EpisodeItem episodeItem : episodeItems) {
-            topQueue.getChildren().add(IMAGE_COMPONENT.createImageCard(episodeItem.getUrlImage(), episodeItem.getName(), episodeItem.getDate()));
+            topQueue.getChildren().add(IMAGE_COMPONENT.createImageCard(episodeItem.getUrlImage(), episodeItem.getTitle(), episodeItem.getDate()));
         }
     }
 

@@ -73,7 +73,7 @@ public class EpisodeBuilder {
         image.setFitHeight(EPISODE_IMAGE_SIZE);
         image.setFitWidth(EPISODE_IMAGE_SIZE);
 
-        Label title = new Label(episodeItem.getName());
+        Label title = new Label(episodeItem.getTitle());
         title.setMinWidth(EPISODE_TITLE_SIZE);
         title.setMaxWidth(EPISODE_TITLE_SIZE);
 

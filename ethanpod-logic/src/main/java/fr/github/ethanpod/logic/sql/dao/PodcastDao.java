@@ -27,12 +27,15 @@ public class PodcastDao extends BaseDao {
                     List<EpisodeItem> result = new ArrayList<>();
                     while (rs.next()) {
                         result.add(new EpisodeItem(
-                                rs.getString("image_url"),
-                                false,
                                 rs.getString("title"),
                                 null,
+                                false,
+                                null,
+                                rs.getString("image_url"),
                                 null,
                                 null,
+                                false,
+                                false,
                                 false
                         ));
                     }

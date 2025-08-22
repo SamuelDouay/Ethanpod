@@ -8,31 +8,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class QueueDao extends BaseDao {
-    private static final String QUEUE_ITEMS_JOIN = "FROM FeedItems AS items INNER JOIN Queue queue ON queue.feeditem = items.id ";
-    private static final String LIMIT_8 = "LIMIT 8";
-
     public QueueDao(DatabaseManager databaseManager) {
         super(databaseManager);
     }
 
     public List<EpisodeItem> getTop8InQueue() {
-        String sql = "SELECT items.title as title, items.pubDate as date, items.image_url as items_image, feeds.image_url as feed_image " +
-                QUEUE_ITEMS_JOIN +
-                "INNER JOIN Feeds feeds ON feeds.id  = items.feed " +
-                LIMIT_8;
-
+        String sql = "SELECT FeedItems.title, FeedItems.pubDate, FeedItems.read, FeedItems.description, FeedItems.image_url as item_image, FeedMedia.duration, FeedMedia.filesize, Feeds.image_url as feed_image, Queue.id as queue, Favorites.id as favorie " +
+                "FROM FeedItems " +
+                "INNER JOIN FeedMedia ON FeedMedia.feeditem = FeedItems.id " +
+                "INNER JOIN Feeds ON Feeds.id = FeedItems.feed " +
+                "INNER JOIN Queue on Queue.feeditem = FeedItems.id " +
+                "LEFT JOIN Favorites ON Favorites.feeditem = FeedItems.id " +
+                "LIMIT 8 ";
         return executeQuery(sql, rs -> {
                     List<EpisodeItem> result = new ArrayList<>();
                     while (rs.next()) {
-                        String imageUrl = rs.getString("items_image") != null ? rs.getString("items_image") : rs.getString("feed_image");
+                        String imageUrl = rs.getString(5) != null ? rs.getString(5) : rs.getString(8);
                         result.add(new EpisodeItem(
+                                rs.getString(1),
+                                Converter.timestampToDate(rs.getLong(2)),
+                                rs.getInt(3) == 1,
+                                rs.getString(4),
                                 imageUrl,
-                                false,
-                                rs.getString("title"),
-                                null,
-                                Converter.timestampToDate(rs.getLong("date")),
-                                null,
-                                false
+                                Converter.convertToHHMMSS(rs.getLong(6)),
+                                Converter.getSize(rs.getLong(7)),
+                                rs.getString(9) != null,
+                                rs.getInt(3) == -1,
+                                rs.getString(10) != null
                         ));
                     }
                     return result;

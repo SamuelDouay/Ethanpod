@@ -104,20 +104,28 @@ public class MainTest extends Application {
         mainContainer.setPadding(new Insets(10));
 
 
-        EpisodeItem episodeItem = new EpisodeItem(String.valueOf(MainTest.class.getResource(IMAGES_HEURE_DU_MONDE_PNG)),
-                false,
+        EpisodeItem episodeItem = new EpisodeItem(
                 TITLE_EXAMPLE,
-                "00:20:40",
                 "28/10/2024",
+                false,
+                "test",
+                String.valueOf(MainTest.class.getResource(IMAGES_HEURE_DU_MONDE_PNG)),
+                "00:25:24",
                 "18 Mo",
+                false,
+                false,
                 true);
 
-        EpisodeItem episodeItem1 = new EpisodeItem(String.valueOf(MainTest.class.getResource(IMAGES_HEURE_DU_MONDE_PNG)),
-                true,
+        EpisodeItem episodeItem1 = new EpisodeItem(
                 TITLE_EXAMPLE,
-                "00:20:40",
                 "28/10/2024",
+                false,
+                "test",
+                String.valueOf(MainTest.class.getResource(IMAGES_HEURE_DU_MONDE_PNG)),
+                "00:25:24",
                 "18 Mo",
+                false,
+                false,
                 false);
 
         mainContainer.getChildren().addAll(EPISODE_COMPONENT.createInboxEpisode(episodeItem), EPISODE_COMPONENT.createInboxEpisode(episodeItem1));
