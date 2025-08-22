@@ -76,7 +76,6 @@ public class PodcastLayout extends Layout implements ContextualLayout {
     }
 
     private void updateEpisode(List<EpisodeItem> episodeItems) {
-        episodeBox.getChildren().clear();
         for (EpisodeItem episodeItem : episodeItems) {
             episodeBox.getChildren().add(EPISODE_COMPONENT.createInboxEpisode(episodeItem));
         }

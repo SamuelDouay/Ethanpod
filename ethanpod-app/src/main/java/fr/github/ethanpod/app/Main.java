@@ -4,6 +4,7 @@ import fr.github.ethanpod.controller.ViewThread;
 import fr.github.ethanpod.event.controller.UIEventThread;
 import fr.github.ethanpod.logic.LogicThread;
 import fr.github.ethanpod.logic.sql.setting.DatabaseManager;
+import fr.github.ethanpod.view.util.ImageCache;
 import javafx.application.Platform;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -245,6 +246,8 @@ public class Main {
         } catch (Exception e) {
             logger.warn("Erreur lors de l'arrêt de JavaFX", e);
         }
+
+        ImageCache.shutdown();
 
         // Arrêt final des threads si pas encore fait
         if (logicThread != null) logicThread.stop();

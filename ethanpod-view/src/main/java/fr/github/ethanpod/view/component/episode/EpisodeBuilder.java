@@ -21,6 +21,8 @@ public class EpisodeBuilder {
     private EpisodeItem episodeItem;
     private Button button;
     private HBox badge;
+    private boolean isRead;
+    private boolean isFavoris;
 
     public EpisodeBuilder() {
         // no parameter
@@ -38,6 +40,16 @@ public class EpisodeBuilder {
 
     public EpisodeBuilder withBadge(HBox badge) {
         this.badge = badge;
+        return this;
+    }
+
+    public EpisodeBuilder isRead(boolean isRead) {
+        this.isRead = isRead;
+        return this;
+    }
+
+    public EpisodeBuilder isFavoris(boolean isFavoris) {
+        this.isFavoris = isFavoris;
         return this;
     }
 
@@ -77,7 +89,7 @@ public class EpisodeBuilder {
         title.setMinWidth(EPISODE_TITLE_SIZE);
         title.setMaxWidth(EPISODE_TITLE_SIZE);
 
-        if (episodeItem.isRead()) {
+        if (isRead) {
             title.setTextFill(ColorThemeConstants.getGrey800());
         } else {
             title.setTextFill(ColorThemeConstants.getGrey950());
@@ -93,12 +105,20 @@ public class EpisodeBuilder {
     private FontIcon createFavoriteIcon() {
         FontIcon icon;
 
-        if (episodeItem.isFavorite()) {
+        if (isFavoris) {
             icon = new FontIcon(MaterialDesignS.STAR);
-            icon.setIconColor(ColorThemeConstants.getMain700());
+            if (isRead) {
+                icon.setIconColor(ColorThemeConstants.getMain700());
+            } else {
+                icon.setIconColor(ColorThemeConstants.getGrey950());
+            }
         } else {
             icon = new FontIcon(MaterialDesignS.STAR_OUTLINE);
-            icon.setIconColor(ColorThemeConstants.getGrey900());
+            if (isRead) {
+                icon.setIconColor(ColorThemeConstants.getGrey800());
+            } else {
+                icon.setIconColor(ColorThemeConstants.getGrey900());
+            }
         }
 
         icon.setIconSize(EPISODE_ICON_SIZE);
@@ -109,7 +129,8 @@ public class EpisodeBuilder {
         HBox box = new HBox();
 
         // Add a badge
-        box.getChildren().add(badge);
+        if (badge != null)
+            box.getChildren().add(badge);
 
         // Add date label with spacer
         addLabelWithSpacer(box, episodeItem.getDate());
@@ -128,7 +149,7 @@ public class EpisodeBuilder {
         addSpacer(box);
         FontIcon menuIcon = new FontIcon(MaterialDesignD.DOTS_VERTICAL);
         menuIcon.setIconSize(EPISODE_ICON_SIZE);
-        if (episodeItem.isRead()) {
+        if (isRead) {
             menuIcon.setIconColor(ColorThemeConstants.getGrey800());
         } else {
             menuIcon.setIconColor(ColorThemeConstants.getGrey950());
@@ -155,7 +176,7 @@ public class EpisodeBuilder {
 
     private Label createLabel(String text) {
         Label label = new Label(text);
-        if (episodeItem.isRead()) {
+        if (isRead) {
             label.setTextFill(ColorThemeConstants.getGrey800());
         } else {
             label.setTextFill(ColorThemeConstants.getGrey950());

@@ -2,6 +2,8 @@ package fr.github.ethanpod.view.layout;
 
 import fr.github.ethanpod.event.UIEventManager;
 import fr.github.ethanpod.view.util.ColorThemeConstants;
+import fr.github.ethanpod.view.util.ImageCache;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
@@ -16,6 +18,8 @@ public abstract class Layout {
     protected final UIEventManager eventManager;
 
     protected Layout(String initialTitle, UIEventManager eventManager) {
+        Platform.runLater(System::gc);
+        ImageCache.cleanupDeadReferences();
         this.titleProperty = new SimpleStringProperty(initialTitle);
         this.eventManager = eventManager;
     }
