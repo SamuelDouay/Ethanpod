@@ -28,6 +28,7 @@ public class PodcastLayout extends Layout implements ContextualLayout {
 
     public PodcastLayout(UIEventManager uiEventManager) {
         super(DEFAULT_TITLE, uiEventManager);
+        this.episodeBox = null;
         registerEventHandlers(uiEventManager);
     }
 

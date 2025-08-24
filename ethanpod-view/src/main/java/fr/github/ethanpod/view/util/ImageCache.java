@@ -19,7 +19,7 @@ public class ImageCache {
     private static final ReferenceQueue<Image> REFERENCE_QUEUE = new ReferenceQueue<>();
     private static final Map<WeakReference<Image>, String> REVERSE_MAP = new ConcurrentHashMap<>();
 
-    private static final int MAX_CACHE_SIZE = 1000;
+    // private static final int MAX_CACHE_SIZE = 1000;
     private static final ScheduledExecutorService CLEANUP_EXECUTOR = Executors.newSingleThreadScheduledExecutor(r -> {
         Thread t = new Thread(r, "ImageCache-Cleanup");
         t.setDaemon(true); // Thread daemon pour ne pas empêcher l'arrêt de l'application
@@ -55,18 +55,13 @@ public class ImageCache {
             }
         }
 
-        // Vérifier la taille du cache avant d'ajouter
-        if (IMAGE_CACHE.size() >= MAX_CACHE_SIZE) {
-            performCacheEviction();
-        }
-
         // Charger la nouvelle image
         Image newImage = new Image(url, true);
         WeakReference<Image> newWeakRef = new WeakReference<>(newImage, REFERENCE_QUEUE);
         IMAGE_CACHE.put(url, newWeakRef);
         REVERSE_MAP.put(newWeakRef, url);
 
-        LOGGER.debug("Image ajoutée au cache: {} (taille cache: {})", url, IMAGE_CACHE.size());
+        LOGGER.debug("(taille cache: {}) Image ajoutée au cache: {} ", IMAGE_CACHE.size(), url);
         return newImage;
     }
 
@@ -91,27 +86,6 @@ public class ImageCache {
         // Première tentative : nettoyer les références mortes
         cleanupDeadReferences();
 
-        // Si le cache est encore plein, supprimer quelques entrées
-        if (IMAGE_CACHE.size() >= MAX_CACHE_SIZE) {
-            int toRemove = IMAGE_CACHE.size() - MAX_CACHE_SIZE + 10; // Supprimer 10 de plus pour éviter les évictions fréquentes
-
-            IMAGE_CACHE.entrySet().iterator().forEachRemaining(entry -> {
-                if (toRemove <= 0) return;
-
-                WeakReference<Image> weakRef = entry.getValue();
-                Image image = weakRef.get();
-                if (image == null) {
-                    // Référence déjà morte
-                    IMAGE_CACHE.remove(entry.getKey());
-                    REVERSE_MAP.remove(weakRef);
-                } else {
-                    // Forcer la suppression
-                    IMAGE_CACHE.remove(entry.getKey());
-                    REVERSE_MAP.remove(weakRef);
-                    LOGGER.debug("Image évincée du cache: {}", entry.getKey());
-                }
-            });
-        }
     }
 
     /**
@@ -176,7 +150,7 @@ public class ImageCache {
             }
         }
 
-        return new CacheStats(totalEntries, aliveReferences, MAX_CACHE_SIZE);
+        return new CacheStats(totalEntries, aliveReferences, 0);
     }
 
     /**
