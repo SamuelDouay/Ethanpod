@@ -150,7 +150,6 @@ public class NavigationContainer {
 
 
         if (layoutType != null && layoutManager != null) {
-            log.debug(layoutType);
             switch (layoutType) {
                 case LayoutType.FEED -> {
                     FeedContext context = new FeedContext(item.getTitle(), item.getUuid().toString(), item.getNumber(), item.getId());
