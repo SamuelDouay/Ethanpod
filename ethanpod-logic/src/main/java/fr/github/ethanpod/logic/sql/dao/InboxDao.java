@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InboxDao extends BaseDao {
-    private static final String NEWS_ITEMS_JOIN = "FROM FeedItems feed INNER JOIN FeedMedia fm ON fm.feeditem = feed.id ";
-    private static final String LIMIT_8 = "LIMIT 8";
 
     public InboxDao(DatabaseManager databaseManager) {
         super(databaseManager);

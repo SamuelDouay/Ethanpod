@@ -8,7 +8,7 @@ import fr.github.ethanpod.event.EpisodeByPodcastIdUpdatedEvent;
 import fr.github.ethanpod.event.PodcastFindByIdUpdate;
 import fr.github.ethanpod.event.UIEventHandler;
 import fr.github.ethanpod.event.UIEventManager;
-import fr.github.ethanpod.view.component.episode.EpisodeComponent;
+import fr.github.ethanpod.view.component.EpisodeComponent;
 import fr.github.ethanpod.view.context.ContextualLayout;
 import fr.github.ethanpod.view.context.FeedContext;
 import fr.github.ethanpod.view.context.LayoutContext;
@@ -78,7 +78,7 @@ public class PodcastLayout extends Layout implements ContextualLayout {
 
     private void updateEpisode(List<EpisodeItem> episodeItems) {
         for (EpisodeItem episodeItem : episodeItems) {
-            episodeBox.getChildren().add(EPISODE_COMPONENT.createInboxEpisode(episodeItem));
+            episodeBox.getChildren().add(EPISODE_COMPONENT.createEpisode(episodeItem));
         }
     }
 

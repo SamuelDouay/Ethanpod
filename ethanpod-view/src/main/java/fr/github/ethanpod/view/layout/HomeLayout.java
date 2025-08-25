@@ -5,7 +5,7 @@ import fr.github.ethanpod.core.thread.EventType;
 import fr.github.ethanpod.core.thread.MessageRouter;
 import fr.github.ethanpod.core.thread.UserRequestType;
 import fr.github.ethanpod.event.*;
-import fr.github.ethanpod.view.component.episode.EpisodeComponent;
+import fr.github.ethanpod.view.component.EpisodeComponent;
 import fr.github.ethanpod.view.component.image.ImageComponent;
 import fr.github.ethanpod.view.component.surprise.SurpriseComponent;
 import fr.github.ethanpod.view.context.ContextualLayout;
@@ -222,7 +222,7 @@ public class HomeLayout extends Layout implements ContextualLayout {
     private void updateTopDownload(List<EpisodeItem> episodeItems) {
         topDownload.getChildren().clear();
         for (EpisodeItem episodeItem : episodeItems) {
-            topDownload.getChildren().add(EPISODE_COMPONENT.createInboxEpisode(episodeItem));
+            topDownload.getChildren().add(EPISODE_COMPONENT.createEpisode(episodeItem));
         }
     }
 
@@ -236,7 +236,7 @@ public class HomeLayout extends Layout implements ContextualLayout {
     private void updateTopInbox(List<EpisodeItem> episodeItems) {
         inboxContainer.getChildren().clear();
         for (EpisodeItem episodeItem : episodeItems) {
-            inboxContainer.getChildren().add(EPISODE_COMPONENT.createInboxEpisode(episodeItem));
+            inboxContainer.getChildren().add(EPISODE_COMPONENT.createEpisode(episodeItem));
         }
     }
 
@@ -249,6 +249,7 @@ public class HomeLayout extends Layout implements ContextualLayout {
 
     @Override
     public void updateContext(LayoutContext context) {
+        // no use
     }
 
     @Override

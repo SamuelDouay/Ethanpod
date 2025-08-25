@@ -1,9 +1,9 @@
 package fr.github.ethanpod.view;
 
 import fr.github.ethanpod.core.item.EpisodeItem;
+import fr.github.ethanpod.view.component.EpisodeComponent;
 import fr.github.ethanpod.view.component.badge.BadgeComponent;
 import fr.github.ethanpod.view.component.button.ButtonComponent;
-import fr.github.ethanpod.view.component.episode.EpisodeComponent;
 import fr.github.ethanpod.view.component.image.ImageComponent;
 import fr.github.ethanpod.view.util.ColorThemeConstants;
 import fr.github.ethanpod.view.util.ThemeType;
@@ -128,7 +128,7 @@ public class MainTest extends Application {
                 false,
                 false);
 
-        mainContainer.getChildren().addAll(EPISODE_COMPONENT.createInboxEpisode(episodeItem), EPISODE_COMPONENT.createInboxEpisode(episodeItem1));
+        mainContainer.getChildren().addAll(EPISODE_COMPONENT.createEpisode(episodeItem), EPISODE_COMPONENT.createEpisode(episodeItem1));
 
         // Configurer le positionnement
         AnchorPane.setLeftAnchor(mainContainer, 240.0);

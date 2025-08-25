@@ -14,12 +14,9 @@ import java.util.concurrent.TimeUnit;
 
 public class ImageCache {
     private static final Logger LOGGER = LogManager.getLogger(ImageCache.class);
-
     private static final Map<String, WeakReference<Image>> IMAGE_CACHE = new ConcurrentHashMap<>();
     private static final ReferenceQueue<Image> REFERENCE_QUEUE = new ReferenceQueue<>();
     private static final Map<WeakReference<Image>, String> REVERSE_MAP = new ConcurrentHashMap<>();
-
-    // private static final int MAX_CACHE_SIZE = 1000;
     private static final ScheduledExecutorService CLEANUP_EXECUTOR = Executors.newSingleThreadScheduledExecutor(r -> {
         Thread t = new Thread(r, "ImageCache-Cleanup");
         t.setDaemon(true); // Thread daemon pour ne pas empêcher l'arrêt de l'application
@@ -80,15 +77,6 @@ public class ImageCache {
     }
 
     /**
-     * Éviction du cache quand il est plein
-     */
-    private static void performCacheEviction() {
-        // Première tentative : nettoyer les références mortes
-        cleanupDeadReferences();
-
-    }
-
-    /**
      * Démarre le nettoyage automatique périodique
      */
     private static void startAutomaticCleanup() {
@@ -119,60 +107,6 @@ public class ImageCache {
         } catch (InterruptedException _) {
             CLEANUP_EXECUTOR.shutdownNow();
             Thread.currentThread().interrupt();
-        }
-    }
-
-    /**
-     * Vide complètement le cache
-     */
-    public static void clearCache() {
-        IMAGE_CACHE.clear();
-        REVERSE_MAP.clear();
-        // Vider aussi la queue des références
-        while (REFERENCE_QUEUE.poll() != null) {
-            // Continue jusqu'à ce que la queue soit vide
-        }
-        LOGGER.info("Cache vidé complètement");
-    }
-
-    /**
-     * Retourne des statistiques du cache
-     */
-    public static CacheStats getCacheStats() {
-        cleanupDeadReferences(); // S'assurer que les stats sont à jour
-
-        int totalEntries = IMAGE_CACHE.size();
-        int aliveReferences = 0;
-
-        for (WeakReference<Image> ref : IMAGE_CACHE.values()) {
-            if (ref.get() != null) {
-                aliveReferences++;
-            }
-        }
-
-        return new CacheStats(totalEntries, aliveReferences, 0);
-    }
-
-    /**
-     * Classe pour les statistiques du cache
-     */
-    public static class CacheStats {
-        public final int totalEntries;
-        public final int aliveReferences;
-        public final int maxSize;
-        public final double usageRatio;
-
-        public CacheStats(int totalEntries, int aliveReferences, int maxSize) {
-            this.totalEntries = totalEntries;
-            this.aliveReferences = aliveReferences;
-            this.maxSize = maxSize;
-            this.usageRatio = maxSize > 0 ? (double) totalEntries / maxSize : 0;
-        }
-
-        @Override
-        public String toString() {
-            return String.format("Cache: %d/%d entrées (%.1f%%), %d références vivantes",
-                    totalEntries, maxSize, usageRatio * 100, aliveReferences);
         }
     }
 }

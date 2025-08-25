@@ -5,7 +5,7 @@ module ethanpod.view {
     exports fr.github.ethanpod.view.util;
     exports fr.github.ethanpod.view.component.image;
     exports fr.github.ethanpod.view.component.surprise;
-    exports fr.github.ethanpod.view.component.episode;
+    exports fr.github.ethanpod.view.component;
     requires javafx.base;
     requires javafx.controls;
     requires javafx.graphics;
