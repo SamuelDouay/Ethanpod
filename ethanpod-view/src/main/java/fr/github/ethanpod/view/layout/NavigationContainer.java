@@ -11,6 +11,7 @@ import fr.github.ethanpod.event.UIEventHandler;
 import fr.github.ethanpod.event.UIEventManager;
 import fr.github.ethanpod.view.component.NavigationComponent;
 import fr.github.ethanpod.view.context.FeedContext;
+import fr.github.ethanpod.view.context.PageContext;
 import fr.github.ethanpod.view.util.ColorThemeConstants;
 import fr.github.ethanpod.view.util.LayoutType;
 import javafx.geometry.Insets;
@@ -70,7 +71,7 @@ public class NavigationContainer {
         fixedItems[1] = new NavigationItem(MaterialDesignP.PLAYLIST_PLAY.getDescription(), "Queue", true, 0);
         fixedItems[2] = new NavigationItem(MaterialDesignI.INBOX.getDescription(), "Inbox", true, 0);
         fixedItems[3] = new NavigationItem(MaterialDesignR.RSS.getDescription(), "Episodes", true, 0);
-        fixedItems[4] = new NavigationItem(MaterialDesignV.VIEW_GRID_OUTLINE.getDescription(), "Subscription", true, 0);
+        fixedItems[4] = new NavigationItem(MaterialDesignV.VIEW_GRID_OUTLINE.getDescription(), "Subscriptions", true, 0);
         fixedItems[5] = new NavigationItem(MaterialDesignD.DOWNLOAD.getDescription(), "Downloads", true, 0);
         fixedItems[6] = new NavigationItem(MaterialDesignH.HISTORY.getDescription(), "Playback history", true, 0);
         fixedItems[7] = new NavigationItem(MaterialDesignP.PLUS.getDescription(), "Add podcast", true, 0);
@@ -83,14 +84,8 @@ public class NavigationContainer {
     private VBox createFixedList() {
         VBox box = createListContainer();
 
-        LayoutType[] layoutTypes = {
-                LayoutType.HOME, LayoutType.QUEUE, LayoutType.INBOX, LayoutType.EPISODES,
-                LayoutType.SUBSCRIPTION, LayoutType.DOWNLOAD, LayoutType.HISTORY, LayoutType.ADD
-        };
-
-
         for (int i = 0; i < fixedItems.length; i++) {
-            fixedNavBoxes[i] = createOptimizedNavigationBox(fixedItems[i], layoutTypes[i]);
+            fixedNavBoxes[i] = createOptimizedNavigationBox(fixedItems[i], LayoutType.PAGE);
             if (fixedItems[i].isSelected()) {
                 selectedBox = fixedNavBoxes[i];
             }
@@ -155,11 +150,17 @@ public class NavigationContainer {
 
 
         if (layoutType != null && layoutManager != null) {
-            if (layoutType == LayoutType.FEED) {
-                FeedContext context = new FeedContext(item.getTitle(), item.getUuid().toString(), item.getNumber(), item.getId());
-                layoutManager.setLayout(layoutType, context);
-            } else {
-                layoutManager.setLayout(layoutType);
+            log.debug(layoutType);
+            switch (layoutType) {
+                case LayoutType.FEED -> {
+                    FeedContext context = new FeedContext(item.getTitle(), item.getUuid().toString(), item.getNumber(), item.getId());
+                    layoutManager.setLayout(layoutType, context);
+                }
+                case LayoutType.PAGE -> {
+                    PageContext context = new PageContext(item.getTitle());
+                    layoutManager.setLayout(layoutType, context);
+                }
+                default -> layoutManager.setLayout(layoutType);
             }
         }
     }
@@ -187,7 +188,7 @@ public class NavigationContainer {
             } else {
                 // Création du badge si il n'existait pas
                 HBox oldBox = fixedNavBoxes[2];
-                HBox newBox = createOptimizedNavigationBox(fixedItems[2], LayoutType.INBOX);
+                HBox newBox = createOptimizedNavigationBox(fixedItems[2], LayoutType.PAGE);
 
                 VBox parent = (VBox) oldBox.getParent();
                 int index = parent.getChildren().indexOf(oldBox);

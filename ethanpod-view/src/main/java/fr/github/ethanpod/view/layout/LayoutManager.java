@@ -47,6 +47,7 @@ public class LayoutManager {
             case HISTORY -> new HistoryLayout(uiEventManager);
             case ADD -> new AddLayout(uiEventManager);
             case FEED -> new PodcastLayout(uiEventManager);
+            case PAGE -> new PageLayout(uiEventManager);
         };
     }
 
@@ -56,7 +57,6 @@ public class LayoutManager {
 
     public void setLayout(LayoutType layoutType, LayoutContext context) {
         Objects.requireNonNull(layoutType, "LayoutType cannot be null");
-
         try {
             Layout layout = layoutCache.get(layoutType);
 

@@ -16,4 +16,13 @@ public class QueueController extends Controller {
                 "Erreur lors du chargement du top 8 Queue"
         );
     }
+
+    public void loadQueueAll() {
+        executeAsyncOperation(
+                "Chargement du all in Queue",
+                () -> asyncServiceManager.getQueueService().getQueueAll(),
+                EventType.QUEUE_ALL_UPDATED,
+                "Erreur lors du chargement du all in Queue"
+        );
+    }
 }

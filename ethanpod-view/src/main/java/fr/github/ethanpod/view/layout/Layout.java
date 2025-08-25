@@ -7,6 +7,7 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
@@ -16,6 +17,7 @@ public abstract class Layout {
     private static final String FONT_FAMILY = "Inter";
     protected final StringProperty titleProperty;
     protected final UIEventManager eventManager;
+    protected Node content;
 
     protected Layout(String initialTitle, UIEventManager eventManager) {
         Platform.runLater(System::gc);

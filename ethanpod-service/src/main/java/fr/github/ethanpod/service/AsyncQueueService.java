@@ -14,4 +14,8 @@ public class AsyncQueueService extends AsyncService {
     public CompletableFuture<RequestResult<List<EpisodeItem>>> getQueueTop8() {
         return createRequestFuture(RequestType.GET_QUEUE_TOP8);
     }
+
+    public CompletableFuture<RequestResult<List<EpisodeItem>>> getQueueAll() {
+        return createRequestFuture(RequestType.GET_QUEUE_ALL);
+    }
 }

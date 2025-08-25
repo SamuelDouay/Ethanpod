@@ -24,4 +24,10 @@ public class DataQueueService extends DataService {
                 queueDao::getTop8InQueue,
                 "getting top 8 queue");
     }
+
+    public void getAllInQueue(String requestId) {
+        executeAsync(requestId, ResponseType.QUEUE_ALL_RESULT,
+                queueDao::getAllInQueue,
+                "getting all in queue");
+    }
 }
