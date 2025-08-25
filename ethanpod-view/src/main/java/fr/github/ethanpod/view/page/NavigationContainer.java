@@ -1,4 +1,4 @@
-package fr.github.ethanpod.view.layout;
+package fr.github.ethanpod.view.page;
 
 import fr.github.ethanpod.core.item.ItemManager;
 import fr.github.ethanpod.core.item.NavigationItem;
@@ -10,7 +10,6 @@ import fr.github.ethanpod.event.NavigationUpdatedEvent;
 import fr.github.ethanpod.event.UIEventHandler;
 import fr.github.ethanpod.event.UIEventManager;
 import fr.github.ethanpod.view.component.NavigationComponent;
-import fr.github.ethanpod.view.context.FeedContext;
 import fr.github.ethanpod.view.context.PageContext;
 import fr.github.ethanpod.view.util.ColorThemeConstants;
 import fr.github.ethanpod.view.util.LayoutType;
@@ -66,15 +65,15 @@ public class NavigationContainer {
     }
 
     private void createFixedItems() {
-        fixedItems[0] = new NavigationItem(MaterialDesignH.HOME.getDescription(), "Home", true, 0);
+        fixedItems[0] = new NavigationItem(MaterialDesignH.HOME.getDescription(), "Home", true);
         fixedItems[0].setSelected(true);
-        fixedItems[1] = new NavigationItem(MaterialDesignP.PLAYLIST_PLAY.getDescription(), "Queue", true, 0);
-        fixedItems[2] = new NavigationItem(MaterialDesignI.INBOX.getDescription(), "Inbox", true, 0);
-        fixedItems[3] = new NavigationItem(MaterialDesignR.RSS.getDescription(), "Episodes", true, 0);
-        fixedItems[4] = new NavigationItem(MaterialDesignV.VIEW_GRID_OUTLINE.getDescription(), "Subscriptions", true, 0);
-        fixedItems[5] = new NavigationItem(MaterialDesignD.DOWNLOAD.getDescription(), "Downloads", true, 0);
-        fixedItems[6] = new NavigationItem(MaterialDesignH.HISTORY.getDescription(), "Playback history", true, 0);
-        fixedItems[7] = new NavigationItem(MaterialDesignP.PLUS.getDescription(), "Add podcast", true, 0);
+        fixedItems[1] = new NavigationItem(MaterialDesignP.PLAYLIST_PLAY.getDescription(), "Queue", true);
+        fixedItems[2] = new NavigationItem(MaterialDesignI.INBOX.getDescription(), "Inbox", true);
+        fixedItems[3] = new NavigationItem(MaterialDesignR.RSS.getDescription(), "Episodes", true);
+        fixedItems[4] = new NavigationItem(MaterialDesignV.VIEW_GRID_OUTLINE.getDescription(), "Subscriptions", true);
+        fixedItems[5] = new NavigationItem(MaterialDesignD.DOWNLOAD.getDescription(), "Downloads", true);
+        fixedItems[6] = new NavigationItem(MaterialDesignH.HISTORY.getDescription(), "Playback history", true);
+        fixedItems[7] = new NavigationItem(MaterialDesignP.PLUS.getDescription(), "Add podcast", true);
 
         for (NavigationItem item : fixedItems) {
             manager.addItem(item);
@@ -146,21 +145,12 @@ public class NavigationContainer {
             NavigationComponent.updateAppearance(selectedBox, false, false);
         }
         selectedBox = clickedBox;
-        NavigationComponent.updateAppearance(clickedBox, true, false);
+        NavigationComponent.updateAppearance(selectedBox, true, false);
 
 
         if (layoutType != null && layoutManager != null) {
-            switch (layoutType) {
-                case LayoutType.FEED -> {
-                    FeedContext context = new FeedContext(item.getTitle(), item.getUuid().toString(), item.getNumber(), item.getId());
-                    layoutManager.setLayout(layoutType, context);
-                }
-                case LayoutType.PAGE -> {
-                    PageContext context = new PageContext(item.getTitle());
-                    layoutManager.setLayout(layoutType, context);
-                }
-                default -> layoutManager.setLayout(layoutType);
-            }
+            PageContext context = new PageContext(item.getTitle(), item.getId());
+            layoutManager.setLayout(layoutType, context);
         }
     }
 
@@ -169,7 +159,7 @@ public class NavigationContainer {
 
         for (NavigationItem item : navigationList) {
             try {
-                HBox component = createOptimizedNavigationBox(item, LayoutType.FEED);
+                HBox component = createOptimizedNavigationBox(item, LayoutType.PAGE);
                 scrollBox.getChildren().add(component);
             } catch (Exception e) {
                 log.error("Erreur création composant pour {}", item, e);

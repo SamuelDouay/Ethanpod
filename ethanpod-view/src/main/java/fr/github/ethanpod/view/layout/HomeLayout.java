@@ -11,7 +11,9 @@ import fr.github.ethanpod.view.component.surprise.SurpriseComponent;
 import fr.github.ethanpod.view.context.ContextualLayout;
 import fr.github.ethanpod.view.context.HomeContext;
 import fr.github.ethanpod.view.context.LayoutContext;
+import fr.github.ethanpod.view.page.Layout;
 import fr.github.ethanpod.view.util.ColorThemeConstants;
+import fr.github.ethanpod.view.util.LayoutType;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -248,7 +250,7 @@ public class HomeLayout extends Layout implements ContextualLayout {
     }
 
     @Override
-    public void updateContext(LayoutContext context) {
+    public void updateContext(LayoutContext context, LayoutType layoutType) {
         // no use
     }
 

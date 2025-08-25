@@ -1,8 +1,9 @@
-package fr.github.ethanpod.view.layout;
+package fr.github.ethanpod.view.page;
 
 import fr.github.ethanpod.event.UIEventManager;
 import fr.github.ethanpod.view.context.ContextualLayout;
 import fr.github.ethanpod.view.context.LayoutContext;
+import fr.github.ethanpod.view.layout.HomeLayout;
 import fr.github.ethanpod.view.util.LayoutType;
 import javafx.scene.control.ScrollPane;
 import org.apache.logging.log4j.LogManager;
@@ -19,7 +20,6 @@ public class LayoutManager {
     private final Map<LayoutType, Layout> layoutCache;
     private final Map<LayoutType, LayoutContext> contextCache;
     private final UIEventManager uiEventManager;
-    private LayoutType currentLayoutType;
 
     public LayoutManager(ScrollPane scrollPane, UIEventManager eventManager) {
         this.scrollPane = Objects.requireNonNull(scrollPane, "ScrollPane cannot be null");
@@ -39,14 +39,14 @@ public class LayoutManager {
     private Layout createLayoutInstance(LayoutType type) {
         return switch (type) {
             case HOME -> new HomeLayout(uiEventManager);
-            case QUEUE -> new QueueLayout(uiEventManager);
-            case INBOX -> new InboxLayout(uiEventManager);
-            case EPISODES -> new EpisodesLayout(uiEventManager);
-            case SUBSCRIPTION -> new SubscriptionLayout(uiEventManager);
-            case DOWNLOAD -> new DownloadLayout(uiEventManager);
-            case HISTORY -> new HistoryLayout(uiEventManager);
-            case ADD -> new AddLayout(uiEventManager);
-            case FEED -> new PodcastLayout(uiEventManager);
+            case QUEUE -> null;
+            case INBOX -> null;
+            case EPISODES -> null;
+            case SUBSCRIPTION -> null;
+            case DOWNLOAD -> null;
+            case HISTORY -> null;
+            case ADD -> null;
+            case FEED -> null;
             case PAGE -> new PageLayout(uiEventManager);
         };
     }
@@ -63,7 +63,7 @@ public class LayoutManager {
             // Appliquer le contexte si le layout le supporte
             if (context != null && layout instanceof ContextualLayout contextualLayout) {
                 if (contextualLayout.acceptsContext(context.getClass())) {
-                    contextualLayout.updateContext(context);
+                    contextualLayout.updateContext(context, layoutType);
                     contextCache.put(layoutType, context);
                 } else {
                     logger.warn("Layout {} does not accept context of type {}", layoutType, context.getClass().getSimpleName());
@@ -71,7 +71,6 @@ public class LayoutManager {
             }
 
             scrollPane.setContent(layout.getLayout());
-            currentLayoutType = layoutType;
 
         } catch (Exception e) {
             logger.warn("Failed to set layout {}: {}", layoutType, e.getMessage());
@@ -79,22 +78,6 @@ public class LayoutManager {
             if (layoutType != LayoutType.HOME) {
                 setLayout(LayoutType.HOME);
             }
-        }
-    }
-
-    public LayoutType getCurrentLayoutType() {
-        return currentLayoutType;
-    }
-
-    public LayoutContext getCurrentContext() {
-        return currentLayoutType != null ? contextCache.get(currentLayoutType) : null;
-    }
-
-    // Méthode pour rafraîchir le layout actuel avec son contexte
-    public void refreshCurrentLayout() {
-        if (currentLayoutType != null) {
-            LayoutContext context = contextCache.get(currentLayoutType);
-            setLayout(currentLayoutType, context);
         }
     }
 }

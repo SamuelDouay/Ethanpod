@@ -2,10 +2,11 @@ package fr.github.ethanpod.view.layout;
 
 import fr.github.ethanpod.core.item.EpisodeItem;
 import fr.github.ethanpod.core.thread.EventType;
-import fr.github.ethanpod.event.EpisodeByPodcastIdUpdatedEvent;
+import fr.github.ethanpod.event.QueueAllUpdatedEvent;
 import fr.github.ethanpod.event.UIEventHandler;
 import fr.github.ethanpod.event.UIEventManager;
 import fr.github.ethanpod.view.component.EpisodeComponent;
+import fr.github.ethanpod.view.page.Layout;
 import javafx.scene.layout.VBox;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,7 +21,7 @@ public class QueueLayout extends Layout {
     public QueueLayout(UIEventManager uiEventManager) {
         super("Queue", uiEventManager);
         //MessageRouter.getInstance().userRequest(UserRequestType.GET_QUEUE_ALL, "[QUEUE]", null);
-        registerEventHandlers(uiEventManager);
+        //registerEventHandlers(uiEventManager);
     }
 
     @Override
@@ -36,7 +37,7 @@ public class QueueLayout extends Layout {
 
     private void registerEventHandlers(UIEventManager eventManager) {
         eventManager.registerHandler(EventType.QUEUE_ALL_UPDATED,
-                (UIEventHandler<EpisodeByPodcastIdUpdatedEvent>) event -> {
+                (UIEventHandler<QueueAllUpdatedEvent>) event -> {
                     log.info("getting {} podcast", event.getEpisodeItems().size());
                     updateEpisode(event.getEpisodeItems());
                 }
@@ -48,4 +49,6 @@ public class QueueLayout extends Layout {
             episodeBox.getChildren().add(EPISODE_COMPONENT.createEpisode(episodeItem));
         }
     }
+
+
 }

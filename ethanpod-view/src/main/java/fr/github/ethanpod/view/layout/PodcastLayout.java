@@ -12,6 +12,8 @@ import fr.github.ethanpod.view.component.EpisodeComponent;
 import fr.github.ethanpod.view.context.ContextualLayout;
 import fr.github.ethanpod.view.context.FeedContext;
 import fr.github.ethanpod.view.context.LayoutContext;
+import fr.github.ethanpod.view.page.Layout;
+import fr.github.ethanpod.view.util.LayoutType;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import org.apache.logging.log4j.LogManager;
@@ -29,7 +31,6 @@ public class PodcastLayout extends Layout implements ContextualLayout {
     public PodcastLayout(UIEventManager uiEventManager) {
         super(DEFAULT_TITLE, uiEventManager);
         this.episodeBox = null;
-        registerEventHandlers(uiEventManager);
     }
 
     @Override
@@ -46,7 +47,7 @@ public class PodcastLayout extends Layout implements ContextualLayout {
     }
 
     @Override
-    public void updateContext(LayoutContext context) {
+    public void updateContext(LayoutContext context, LayoutType layoutType) {
         if (context instanceof FeedContext feedContext) {
             MessageRouter.getInstance().userRequest(UserRequestType.GET_PODCAST_BY_ID, "[PODCAST]", feedContext.id());
             MessageRouter.getInstance().userRequest(UserRequestType.GET_EPISODE_BY_PODCAST_ID, "[PODCAST]", feedContext.id());

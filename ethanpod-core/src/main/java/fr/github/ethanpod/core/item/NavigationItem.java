@@ -25,6 +25,24 @@ public class NavigationItem extends Item {
         this.id = id;
     }
 
+    public NavigationItem(String urlImage, String title, boolean icon) {
+        super();
+        this.urlImage = urlImage;
+        this.title = title;
+        this.number = 0;
+        this.icon = icon;
+        this.id = 0;
+    }
+
+    public NavigationItem(String urlImage, String title, int number, boolean icon) {
+        super();
+        this.urlImage = urlImage;
+        this.title = title;
+        this.number = number;
+        this.icon = icon;
+        this.id = 0;
+    }
+
     public boolean isIcon() {
         return icon;
     }

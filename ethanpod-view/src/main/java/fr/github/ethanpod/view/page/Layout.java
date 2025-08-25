@@ -1,4 +1,4 @@
-package fr.github.ethanpod.view.layout;
+package fr.github.ethanpod.view.page;
 
 import fr.github.ethanpod.event.UIEventManager;
 import fr.github.ethanpod.view.util.ColorThemeConstants;
@@ -24,10 +24,6 @@ public abstract class Layout {
         ImageCache.cleanupDeadReferences();
         this.titleProperty = new SimpleStringProperty(initialTitle);
         this.eventManager = eventManager;
-    }
-
-    public final StringProperty titleProperty() {
-        return titleProperty;
     }
 
     protected Label getTitle() {

@@ -63,6 +63,8 @@ public class UIEventHandle {
                     uiControllerManager.getEpisodeService().updateEpisodeByPodcastId((List<EpisodeItem>) message.data());
             case QUEUE_ALL_UPDATED ->
                     uiControllerManager.getQueueService().updateQueueAllUI((List<EpisodeItem>) message.data());
+            case INBOX_ALL_UPDATED ->
+                    uiControllerManager.getInboxService().updateInboxAll((List<EpisodeItem>) message.data());
             default -> logger.warn("Requête non reconnue: {}", content);
 
         }

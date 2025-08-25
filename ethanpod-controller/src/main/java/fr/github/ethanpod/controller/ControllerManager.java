@@ -64,6 +64,7 @@ public class ControllerManager extends BaseServiceManager<Controller> {
             case UserRequestType.GET_QUEUE_TOP8 -> getQueueController().loadQueueTop8();
             case UserRequestType.GET_PODCAST_READ_TOP8 -> getPodcastController().loadTop8PodcastRead();
             case UserRequestType.GET_QUEUE_ALL -> getQueueController().loadQueueAll();
+            case GET_INBOX_ALL -> getInboxController().loadInboxAll();
             default -> logger.warn("Type de message non géré: {}", message.type());
         }
     }

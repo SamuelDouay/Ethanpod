@@ -30,4 +30,10 @@ public class DataInboxService extends DataService {
                 inboxDao::getTop8InInbox,
                 "getting inbox top 8");
     }
+
+    public void getAllInInbox(String requestId) {
+        executeAsync(requestId, ResponseType.INBOX_ALL_RESULT,
+                inboxDao::getAllInInbox,
+                "getting inbox all");
+    }
 }

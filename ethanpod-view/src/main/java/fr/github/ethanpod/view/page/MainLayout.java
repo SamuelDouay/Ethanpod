@@ -1,4 +1,4 @@
-package fr.github.ethanpod.view.layout;
+package fr.github.ethanpod.view.page;
 
 import fr.github.ethanpod.event.UIEventManager;
 import fr.github.ethanpod.view.component.SearchComponent;

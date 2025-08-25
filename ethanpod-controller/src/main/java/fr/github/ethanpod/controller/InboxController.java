@@ -27,4 +27,13 @@ public class InboxController extends Controller {
                 "Erreur lors du chargement du top 8 inbox"
         );
     }
+
+    public void loadInboxAll() {
+        executeAsyncOperation(
+                "Chargement du all Inbox",
+                () -> asyncServiceManager.getInboxService().getAllInbox(),
+                EventType.INBOX_ALL_UPDATED,
+                "Erreur lors du chargement all inbox"
+        );
+    }
 }

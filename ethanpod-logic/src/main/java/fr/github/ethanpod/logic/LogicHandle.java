@@ -55,6 +55,7 @@ public class LogicHandle {
             case GET_EPISODE_BY_PODCAST_ID ->
                     serviceManager.getEpisodeService().getEpisodeByPodcastId(requestId, (Integer) message.data());
             case GET_QUEUE_ALL -> serviceManager.getQueueService().getAllInQueue(requestId);
+            case GET_INBOX_ALL -> serviceManager.getInboxService().getAllInInbox(requestId);
             default -> logger.warn("Requête non reconnue: {}", content);
 
         }

@@ -3,7 +3,7 @@ package fr.github.ethanpod.view;
 import fr.github.ethanpod.core.thread.MessageRouter;
 import fr.github.ethanpod.core.thread.NotificationType;
 import fr.github.ethanpod.util.setting.ConfigProperties;
-import fr.github.ethanpod.view.layout.MainLayout;
+import fr.github.ethanpod.view.page.MainLayout;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;

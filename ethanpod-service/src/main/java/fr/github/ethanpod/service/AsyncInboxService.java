@@ -19,4 +19,8 @@ public class AsyncInboxService extends AsyncService {
     public CompletableFuture<RequestResult<List<EpisodeItem>>> getTop8InInbox() {
         return createRequestFuture(RequestType.GET_INBOX_TOP8);
     }
+
+    public CompletableFuture<RequestResult<List<EpisodeItem>>> getAllInbox() {
+        return createRequestFuture(RequestType.GET_INBOX_ALL);
+    }
 }

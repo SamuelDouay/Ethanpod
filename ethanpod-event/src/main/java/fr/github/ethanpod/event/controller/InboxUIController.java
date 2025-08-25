@@ -1,6 +1,7 @@
 package fr.github.ethanpod.event.controller;
 
 import fr.github.ethanpod.core.item.EpisodeItem;
+import fr.github.ethanpod.event.InboxAllUpdatedEvent;
 import fr.github.ethanpod.event.InboxCountUpdatedEvent;
 import fr.github.ethanpod.event.InboxTop8UpdatedEvent;
 
@@ -22,5 +23,11 @@ public class InboxUIController extends UIController {
         if (!isValidList(episodes)) return;
 
         publishEvent(() -> new InboxTop8UpdatedEvent(controllerName, episodes));
+    }
+
+    public void updateInboxAll(List<EpisodeItem> episodes) {
+        if (!isValidList(episodes)) return;
+
+        publishEvent(() -> new InboxAllUpdatedEvent(controllerName, episodes));
     }
 }
