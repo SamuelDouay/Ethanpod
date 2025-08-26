@@ -97,6 +97,35 @@ public abstract class BaseDao {
         }
     }
 
+    protected String getImageUrl(String itemImage, String feedImage) {
+        String imageUrl;
+        if (itemImage != null && !itemImage.trim().isEmpty()) {
+            // Si item_image existe, construire l'URL complète
+            if (itemImage.startsWith("http")) {
+                imageUrl = itemImage; // Déjà une URL complète
+            } else {
+                // Extraire le domaine de base depuis feed_image
+                String baseUrl = "";
+                if (feedImage != null) {
+                    try {
+                        java.net.URL url = new java.net.URL(feedImage);
+                        baseUrl = url.getProtocol() + "://" + url.getHost();
+                    } catch (java.net.MalformedURLException e) {
+                        // En cas d'erreur, utiliser une valeur par défaut
+                        baseUrl = "https://canalb.fr";
+                    }
+                } else {
+                    baseUrl = "https://canalb.fr";
+                }
+                imageUrl = baseUrl + itemImage;
+            }
+        } else {
+            // Sinon utiliser feed_image (qui est déjà une URL complète)
+            imageUrl = feedImage;
+        }
+        return imageUrl;
+    }
+
     @FunctionalInterface
     protected interface ResultSetMapper<T> {
         T map(ResultSet rs) throws SQLException;

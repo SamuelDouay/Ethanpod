@@ -24,7 +24,7 @@ public class EpisodeDao extends BaseDao {
         return executeQueryWithParams(sql, rs -> {
                     List<EpisodeItem> result = new ArrayList<>();
                     while (rs.next()) {
-                        String imageUrl = rs.getString(5) != null ? rs.getString(5) : rs.getString(8);
+                        String imageUrl = getImageUrl(rs.getString(5), rs.getString(8));
                         result.add(new EpisodeItem(
                                 rs.getString(1),
                                 Converter.timestampToDate(rs.getLong(2)),

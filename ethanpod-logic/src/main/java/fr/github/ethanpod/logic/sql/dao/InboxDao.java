@@ -13,6 +13,7 @@ public class InboxDao extends BaseDao {
         super(databaseManager);
     }
 
+
     public int getNumberOfInbox() {
         String sql = "SELECT COUNT(*) as unread_count " +
                 "FROM FeedItems AS items " +
@@ -66,7 +67,7 @@ public class InboxDao extends BaseDao {
         return executeQuery(sql, rs -> {
                     List<EpisodeItem> result = new ArrayList<>();
                     while (rs.next()) {
-                        String imageUrl = rs.getString(5) != null ? rs.getString(5) : rs.getString(8);
+                        String imageUrl = getImageUrl(rs.getString(5), rs.getString(8));
                         result.add(new EpisodeItem(
                                 rs.getString(1),
                                 Converter.timestampToDate(rs.getLong(2)),

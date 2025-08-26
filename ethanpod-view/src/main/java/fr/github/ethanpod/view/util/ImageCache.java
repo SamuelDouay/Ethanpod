@@ -58,7 +58,7 @@ public class ImageCache {
         IMAGE_CACHE.put(url, newWeakRef);
         REVERSE_MAP.put(newWeakRef, url);
 
-        LOGGER.debug("(taille cache: {}) Image ajoutée au cache: {} ", IMAGE_CACHE.size(), url);
+        //LOGGER.debug("(taille cache: {}) Image ajoutée au cache: {} ", IMAGE_CACHE.size(), url);
         return newImage;
     }
 
@@ -71,7 +71,7 @@ public class ImageCache {
             String url = REVERSE_MAP.remove(deadRef);
             if (url != null) {
                 IMAGE_CACHE.remove(url);
-                LOGGER.debug("Image automatiquement supprimée du cache: {}", url);
+                //LOGGER.debug("Image automatiquement supprimée du cache: {}", url);
             }
         }
     }
