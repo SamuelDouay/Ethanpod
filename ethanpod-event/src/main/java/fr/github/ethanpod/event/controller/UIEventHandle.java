@@ -65,6 +65,8 @@ public class UIEventHandle {
                     uiControllerManager.getQueueService().updateQueueAllUI((List<EpisodeItem>) message.data());
             case INBOX_ALL_UPDATED ->
                     uiControllerManager.getInboxService().updateInboxAll((List<EpisodeItem>) message.data());
+            case DOWNLOAD_ALL_UPDATED ->
+                    uiControllerManager.getDownloadService().updateDownloadAllUI((List<EpisodeItem>) message.data());
             default -> logger.warn("Requête non reconnue: {}", content);
 
         }

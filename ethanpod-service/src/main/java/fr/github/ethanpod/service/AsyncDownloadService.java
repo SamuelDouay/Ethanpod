@@ -13,4 +13,8 @@ public class AsyncDownloadService extends AsyncService {
     public CompletableFuture<RequestResult<Integer>> getDownloadTop8() {
         return createRequestFuture(RequestType.GET_DOWNLOAD_TOP8);
     }
+
+    public CompletableFuture<RequestResult<Integer>> getDownloadAll() {
+        return createRequestFuture(RequestType.GET_DOWNLOAD_ALL);
+    }
 }

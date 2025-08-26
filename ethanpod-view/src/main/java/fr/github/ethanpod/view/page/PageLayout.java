@@ -48,6 +48,8 @@ public class PageLayout extends Layout implements ContextualLayout {
             switch (title) {
                 case "Queue" -> MessageRouter.getInstance().userRequest(UserRequestType.GET_QUEUE_ALL, "[QUEUE]", null);
                 case "Inbox" -> MessageRouter.getInstance().userRequest(UserRequestType.GET_INBOX_ALL, "[INBOX]", null);
+                case "Downloads" ->
+                        MessageRouter.getInstance().userRequest(UserRequestType.GET_DOWNLOAD_ALL, "[DOWNLOAD]", null);
             }
         }
     }
@@ -71,27 +73,31 @@ public class PageLayout extends Layout implements ContextualLayout {
 
         eventManager.registerHandler(EventType.EPISODE_BY_PODCAST_ID_UPDATED,
                 (UIEventHandler<EpisodeByPodcastIdUpdatedEvent>) event -> {
-                    log.info("getting {} podcast", event.getEpisodeItems().size());
                     updateEpisode(event.getEpisodeItems());
                 }
         );
 
         eventManager.registerHandler(EventType.QUEUE_ALL_UPDATED,
                 (UIEventHandler<QueueAllUpdatedEvent>) event -> {
-                    log.info("getting {} podcast", event.getEpisodeItems().size());
                     updateEpisode(event.getEpisodeItems());
                 }
         );
 
         eventManager.registerHandler(EventType.INBOX_ALL_UPDATED,
                 (UIEventHandler<InboxAllUpdatedEvent>) event -> {
-                    log.info("getting {} podcast", event.getEpisodeItems().size());
+                    updateEpisode(event.getEpisodeItems());
+                }
+        );
+
+        eventManager.registerHandler(EventType.DOWNLOAD_ALL_UPDATED,
+                (UIEventHandler<DownloadAllUpdatedEvent>) event -> {
                     updateEpisode(event.getEpisodeItems());
                 }
         );
     }
 
     private void updateEpisode(List<EpisodeItem> episodeItems) {
+        log.info("getting {} podcast", episodeItems.size());
         for (EpisodeItem episodeItem : episodeItems) {
             container.getChildren().add(EPISODE_COMPONENT.createEpisode(episodeItem));
         }

@@ -39,7 +39,7 @@ public abstract class Layout {
     }
 
     protected VBox getContainer() {
-        VBox box = new VBox();
+        VBox box = new VBox(15);
         box.setPadding(new Insets(32.0, 64.0, 32.0, 64.0));
         box.setSpacing(35.0);
         box.setBackground(new Background(new BackgroundFill(ColorThemeConstants.getGrey000(), null, null)));

@@ -16,4 +16,13 @@ public class DownloadController extends Controller {
                 "Erreur lors du chargement du top 8 Download"
         );
     }
+
+    public void loadDownloadAll() {
+        executeAsyncOperation(
+                "Chargement du all Download",
+                () -> asyncServiceManager.getDownloadService().getDownloadAll(),
+                EventType.DOWNLOAD_ALL_UPDATED,
+                "Erreur lors du chargement du all Download"
+        );
+    }
 }

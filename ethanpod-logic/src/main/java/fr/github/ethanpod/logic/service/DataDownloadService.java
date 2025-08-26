@@ -19,10 +19,16 @@ public class DataDownloadService extends DataService {
         // no
     }
 
-    public void getQueueTop8(String requestId) {
+    public void getDownloadTop8(String requestId) {
         executeAsync(requestId, ResponseType.DOWNLOAD_TOP8_RESULT,
                 downloadDao::getTop8Download,
                 "getting top 8 download");
+    }
+
+    public void getDownloadAll(String requestId) {
+        executeAsync(requestId, ResponseType.DOWNLOAD_ALL_RESULT,
+                downloadDao::getAllDownload,
+                "getting all download");
     }
 }
 

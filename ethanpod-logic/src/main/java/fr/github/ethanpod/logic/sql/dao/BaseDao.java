@@ -1,20 +1,83 @@
 package fr.github.ethanpod.logic.sql.dao;
 
+import fr.github.ethanpod.core.item.EpisodeItem;
 import fr.github.ethanpod.exception.technical.DatabaseException;
 import fr.github.ethanpod.logic.sql.setting.DatabaseManager;
+import fr.github.ethanpod.util.Converter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class BaseDao {
     protected static final Logger logger = LogManager.getLogger(BaseDao.class);
+    // Requête SQL commune pour récupérer les épisodes
+    protected static final String EPISODE_BASE_QUERY =
+            "SELECT FeedItems.title, FeedItems.pubDate, FeedItems.read, FeedItems.description, " +
+                    "FeedItems.image_url as item_image, FeedMedia.duration, FeedMedia.filesize, " +
+                    "Feeds.image_url as feed_image, Queue.id as queue, Favorites.id as favorie " +
+                    "FROM FeedItems " +
+                    "INNER JOIN FeedMedia ON FeedMedia.feeditem = FeedItems.id " +
+                    "INNER JOIN Feeds ON Feeds.id = FeedItems.feed " +
+                    "LEFT JOIN Queue on Queue.feeditem = FeedItems.id " +
+                    "LEFT JOIN Favorites ON Favorites.feeditem = FeedItems.id ";
+    // Mapper commun pour créer les EpisodeItem
+    protected static final ResultSetMapper<List<EpisodeItem>> EPISODE_LIST_MAPPER = rs -> {
+        List<EpisodeItem> result = new ArrayList<>();
+        while (rs.next()) {
+            String imageUrl = getImageUrl(rs.getString(5), rs.getString(8));
+            result.add(new EpisodeItem(
+                    rs.getString(1),
+                    Converter.timestampToDate(rs.getLong(2)),
+                    rs.getInt(3) == 1,
+                    rs.getString(4),
+                    imageUrl,
+                    Converter.convertToHHMMSS(rs.getLong(6)),
+                    Converter.getSize(rs.getLong(7)),
+                    rs.getString(9) != null,
+                    rs.getInt(3) == -1,
+                    rs.getString(10) != null
+            ));
+        }
+        return result;
+    };
     private final DatabaseManager databaseManager;
 
     protected BaseDao(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;
+    }
+
+    protected static String getImageUrl(String itemImage, String feedImage) {
+        String imageUrl;
+        if (itemImage != null && !itemImage.trim().isEmpty()) {
+            // Si item_image existe, construire l'URL complète
+            if (itemImage.startsWith("http")) {
+                imageUrl = itemImage; // Déjà une URL complète
+            } else {
+                // Extraire le domaine de base depuis feed_image
+                String baseUrl = "";
+                if (feedImage != null) {
+                    try {
+                        java.net.URL url = new java.net.URL(feedImage);
+                        baseUrl = url.getProtocol() + "://" + url.getHost();
+                    } catch (java.net.MalformedURLException _) {
+                        // En cas d'erreur, utiliser une valeur par défaut
+                        baseUrl = "https://canalb.fr";
+                    }
+                } else {
+                    baseUrl = "https://canalb.fr";
+                }
+                imageUrl = baseUrl + itemImage;
+            }
+        } else {
+            // Sinon utiliser feed_image (qui est déjà une URL complète)
+            imageUrl = feedImage;
+        }
+        return imageUrl;
     }
 
     private void logMetrics(String sql, long startTime) {
@@ -95,35 +158,6 @@ public abstract class BaseDao {
             logger.error("Erreur lors de la requête [{}]: {}", sql, e.getMessage(), e);
             return 0;
         }
-    }
-
-    protected String getImageUrl(String itemImage, String feedImage) {
-        String imageUrl;
-        if (itemImage != null && !itemImage.trim().isEmpty()) {
-            // Si item_image existe, construire l'URL complète
-            if (itemImage.startsWith("http")) {
-                imageUrl = itemImage; // Déjà une URL complète
-            } else {
-                // Extraire le domaine de base depuis feed_image
-                String baseUrl = "";
-                if (feedImage != null) {
-                    try {
-                        java.net.URL url = new java.net.URL(feedImage);
-                        baseUrl = url.getProtocol() + "://" + url.getHost();
-                    } catch (java.net.MalformedURLException e) {
-                        // En cas d'erreur, utiliser une valeur par défaut
-                        baseUrl = "https://canalb.fr";
-                    }
-                } else {
-                    baseUrl = "https://canalb.fr";
-                }
-                imageUrl = baseUrl + itemImage;
-            }
-        } else {
-            // Sinon utiliser feed_image (qui est déjà une URL complète)
-            imageUrl = feedImage;
-        }
-        return imageUrl;
     }
 
     @FunctionalInterface

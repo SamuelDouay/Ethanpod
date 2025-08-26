@@ -10,5 +10,6 @@ public enum UserRequestType {
     GET_DOWNLOAD_TOP8,
     GET_QUEUE_TOP8,
     GET_PODCAST_READ_TOP8,
-    GET_QUEUE_ALL
+    GET_QUEUE_ALL,
+    GET_DOWNLOAD_ALL
 }

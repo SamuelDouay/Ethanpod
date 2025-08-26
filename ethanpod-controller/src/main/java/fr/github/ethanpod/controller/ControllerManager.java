@@ -54,17 +54,17 @@ public class ControllerManager extends BaseServiceManager<Controller> {
         UserRequestType type = (UserRequestType) message.type();
 
         switch (type) {
-            case UserRequestType.GET_PODCAST_BY_ID -> getPodcastController().getPodcastById((Integer) message.data());
-            case UserRequestType.GET_EPISODE_BY_PODCAST_ID ->
-                    getEpisodeController().getEpisodeByPodcastId((Integer) message.data());
-            case UserRequestType.GET_NAVIGATION_LIST -> getNavigationController().loadNavigationData();
-            case UserRequestType.GET_INBOX_COUNT -> getInboxController().loadInboxCount();
-            case UserRequestType.GET_INBOX_TOP8 -> getInboxController().loadInboxTop8();
-            case UserRequestType.GET_DOWNLOAD_TOP8 -> getDownloadController().loadDownloadTop8();
-            case UserRequestType.GET_QUEUE_TOP8 -> getQueueController().loadQueueTop8();
-            case UserRequestType.GET_PODCAST_READ_TOP8 -> getPodcastController().loadTop8PodcastRead();
-            case UserRequestType.GET_QUEUE_ALL -> getQueueController().loadQueueAll();
+            case GET_PODCAST_BY_ID -> getPodcastController().getPodcastById((Integer) message.data());
+            case GET_EPISODE_BY_PODCAST_ID -> getEpisodeController().getEpisodeByPodcastId((Integer) message.data());
+            case GET_NAVIGATION_LIST -> getNavigationController().loadNavigationData();
+            case GET_INBOX_COUNT -> getInboxController().loadInboxCount();
+            case GET_INBOX_TOP8 -> getInboxController().loadInboxTop8();
+            case GET_DOWNLOAD_TOP8 -> getDownloadController().loadDownloadTop8();
+            case GET_QUEUE_TOP8 -> getQueueController().loadQueueTop8();
+            case GET_PODCAST_READ_TOP8 -> getPodcastController().loadTop8PodcastRead();
+            case GET_QUEUE_ALL -> getQueueController().loadQueueAll();
             case GET_INBOX_ALL -> getInboxController().loadInboxAll();
+            case GET_DOWNLOAD_ALL -> getDownloadController().loadDownloadAll();
             default -> logger.warn("Type de message non géré: {}", message.type());
         }
     }
