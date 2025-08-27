@@ -19,7 +19,7 @@ public class ImageCache {
     private static final Map<WeakReference<Image>, String> REVERSE_MAP = new ConcurrentHashMap<>();
     private static final ScheduledExecutorService CLEANUP_EXECUTOR = Executors.newSingleThreadScheduledExecutor(r -> {
         Thread t = new Thread(r, "ImageCache-Cleanup");
-        t.setDaemon(true); // Thread daemon pour ne pas empêcher l'arrêt de l'application
+        t.setDaemon(true);
         return t;
     });
 
@@ -57,8 +57,6 @@ public class ImageCache {
         WeakReference<Image> newWeakRef = new WeakReference<>(newImage, REFERENCE_QUEUE);
         IMAGE_CACHE.put(url, newWeakRef);
         REVERSE_MAP.put(newWeakRef, url);
-
-        //LOGGER.debug("(taille cache: {}) Image ajoutée au cache: {} ", IMAGE_CACHE.size(), url);
         return newImage;
     }
 
@@ -71,7 +69,6 @@ public class ImageCache {
             String url = REVERSE_MAP.remove(deadRef);
             if (url != null) {
                 IMAGE_CACHE.remove(url);
-                //LOGGER.debug("Image automatiquement supprimée du cache: {}", url);
             }
         }
     }

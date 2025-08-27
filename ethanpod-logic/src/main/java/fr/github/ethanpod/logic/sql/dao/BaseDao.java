@@ -7,6 +7,10 @@ import fr.github.ethanpod.util.Converter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -59,18 +63,7 @@ public abstract class BaseDao {
                 imageUrl = itemImage; // Déjà une URL complète
             } else {
                 // Extraire le domaine de base depuis feed_image
-                String baseUrl = "";
-                if (feedImage != null) {
-                    try {
-                        java.net.URL url = new java.net.URL(feedImage);
-                        baseUrl = url.getProtocol() + "://" + url.getHost();
-                    } catch (java.net.MalformedURLException _) {
-                        // En cas d'erreur, utiliser une valeur par défaut
-                        baseUrl = "https://canalb.fr";
-                    }
-                } else {
-                    baseUrl = "https://canalb.fr";
-                }
+                String baseUrl = getUrl(feedImage, itemImage);
                 imageUrl = baseUrl + itemImage;
             }
         } else {
@@ -78,6 +71,19 @@ public abstract class BaseDao {
             imageUrl = feedImage;
         }
         return imageUrl;
+    }
+
+    private static String getUrl(String feedImage, String itemImage) {
+        if (feedImage != null) {
+            try {
+                URL url = new URI(feedImage).toURL();
+                return url.getProtocol() + "://" + url.getHost();
+            } catch (MalformedURLException | URISyntaxException _) {
+                return itemImage;
+            }
+        } else {
+            return itemImage;
+        }
     }
 
     private void logMetrics(String sql, long startTime) {

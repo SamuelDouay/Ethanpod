@@ -11,8 +11,6 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignD;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignI;
@@ -23,8 +21,6 @@ import static fr.github.ethanpod.view.util.Constant.*;
 import static fr.github.ethanpod.view.util.FontThemeConstants.MEDIUM_14;
 
 public class EpisodeComponent {
-    private static final Logger log = LogManager.getLogger(EpisodeComponent.class);
-
     public EpisodeComponent() {
         // no parameters
     }

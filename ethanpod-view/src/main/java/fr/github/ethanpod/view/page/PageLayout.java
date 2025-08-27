@@ -50,6 +50,8 @@ public class PageLayout extends Layout implements ContextualLayout {
                 case "Inbox" -> MessageRouter.getInstance().userRequest(UserRequestType.GET_INBOX_ALL, "[INBOX]", null);
                 case "Downloads" ->
                         MessageRouter.getInstance().userRequest(UserRequestType.GET_DOWNLOAD_ALL, "[DOWNLOAD]", null);
+                default -> {
+                }
             }
         }
     }
@@ -61,39 +63,37 @@ public class PageLayout extends Layout implements ContextualLayout {
 
     private void registerEventHandlersPodcast(UIEventManager eventManager) {
         eventManager.registerHandler(EventType.PODCAST_BY_ID_UPDATED,
-                (UIEventHandler<PodcastFindByIdUpdate>) event -> {
-                    log.info("getting podcast: {}", event.getPodcastItem().getTitle());
-                    setTitle(event.getPodcastItem().getTitle());
-                    VBox subtitle = new VBox();
-                    subtitle.getChildren().add(new Label(event.getPodcastItem().getAuthor()));
-                    subtitle.getChildren().add(new Label(event.getPodcastItem().getDescription()));
-                    container.getChildren().add(subtitle);
-                }
+                this::updatePodcastTitle
         );
 
         eventManager.registerHandler(EventType.EPISODE_BY_PODCAST_ID_UPDATED,
-                (UIEventHandler<EpisodeByPodcastIdUpdatedEvent>) event -> {
-                    updateEpisode(event.getEpisodeItems());
-                }
+                (UIEventHandler<EpisodeByPodcastIdUpdatedEvent>) event ->
+                        updateEpisode(event.getEpisodeItems())
         );
 
         eventManager.registerHandler(EventType.QUEUE_ALL_UPDATED,
-                (UIEventHandler<QueueAllUpdatedEvent>) event -> {
-                    updateEpisode(event.getEpisodeItems());
-                }
+                (UIEventHandler<QueueAllUpdatedEvent>) event ->
+                        updateEpisode(event.getEpisodeItems())
         );
 
         eventManager.registerHandler(EventType.INBOX_ALL_UPDATED,
-                (UIEventHandler<InboxAllUpdatedEvent>) event -> {
-                    updateEpisode(event.getEpisodeItems());
-                }
+                (UIEventHandler<InboxAllUpdatedEvent>) event ->
+                        updateEpisode(event.getEpisodeItems())
         );
 
         eventManager.registerHandler(EventType.DOWNLOAD_ALL_UPDATED,
-                (UIEventHandler<DownloadAllUpdatedEvent>) event -> {
-                    updateEpisode(event.getEpisodeItems());
-                }
+                (UIEventHandler<DownloadAllUpdatedEvent>) event ->
+                        updateEpisode(event.getEpisodeItems())
         );
+    }
+
+    private void updatePodcastTitle(PodcastFindByIdUpdate event) {
+        log.info("getting podcast: {}", event.getPodcastItem().getTitle());
+        setTitle(event.getPodcastItem().getTitle());
+        VBox subtitle = new VBox();
+        subtitle.getChildren().add(new Label(event.getPodcastItem().getAuthor()));
+        subtitle.getChildren().add(new Label(event.getPodcastItem().getDescription()));
+        container.getChildren().add(subtitle);
     }
 
     private void updateEpisode(List<EpisodeItem> episodeItems) {
