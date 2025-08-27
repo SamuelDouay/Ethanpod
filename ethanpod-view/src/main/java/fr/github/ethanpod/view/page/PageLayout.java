@@ -1,18 +1,19 @@
 package fr.github.ethanpod.view.page;
 
 import fr.github.ethanpod.core.item.EpisodeItem;
+import fr.github.ethanpod.core.item.NavigationItem;
 import fr.github.ethanpod.core.thread.EventType;
 import fr.github.ethanpod.core.thread.MessageRouter;
 import fr.github.ethanpod.core.thread.UserRequestType;
 import fr.github.ethanpod.event.*;
 import fr.github.ethanpod.view.component.EpisodeComponent;
+import fr.github.ethanpod.view.component.image.ImageComponent;
 import fr.github.ethanpod.view.context.CleanableLayout;
 import fr.github.ethanpod.view.context.ContextualLayout;
 import fr.github.ethanpod.view.context.LayoutContext;
 import fr.github.ethanpod.view.context.PageContext;
 import fr.github.ethanpod.view.util.ImageCache;
 import fr.github.ethanpod.view.util.LayoutType;
-import javafx.application.Platform;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import org.apache.logging.log4j.LogManager;
@@ -23,7 +24,8 @@ import java.util.List;
 public class PageLayout extends Layout implements ContextualLayout, CleanableLayout {
     private static final EpisodeComponent EPISODE_COMPONENT = new EpisodeComponent();
     private static final String DEFAULT_TITLE = "PAGE";
-    private static final Logger log = LogManager.getLogger(PageLayout.class);
+    private static final Logger LOGGER = LogManager.getLogger(PageLayout.class);
+    private static final ImageComponent IMAGE_COMPONENT = new ImageComponent();
 
     public PageLayout(UIEventManager eventManager) {
         super(DEFAULT_TITLE, eventManager);
@@ -41,14 +43,9 @@ public class PageLayout extends Layout implements ContextualLayout, CleanableLay
     @Override
     public void clearContainer() {
         if (container != null) {
-            log.debug("Nettoyage du container PageLayout");
+            LOGGER.debug("Nettoyage du container PageLayout");
             container.getChildren().clear();
-
-            // Force le nettoyage du cache d'images et le garbage collector
-            Platform.runLater(() -> {
-                ImageCache.cleanupDeadReferences();
-                System.gc();
-            });
+            ImageCache.cleanupDeadReferences();
         }
     }
 
@@ -67,6 +64,8 @@ public class PageLayout extends Layout implements ContextualLayout, CleanableLay
                 case "Inbox" -> MessageRouter.getInstance().userRequest(UserRequestType.GET_INBOX_ALL, "[INBOX]", null);
                 case "Downloads" ->
                         MessageRouter.getInstance().userRequest(UserRequestType.GET_DOWNLOAD_ALL, "[DOWNLOAD]", null);
+                case "Subscriptions" ->
+                        MessageRouter.getInstance().userRequest(UserRequestType.GET_NAVIGATION_LIST, "[NAVIGATION]", null);
                 default -> {
                     // no default case
                 }
@@ -103,10 +102,17 @@ public class PageLayout extends Layout implements ContextualLayout, CleanableLay
                 (UIEventHandler<DownloadAllUpdatedEvent>) event ->
                         updateEpisode(event.getEpisodeItems())
         );
+
+        eventManager.registerHandler(EventType.NAVIGATION_UPDATED,
+                (UIEventHandler<NavigationUpdatedEvent>) event -> {
+                    LOGGER.info("Navigation update: {} items", event.getItemCount());
+                    updateSubscriptions(event.getNavigationItems());
+                }
+        );
     }
 
     private void updatePodcastTitle(PodcastFindByIdUpdate event) {
-        log.info("getting podcast: {}", event.getPodcastItem().getTitle());
+        LOGGER.info("getting podcast: {}", event.getPodcastItem().getTitle());
         setTitle(event.getPodcastItem().getTitle());
         VBox subtitle = new VBox();
         subtitle.getChildren().add(new Label(event.getPodcastItem().getAuthor()));
@@ -115,9 +121,17 @@ public class PageLayout extends Layout implements ContextualLayout, CleanableLay
     }
 
     private void updateEpisode(List<EpisodeItem> episodeItems) {
-        log.info("getting {} podcast", episodeItems.size());
+        LOGGER.info("getting {} podcast", episodeItems.size());
         for (EpisodeItem episodeItem : episodeItems) {
             container.getChildren().add(EPISODE_COMPONENT.createEpisode(episodeItem));
         }
+    }
+
+    private void updateSubscriptions(List<NavigationItem> items) {
+        getGrid();
+        for (NavigationItem item : items) {
+            grid.getChildren().add(IMAGE_COMPONENT.createImageCard(item.getUrlImage(), item.getTitle(), item.getNumber()));
+        }
+        container.getChildren().add(grid);
     }
 }
