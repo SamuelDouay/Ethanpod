@@ -9,6 +9,7 @@ import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -18,16 +19,18 @@ public abstract class Layout {
     protected final StringProperty titleProperty;
     protected final UIEventManager eventManager;
     protected final VBox container;
+    protected final ScrollPane scrollPane;
 
     protected final FlowPane grid;
 
-    protected Layout(String initialTitle, UIEventManager eventManager) {
+    protected Layout(String initialTitle, UIEventManager eventManager, ScrollPane scrollPane) {
         Platform.runLater(System::gc);
         ImageCache.cleanupDeadReferences();
         this.titleProperty = new SimpleStringProperty(initialTitle);
         this.eventManager = eventManager;
         this.container = new VBox();
         this.grid = new FlowPane();
+        this.scrollPane = scrollPane;
     }
 
     protected void getGrid() {

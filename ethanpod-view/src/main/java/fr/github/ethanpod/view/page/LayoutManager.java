@@ -31,8 +31,8 @@ public class LayoutManager {
     }
 
     private void initializeLayouts() {
-        layoutCache.put(LayoutType.HOME, new HomeLayout(uiEventManager));
-        layoutCache.put(LayoutType.PAGE, new PageLayout(uiEventManager));
+        layoutCache.put(LayoutType.HOME, new HomeLayout(uiEventManager, scrollPane));
+        layoutCache.put(LayoutType.PAGE, new PageLayout(uiEventManager, scrollPane));
     }
 
     public void setLayout(LayoutType layoutType) {

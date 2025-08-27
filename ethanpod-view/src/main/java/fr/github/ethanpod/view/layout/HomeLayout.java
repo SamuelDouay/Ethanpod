@@ -41,8 +41,8 @@ public class HomeLayout extends Layout implements ContextualLayout {
     private VBox mainContainer;
     private Label newLabel;
 
-    public HomeLayout(UIEventManager uiEventManager) {
-        super("Home", uiEventManager);
+    public HomeLayout(UIEventManager uiEventManager, ScrollPane scrollPane) {
+        super("Home", uiEventManager, scrollPane);
         registerEventHandlers();
         MessageRouter.getInstance().userRequest(UserRequestType.GET_INBOX_TOP8, "[INBOX]", null);
         MessageRouter.getInstance().userRequest(UserRequestType.GET_DOWNLOAD_TOP8, "[DOWNLOAD]", null);

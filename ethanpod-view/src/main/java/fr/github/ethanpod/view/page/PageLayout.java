@@ -15,6 +15,7 @@ import fr.github.ethanpod.view.context.PageContext;
 import fr.github.ethanpod.view.util.ImageCache;
 import fr.github.ethanpod.view.util.LayoutType;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,8 +28,8 @@ public class PageLayout extends Layout implements ContextualLayout, CleanableLay
     private static final Logger LOGGER = LogManager.getLogger(PageLayout.class);
     private static final ImageComponent IMAGE_COMPONENT = new ImageComponent();
 
-    public PageLayout(UIEventManager eventManager) {
-        super(DEFAULT_TITLE, eventManager);
+    public PageLayout(UIEventManager eventManager, ScrollPane scrollPane) {
+        super(DEFAULT_TITLE, eventManager, scrollPane);
         registerEventHandlersPodcast(eventManager);
     }
 
@@ -71,6 +72,11 @@ public class PageLayout extends Layout implements ContextualLayout, CleanableLay
                 }
             }
         }
+
+        scrollPane.vvalueProperty().addListener((observable, oldValue, newValue) -> {
+            // Déclencher le chargement quand on atteint 90% du scroll
+            LOGGER.debug("==== SCROLL VALUE {} ====", newValue);
+        });
     }
 
     @Override
@@ -129,6 +135,7 @@ public class PageLayout extends Layout implements ContextualLayout, CleanableLay
 
     private void updateSubscriptions(List<NavigationItem> items) {
         getGrid();
+        grid.getChildren().clear();
         for (NavigationItem item : items) {
             grid.getChildren().add(IMAGE_COMPONENT.createImageCard(item.getUrlImage(), item.getTitle(), item.getNumber()));
         }
