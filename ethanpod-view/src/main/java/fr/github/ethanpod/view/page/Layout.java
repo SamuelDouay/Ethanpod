@@ -7,7 +7,6 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
@@ -17,13 +16,14 @@ public abstract class Layout {
     private static final String FONT_FAMILY = "Inter";
     protected final StringProperty titleProperty;
     protected final UIEventManager eventManager;
-    protected Node content;
+    protected final VBox container;
 
     protected Layout(String initialTitle, UIEventManager eventManager) {
         Platform.runLater(System::gc);
         ImageCache.cleanupDeadReferences();
         this.titleProperty = new SimpleStringProperty(initialTitle);
         this.eventManager = eventManager;
+        this.container = new VBox();
     }
 
     protected Label getTitle() {

@@ -1,6 +1,7 @@
 package fr.github.ethanpod.view.page;
 
 import fr.github.ethanpod.event.UIEventManager;
+import fr.github.ethanpod.view.context.CleanableLayout;
 import fr.github.ethanpod.view.context.ContextualLayout;
 import fr.github.ethanpod.view.context.LayoutContext;
 import fr.github.ethanpod.view.layout.HomeLayout;
@@ -30,25 +31,8 @@ public class LayoutManager {
     }
 
     private void initializeLayouts() {
-        // Initialisation paresseuse des layouts
-        for (LayoutType type : LayoutType.values()) {
-            layoutCache.put(type, createLayoutInstance(type));
-        }
-    }
-
-    private Layout createLayoutInstance(LayoutType type) {
-        return switch (type) {
-            case HOME -> new HomeLayout(uiEventManager);
-            case QUEUE -> null;
-            case INBOX -> null;
-            case EPISODES -> null;
-            case SUBSCRIPTION -> null;
-            case DOWNLOAD -> null;
-            case HISTORY -> null;
-            case ADD -> null;
-            case FEED -> null;
-            case PAGE -> new PageLayout(uiEventManager);
-        };
+        layoutCache.put(LayoutType.HOME, new HomeLayout(uiEventManager));
+        layoutCache.put(LayoutType.PAGE, new PageLayout(uiEventManager));
     }
 
     public void setLayout(LayoutType layoutType) {
@@ -57,8 +41,13 @@ public class LayoutManager {
 
     public void setLayout(LayoutType layoutType, LayoutContext context) {
         Objects.requireNonNull(layoutType, "LayoutType cannot be null");
+
         try {
             Layout layout = layoutCache.get(layoutType);
+
+            if (layout instanceof CleanableLayout cleanableLayout) {
+                cleanableLayout.clearContainer();
+            }
 
             // Appliquer le contexte si le layout le supporte
             if (context != null && layout instanceof ContextualLayout contextualLayout) {
