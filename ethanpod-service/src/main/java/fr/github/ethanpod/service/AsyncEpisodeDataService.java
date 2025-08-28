@@ -1,5 +1,6 @@
 package fr.github.ethanpod.service;
 
+import fr.github.ethanpod.core.UserDataRequest;
 import fr.github.ethanpod.core.item.EpisodeItem;
 import fr.github.ethanpod.core.thread.RequestType;
 
@@ -12,8 +13,8 @@ public class AsyncEpisodeDataService extends AsyncService {
         super("EPISODE");
     }
 
-    public CompletableFuture<RequestResult<List<EpisodeItem>>> getEpisodeByPodcastId(Integer id) {
-        return createRequestFuture(RequestType.GET_EPISODE_BY_PODCAST_ID, id);
+    public CompletableFuture<RequestResult<List<EpisodeItem>>> getEpisodeByPodcastId(UserDataRequest userDataRequest) {
+        return createRequestFuture(RequestType.GET_EPISODE_BY_PODCAST_ID, userDataRequest);
 
     }
 }

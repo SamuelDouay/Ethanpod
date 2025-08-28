@@ -56,7 +56,8 @@ public class ControllerManager extends BaseServiceManager<Controller> {
 
         switch (type) {
             case GET_PODCAST_BY_ID -> getPodcastController().getPodcastById((Integer) message.data());
-            case GET_EPISODE_BY_PODCAST_ID -> getEpisodeController().getEpisodeByPodcastId((Integer) message.data());
+            case GET_EPISODE_BY_PODCAST_ID ->
+                    getEpisodeController().getEpisodeByPodcastId((UserDataRequest) message.data());
             case GET_NAVIGATION_LIST -> getNavigationController().loadNavigationData();
             case GET_INBOX_COUNT -> getInboxController().loadInboxCount();
             case GET_INBOX_TOP8 -> getInboxController().loadInboxTop8();

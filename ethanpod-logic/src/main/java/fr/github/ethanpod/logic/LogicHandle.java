@@ -54,7 +54,7 @@ public class LogicHandle {
             case GET_PODCAST_BY_ID ->
                     serviceManager.getPodcastService().getPodcastById(requestId, (Integer) message.data());
             case GET_EPISODE_BY_PODCAST_ID ->
-                    serviceManager.getEpisodeService().getEpisodeByPodcastId(requestId, (Integer) message.data());
+                    serviceManager.getEpisodeService().getEpisodeByPodcastId(requestId, (UserDataRequest) message.data());
             case GET_QUEUE_ALL ->
                     serviceManager.getQueueService().getAllInQueue(requestId, (UserDataRequest) message.data());
             case GET_INBOX_ALL ->

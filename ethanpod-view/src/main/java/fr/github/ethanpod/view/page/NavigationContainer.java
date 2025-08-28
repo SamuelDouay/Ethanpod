@@ -84,7 +84,7 @@ public class NavigationContainer {
         VBox box = createListContainer();
 
         for (int i = 0; i < fixedItems.length; i++) {
-            fixedNavBoxes[i] = createOptimizedNavigationBox(fixedItems[i], LayoutType.PAGE);
+            fixedNavBoxes[i] = createOptimizedNavigationBox(fixedItems[i]);
             if (fixedItems[i].isSelected()) {
                 selectedBox = fixedNavBoxes[i];
             }
@@ -124,11 +124,11 @@ public class NavigationContainer {
         return scrollPane;
     }
 
-    private HBox createOptimizedNavigationBox(NavigationItem item, LayoutType layoutType) {
+    private HBox createOptimizedNavigationBox(NavigationItem item) {
         HBox box = navComponent.createNavigationCard(item);
 
 
-        box.setOnMouseClicked(_ -> handleNavClick(box, item, layoutType));
+        box.setOnMouseClicked(_ -> handleNavClick(box, item));
         box.setOnMouseEntered(_ -> NavigationComponent.updateAppearance(box, true, true));
         box.setOnMouseExited(_ -> NavigationComponent.updateAppearance(box, item.isSelected(), false));
         box.setOnMousePressed(_ -> box.setBackground(PRESSED_BG));
@@ -137,7 +137,7 @@ public class NavigationContainer {
         return box;
     }
 
-    private void handleNavClick(HBox clickedBox, NavigationItem item, LayoutType layoutType) {
+    private void handleNavClick(HBox clickedBox, NavigationItem item) {
         manager.setItemState(true, item.getUuid());
 
 
@@ -147,11 +147,8 @@ public class NavigationContainer {
         selectedBox = clickedBox;
         NavigationComponent.updateAppearance(selectedBox, true, false);
 
-
-        if (layoutType != null && layoutManager != null) {
-            PageContext context = new PageContext(item.getTitle(), item.getId());
-            layoutManager.setLayout(layoutType, context);
-        }
+        PageContext context = new PageContext(item.getTitle(), item.getId());
+        layoutManager.setLayout(LayoutType.PAGE, context);
     }
 
     private void updateNavigationList(List<NavigationItem> navigationList) {
@@ -159,7 +156,7 @@ public class NavigationContainer {
 
         for (NavigationItem item : navigationList) {
             try {
-                HBox component = createOptimizedNavigationBox(item, LayoutType.PAGE);
+                HBox component = createOptimizedNavigationBox(item);
                 scrollBox.getChildren().add(component);
             } catch (Exception e) {
                 log.error("Erreur création composant pour {}", item, e);
@@ -177,7 +174,7 @@ public class NavigationContainer {
             } else {
                 // Création du badge si il n'existait pas
                 HBox oldBox = fixedNavBoxes[2];
-                HBox newBox = createOptimizedNavigationBox(fixedItems[2], LayoutType.PAGE);
+                HBox newBox = createOptimizedNavigationBox(fixedItems[2]);
 
                 VBox parent = (VBox) oldBox.getParent();
                 int index = parent.getChildren().indexOf(oldBox);
@@ -211,9 +208,9 @@ public class NavigationContainer {
 
     private void registerEventHandlers(UIEventManager eventManager) {
         eventManager.registerHandler(EventType.NAVIGATION_UPDATED,
-                (UIEventHandler<NavigationUpdatedEvent>) event -> {
-                    updateNavigationList(event.getNavigationItems());
-                }
+                (UIEventHandler<NavigationUpdatedEvent>) event ->
+                        updateNavigationList(event.getNavigationItems())
+
         );
 
         eventManager.registerHandler(EventType.INBOX_COUNT_UPDATED,

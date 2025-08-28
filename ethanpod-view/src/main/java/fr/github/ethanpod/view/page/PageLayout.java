@@ -16,6 +16,7 @@ import fr.github.ethanpod.view.context.LayoutContext;
 import fr.github.ethanpod.view.context.PageContext;
 import fr.github.ethanpod.view.util.ImageCache;
 import fr.github.ethanpod.view.util.LayoutType;
+import fr.github.ethanpod.view.util.PaginationState;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -36,7 +37,6 @@ public class PageLayout extends Layout implements ContextualLayout, CleanableLay
     // Pagination configuration
     private static final int PAGE_SIZE = 100;
     private static final double SCROLL_THRESHOLD = 0.9;
-    private static final int INITIAL_PAGE = 0;
 
     // Page types
     private static final String QUEUE_PAGE = "Queue";
@@ -202,9 +202,9 @@ public class PageLayout extends Layout implements ContextualLayout, CleanableLay
     }
 
     private void registerNavigationHandlers(UIEventManager eventManager) {
-        eventManager.registerHandler(EventType.NAVIGATION_UPDATED, event -> {
-            handleNavigationUpdate(event.getNavigationItems());
-        });
+        eventManager.registerHandler(EventType.NAVIGATION_UPDATED, event ->
+                handleNavigationUpdate(event.getNavigationItems())
+        );
     }
 
     // Private methods - UI updates
@@ -245,12 +245,12 @@ public class PageLayout extends Layout implements ContextualLayout, CleanableLay
 
     private void clearContainerExceptPodcastInfo() {
         container.getChildren().removeIf(node ->
-                !(node instanceof VBox && hasLabelAsFirstChild((VBox) node))
+                !hasLabelAsFirstChild((VBox) node)
         );
     }
 
     private boolean hasLabelAsFirstChild(VBox vbox) {
-        return !vbox.getChildren().isEmpty() && vbox.getChildren().get(0) instanceof Label;
+        return !vbox.getChildren().isEmpty() && vbox.getChildren().getFirst() instanceof Label;
     }
 
     private void addEpisodesToContainer(List<EpisodeItem> episodeItems) {
@@ -299,58 +299,6 @@ public class PageLayout extends Layout implements ContextualLayout, CleanableLay
         if (items.isEmpty() || items.size() < PAGE_SIZE) {
             paginationState.setHasMoreData(false);
             LOGGER.debug("Plus de données disponibles - reçu {} éléments", items.size());
-        }
-    }
-
-    // Inner class for pagination state management
-    private static class PaginationState {
-        private int currentPage = INITIAL_PAGE;
-        private boolean hasMoreData = true;
-        private String currentPageType = "";
-        private Integer currentPodcastId = null;
-
-        void reset() {
-            reset("", null);
-        }
-
-        void reset(String pageType, Integer podcastId) {
-            this.currentPage = INITIAL_PAGE;
-            this.hasMoreData = true;
-            this.currentPageType = pageType;
-            this.currentPodcastId = podcastId;
-        }
-
-        void nextPage() {
-            currentPage++;
-        }
-
-        boolean isFirstPage() {
-            return currentPage == INITIAL_PAGE;
-        }
-
-        boolean hasMoreData() {
-            return hasMoreData;
-        }
-
-        void setHasMoreData(boolean hasMoreData) {
-            this.hasMoreData = hasMoreData;
-        }
-
-        boolean hasPodcastId() {
-            return currentPodcastId != null && currentPodcastId != 0;
-        }
-
-        // Getters
-        int getCurrentPage() {
-            return currentPage;
-        }
-
-        String getCurrentPageType() {
-            return currentPageType;
-        }
-
-        Integer getCurrentPodcastId() {
-            return currentPodcastId;
         }
     }
 }
