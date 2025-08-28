@@ -1,5 +1,6 @@
 package fr.github.ethanpod.logic.service;
 
+import fr.github.ethanpod.core.UserDataRequest;
 import fr.github.ethanpod.core.thread.ResponseType;
 import fr.github.ethanpod.logic.sql.dao.QueueDao;
 import fr.github.ethanpod.logic.sql.setting.DatabaseManager;
@@ -25,9 +26,9 @@ public class DataQueueService extends DataService {
                 "getting top 8 queue");
     }
 
-    public void getAllInQueue(String requestId) {
+    public void getAllInQueue(String requestId, UserDataRequest userDataRequest) {
         executeAsync(requestId, ResponseType.QUEUE_ALL_RESULT,
-                queueDao::getAllInQueue,
+                () -> queueDao.getAllInQueue(userDataRequest),
                 "getting all in queue");
     }
 }

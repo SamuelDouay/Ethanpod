@@ -1,5 +1,6 @@
 package fr.github.ethanpod.service;
 
+import fr.github.ethanpod.core.UserDataRequest;
 import fr.github.ethanpod.core.thread.RequestType;
 
 import java.util.concurrent.CompletableFuture;
@@ -14,7 +15,7 @@ public class AsyncDownloadService extends AsyncService {
         return createRequestFuture(RequestType.GET_DOWNLOAD_TOP8);
     }
 
-    public CompletableFuture<RequestResult<Integer>> getDownloadAll() {
-        return createRequestFuture(RequestType.GET_DOWNLOAD_ALL);
+    public CompletableFuture<RequestResult<Integer>> getDownloadAll(UserDataRequest userDataRequest) {
+        return createRequestFuture(RequestType.GET_DOWNLOAD_ALL, userDataRequest);
     }
 }

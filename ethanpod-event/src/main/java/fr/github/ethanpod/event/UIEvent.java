@@ -1,29 +1,23 @@
 package fr.github.ethanpod.event;
 
+import fr.github.ethanpod.core.item.EpisodeItem;
+import fr.github.ethanpod.core.item.NavigationItem;
+import fr.github.ethanpod.core.item.PodcastItem;
 import fr.github.ethanpod.core.thread.EventType;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.List;
 
 public abstract class UIEvent {
     public final EventType eventType;
-    private final String eventId;
-    private final LocalDateTime timestamp;
     private final String source;
+    protected PodcastItem podcastItem;
+    protected List<EpisodeItem> episodeItems;
+    protected List<NavigationItem> navigationItems;
+    protected Integer count;
 
     protected UIEvent(String source, EventType eventType) {
-        this.eventId = UUID.randomUUID().toString();
-        this.timestamp = LocalDateTime.now();
         this.source = source;
         this.eventType = eventType;
-    }
-
-    public String getEventId() {
-        return eventId;
-    }
-
-    public LocalDateTime getTimestamp() {
-        return timestamp;
     }
 
     public String getSource() {
@@ -33,4 +27,21 @@ public abstract class UIEvent {
     public EventType getEventType() {
         return eventType;
     }
+
+    public List<EpisodeItem> getEpisodeItems() {
+        return episodeItems;
+    }
+
+    public PodcastItem getPodcastItem() {
+        return podcastItem;
+    }
+
+    public List<NavigationItem> getNavigationItems() {
+        return navigationItems;
+    }
+
+    public Integer getCount() {
+        return count;
+    }
+
 }

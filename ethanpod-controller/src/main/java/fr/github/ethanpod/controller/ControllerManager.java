@@ -1,5 +1,6 @@
 package fr.github.ethanpod.controller;
 
+import fr.github.ethanpod.core.UserDataRequest;
 import fr.github.ethanpod.core.thread.ThreadMessage;
 import fr.github.ethanpod.core.thread.UserRequestType;
 import fr.github.ethanpod.service.AsyncServiceManager;
@@ -62,9 +63,9 @@ public class ControllerManager extends BaseServiceManager<Controller> {
             case GET_DOWNLOAD_TOP8 -> getDownloadController().loadDownloadTop8();
             case GET_QUEUE_TOP8 -> getQueueController().loadQueueTop8();
             case GET_PODCAST_READ_TOP8 -> getPodcastController().loadTop8PodcastRead();
-            case GET_QUEUE_ALL -> getQueueController().loadQueueAll();
-            case GET_INBOX_ALL -> getInboxController().loadInboxAll();
-            case GET_DOWNLOAD_ALL -> getDownloadController().loadDownloadAll();
+            case GET_QUEUE_ALL -> getQueueController().loadQueueAll((UserDataRequest) message.data());
+            case GET_INBOX_ALL -> getInboxController().loadInboxAll((UserDataRequest) message.data());
+            case GET_DOWNLOAD_ALL -> getDownloadController().loadDownloadAll((UserDataRequest) message.data());
             default -> logger.warn("Type de message non géré: {}", message.type());
         }
     }

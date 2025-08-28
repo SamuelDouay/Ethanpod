@@ -29,6 +29,7 @@ public abstract class BaseDao {
                     "INNER JOIN Feeds ON Feeds.id = FeedItems.feed " +
                     "LEFT JOIN Queue on Queue.feeditem = FeedItems.id " +
                     "LEFT JOIN Favorites ON Favorites.feeditem = FeedItems.id ";
+    protected static final String LIMIT_OFFSET = "LIMIT ? OFFSET ?";
     // Mapper commun pour créer les EpisodeItem
     protected static final ResultSetMapper<List<EpisodeItem>> EPISODE_LIST_MAPPER = rs -> {
         List<EpisodeItem> result = new ArrayList<>();

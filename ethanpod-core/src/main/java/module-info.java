@@ -3,4 +3,5 @@ module ethanpod.core {
     requires java.sql;
     exports fr.github.ethanpod.core.item;
     exports fr.github.ethanpod.core.thread;
+    exports fr.github.ethanpod.core;
 }

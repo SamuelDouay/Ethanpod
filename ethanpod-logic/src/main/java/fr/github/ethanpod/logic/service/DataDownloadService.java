@@ -1,5 +1,6 @@
 package fr.github.ethanpod.logic.service;
 
+import fr.github.ethanpod.core.UserDataRequest;
 import fr.github.ethanpod.core.thread.ResponseType;
 import fr.github.ethanpod.logic.sql.dao.DownloadDao;
 import fr.github.ethanpod.logic.sql.setting.DatabaseManager;
@@ -25,9 +26,9 @@ public class DataDownloadService extends DataService {
                 "getting top 8 download");
     }
 
-    public void getDownloadAll(String requestId) {
+    public void getDownloadAll(String requestId, UserDataRequest userDataRequest) {
         executeAsync(requestId, ResponseType.DOWNLOAD_ALL_RESULT,
-                downloadDao::getAllDownload,
+                () -> downloadDao.getAllDownload(userDataRequest),
                 "getting all download");
     }
 }

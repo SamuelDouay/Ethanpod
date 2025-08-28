@@ -1,5 +1,6 @@
 package fr.github.ethanpod.logic.service;
 
+import fr.github.ethanpod.core.UserDataRequest;
 import fr.github.ethanpod.core.thread.ResponseType;
 import fr.github.ethanpod.logic.sql.dao.InboxDao;
 import fr.github.ethanpod.logic.sql.setting.DatabaseManager;
@@ -31,9 +32,9 @@ public class DataInboxService extends DataService {
                 "getting inbox top 8");
     }
 
-    public void getAllInInbox(String requestId) {
+    public void getAllInInbox(String requestId, UserDataRequest userDataRequest) {
         executeAsync(requestId, ResponseType.INBOX_ALL_RESULT,
-                inboxDao::getAllInInbox,
+                () -> inboxDao.getAllInInbox(userDataRequest),
                 "getting inbox all");
     }
 }

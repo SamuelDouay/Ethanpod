@@ -40,7 +40,7 @@ public class UIEventHandle {
     private void handleEvent(ThreadMessage message) {
         EventType content = (EventType) message.type();
         String requestId = message.id();
-
+        
         logger.debug("Traitement requête: {} avec ID: {}", content, requestId);
 
 

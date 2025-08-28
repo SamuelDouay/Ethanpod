@@ -1,5 +1,6 @@
 package fr.github.ethanpod.service;
 
+import fr.github.ethanpod.core.UserDataRequest;
 import fr.github.ethanpod.core.item.EpisodeItem;
 import fr.github.ethanpod.core.thread.RequestType;
 
@@ -20,7 +21,7 @@ public class AsyncInboxService extends AsyncService {
         return createRequestFuture(RequestType.GET_INBOX_TOP8);
     }
 
-    public CompletableFuture<RequestResult<List<EpisodeItem>>> getAllInbox() {
-        return createRequestFuture(RequestType.GET_INBOX_ALL);
+    public CompletableFuture<RequestResult<List<EpisodeItem>>> getAllInbox(UserDataRequest userDataRequest) {
+        return createRequestFuture(RequestType.GET_INBOX_ALL, userDataRequest);
     }
 }

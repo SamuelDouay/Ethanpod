@@ -1,5 +1,6 @@
 package fr.github.ethanpod.logic;
 
+import fr.github.ethanpod.core.UserDataRequest;
 import fr.github.ethanpod.core.thread.MessageRouter;
 import fr.github.ethanpod.core.thread.NotificationType;
 import fr.github.ethanpod.core.thread.RequestType;
@@ -54,9 +55,12 @@ public class LogicHandle {
                     serviceManager.getPodcastService().getPodcastById(requestId, (Integer) message.data());
             case GET_EPISODE_BY_PODCAST_ID ->
                     serviceManager.getEpisodeService().getEpisodeByPodcastId(requestId, (Integer) message.data());
-            case GET_QUEUE_ALL -> serviceManager.getQueueService().getAllInQueue(requestId);
-            case GET_INBOX_ALL -> serviceManager.getInboxService().getAllInInbox(requestId);
-            case GET_DOWNLOAD_ALL -> serviceManager.getDownloadService().getDownloadAll(requestId);
+            case GET_QUEUE_ALL ->
+                    serviceManager.getQueueService().getAllInQueue(requestId, (UserDataRequest) message.data());
+            case GET_INBOX_ALL ->
+                    serviceManager.getInboxService().getAllInInbox(requestId, (UserDataRequest) message.data());
+            case GET_DOWNLOAD_ALL ->
+                    serviceManager.getDownloadService().getDownloadAll(requestId, (UserDataRequest) message.data());
             default -> logger.warn("Requête non reconnue: {}", content);
 
         }

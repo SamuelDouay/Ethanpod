@@ -212,7 +212,6 @@ public class NavigationContainer {
     private void registerEventHandlers(UIEventManager eventManager) {
         eventManager.registerHandler(EventType.NAVIGATION_UPDATED,
                 (UIEventHandler<NavigationUpdatedEvent>) event -> {
-                    log.info("Navigation update: {} items", event.getItemCount());
                     updateNavigationList(event.getNavigationItems());
                 }
         );
