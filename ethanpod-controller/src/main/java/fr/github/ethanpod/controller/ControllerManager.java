@@ -25,6 +25,7 @@ public class ControllerManager extends BaseServiceManager<Controller> {
         registerService(ServiceConstants.PODCAST_SERVICE, new PodcastController(asyncServiceManager));
         registerService(ServiceConstants.DOWNLOAD_SERVICE, new DownloadController(asyncServiceManager));
         registerService(ServiceConstants.EPISODE_SERVICE, new EpisodeController(asyncServiceManager));
+        registerService(ServiceConstants.HISTORY_SERVICE, new HistoryController(asyncServiceManager));
     }
 
     private PodcastController getPodcastController() {
@@ -51,6 +52,10 @@ public class ControllerManager extends BaseServiceManager<Controller> {
         return getService(ServiceConstants.DOWNLOAD_SERVICE, DownloadController.class);
     }
 
+    private HistoryController getHistoryController() {
+        return getService(ServiceConstants.HISTORY_SERVICE, HistoryController.class);
+    }
+
     public void handleUserRequest(ThreadMessage message) {
         UserRequestType type = (UserRequestType) message.type();
 
@@ -67,6 +72,7 @@ public class ControllerManager extends BaseServiceManager<Controller> {
             case GET_QUEUE_ALL -> getQueueController().loadQueueAll((UserDataRequest) message.data());
             case GET_INBOX_ALL -> getInboxController().loadInboxAll((UserDataRequest) message.data());
             case GET_DOWNLOAD_ALL -> getDownloadController().loadDownloadAll((UserDataRequest) message.data());
+            case GET_HISTORY_ALL -> getHistoryController().loadHistoryAll((UserDataRequest) message.data());
             default -> logger.warn("Type de message non géré: {}", message.type());
         }
     }

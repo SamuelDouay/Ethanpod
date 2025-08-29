@@ -40,7 +40,7 @@ public class UIEventHandle {
     private void handleEvent(ThreadMessage message) {
         EventType content = (EventType) message.type();
         String requestId = message.id();
-        
+
         logger.debug("Traitement requête: {} avec ID: {}", content, requestId);
 
 
@@ -67,6 +67,8 @@ public class UIEventHandle {
                     uiControllerManager.getInboxService().updateInboxAll((List<EpisodeItem>) message.data());
             case DOWNLOAD_ALL_UPDATED ->
                     uiControllerManager.getDownloadService().updateDownloadAllUI((List<EpisodeItem>) message.data());
+            case HISTORY_ALL_UPDATED ->
+                    uiControllerManager.getHistoryService().updateHistoryAllUI((List<EpisodeItem>) message.data());
             default -> logger.warn("Requête non reconnue: {}", content);
 
         }

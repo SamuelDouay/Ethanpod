@@ -25,6 +25,7 @@ public class DataServiceManager extends BaseServiceManager<DataService> {
         registerService(ServiceConstants.PODCAST_SERVICE, new DataPodcastService(executor, databaseManager));
         registerService(ServiceConstants.DOWNLOAD_SERVICE, new DataDownloadService(executor, databaseManager));
         registerService(ServiceConstants.EPISODE_SERVICE, new DataEpisodeService(executor, databaseManager));
+        registerService(ServiceConstants.HISTORY_SERVICE, new DataHistoryService(executor, databaseManager));
     }
 
     public DataNavigationService getNavigationService() {
@@ -49,6 +50,10 @@ public class DataServiceManager extends BaseServiceManager<DataService> {
 
     public DataEpisodeService getEpisodeService() {
         return getService(ServiceConstants.EPISODE_SERVICE, DataEpisodeService.class);
+    }
+
+    public DataHistoryService getHistoryService() {
+        return getService(ServiceConstants.HISTORY_SERVICE, DataHistoryService.class);
     }
 
 

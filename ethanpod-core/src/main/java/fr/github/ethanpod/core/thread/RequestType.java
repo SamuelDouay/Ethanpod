@@ -11,5 +11,6 @@ public enum RequestType {
     GET_PODCAST_BY_ID,
     GET_EPISODE_BY_PODCAST_ID,
     GET_QUEUE_ALL,
-    GET_INBOX_ALL
+    GET_INBOX_ALL,
+    GET_HISTORY_ALL
 }

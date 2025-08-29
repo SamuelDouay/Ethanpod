@@ -61,6 +61,8 @@ public class LogicHandle {
                     serviceManager.getInboxService().getAllInInbox(requestId, (UserDataRequest) message.data());
             case GET_DOWNLOAD_ALL ->
                     serviceManager.getDownloadService().getDownloadAll(requestId, (UserDataRequest) message.data());
+            case GET_HISTORY_ALL ->
+                    serviceManager.getHistoryService().getAllInHistory(requestId, (UserDataRequest) message.data());
             default -> logger.warn("Requête non reconnue: {}", content);
 
         }

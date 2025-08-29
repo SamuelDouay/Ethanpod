@@ -43,6 +43,7 @@ public class PageLayout extends Layout implements ContextualLayout, CleanableLay
     private static final String INBOX_PAGE = "Inbox";
     private static final String DOWNLOADS_PAGE = "Downloads";
     private static final String SUBSCRIPTIONS_PAGE = "Subscriptions";
+    private static final String HISTORY_PAGE = "Playback history";
 
     // Pagination state
     private final PaginationState paginationState = new PaginationState();
@@ -142,6 +143,7 @@ public class PageLayout extends Layout implements ContextualLayout, CleanableLay
             case INBOX_PAGE -> sendRequest(UserRequestType.GET_INBOX_ALL, "[INBOX]", request);
             case DOWNLOADS_PAGE -> sendRequest(UserRequestType.GET_DOWNLOAD_ALL, "[DOWNLOAD]", request);
             case SUBSCRIPTIONS_PAGE -> sendRequest(UserRequestType.GET_NAVIGATION_LIST, "[NAVIGATION]", request);
+            case HISTORY_PAGE -> sendRequest(UserRequestType.GET_HISTORY_ALL, "[HISTORY]", request);
             default -> LOGGER.warn("Type de page non reconnu: {}", pageType);
         }
     }
@@ -198,6 +200,9 @@ public class PageLayout extends Layout implements ContextualLayout, CleanableLay
                 event -> handleEpisodeUpdate(event.getEpisodeItems()));
 
         eventManager.registerHandler(EventType.DOWNLOAD_ALL_UPDATED,
+                event -> handleEpisodeUpdate(event.getEpisodeItems()));
+
+        eventManager.registerHandler(EventType.HISTORY_ALL_UPDATED,
                 event -> handleEpisodeUpdate(event.getEpisodeItems()));
     }
 
