@@ -11,11 +11,11 @@ public class AsyncDownloadService extends AsyncService {
         super("DOWNLOAD");
     }
 
-    public CompletableFuture<RequestResult<Integer>> getDownloadTop8() {
-        return createRequestFuture(RequestType.GET_DOWNLOAD_TOP8);
+    public CompletableFuture<RequestResult<Integer>> getDownloadTop8(String serviceId) {
+        return createRequestFuture(RequestType.GET_DOWNLOAD_TOP8, serviceId);
     }
 
-    public CompletableFuture<RequestResult<Integer>> getDownloadAll(UserDataRequest userDataRequest) {
-        return createRequestFuture(RequestType.GET_DOWNLOAD_ALL, userDataRequest);
+    public CompletableFuture<RequestResult<Integer>> getDownloadAll(String serviceId, UserDataRequest userDataRequest) {
+        return createRequestFuture(RequestType.GET_DOWNLOAD_ALL, serviceId, userDataRequest);
     }
 }

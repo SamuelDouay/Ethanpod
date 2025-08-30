@@ -2,6 +2,7 @@ package fr.github.ethanpod.controller;
 
 import fr.github.ethanpod.core.UserDataRequest;
 import fr.github.ethanpod.core.thread.EventType;
+import fr.github.ethanpod.core.thread.ThreadMessage;
 import fr.github.ethanpod.service.AsyncServiceManager;
 
 public class HistoryController extends Controller {
@@ -9,11 +10,11 @@ public class HistoryController extends Controller {
         super(asyncServiceManager);
     }
 
-    public void loadHistoryAll(UserDataRequest userDataRequest) {
+    public void loadHistoryAll(ThreadMessage message) {
         executeAsyncOperation(
                 "Chargement du all in history",
-                () -> asyncServiceManager.getHistoryService().getHistoryAll(userDataRequest),
-                EventType.HISTORY_ALL_UPDATED,
+                () -> asyncServiceManager.getHistoryService().getHistoryAll(message.id(), (UserDataRequest) message.data()),
+                EventType.EPISODE_ALL_UPDATED,
                 "Erreur lors du chargement du all in history"
         );
     }

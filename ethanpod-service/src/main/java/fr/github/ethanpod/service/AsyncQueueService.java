@@ -12,11 +12,11 @@ public class AsyncQueueService extends AsyncService {
         super("QUEUE");
     }
 
-    public CompletableFuture<RequestResult<List<EpisodeItem>>> getQueueTop8() {
-        return createRequestFuture(RequestType.GET_QUEUE_TOP8);
+    public CompletableFuture<RequestResult<List<EpisodeItem>>> getQueueTop8(String serviceId) {
+        return createRequestFuture(RequestType.GET_QUEUE_TOP8, serviceId);
     }
 
-    public CompletableFuture<RequestResult<List<EpisodeItem>>> getQueueAll(UserDataRequest userDataRequest) {
-        return createRequestFuture(RequestType.GET_QUEUE_ALL, userDataRequest);
+    public CompletableFuture<RequestResult<List<EpisodeItem>>> getQueueAll(String serviceId, UserDataRequest userDataRequest) {
+        return createRequestFuture(RequestType.GET_QUEUE_ALL, serviceId, userDataRequest);
     }
 }

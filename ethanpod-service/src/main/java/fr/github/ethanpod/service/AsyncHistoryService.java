@@ -12,7 +12,7 @@ public class AsyncHistoryService extends AsyncService {
         super("HISTORY");
     }
 
-    public CompletableFuture<RequestResult<List<EpisodeItem>>> getHistoryAll(UserDataRequest userDataRequest) {
-        return createRequestFuture(RequestType.GET_HISTORY_ALL, userDataRequest);
+    public CompletableFuture<RequestResult<List<EpisodeItem>>> getHistoryAll(String serviceId, UserDataRequest userDataRequest) {
+        return createRequestFuture(RequestType.GET_HISTORY_ALL, serviceId, userDataRequest);
     }
 }

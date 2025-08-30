@@ -25,9 +25,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
+import java.util.UUID;
 
 public class PageLayout extends Layout implements ContextualLayout, CleanableLayout {
-
     // Constants
     private static final EpisodeComponent EPISODE_COMPONENT = new EpisodeComponent();
     private static final ImageComponent IMAGE_COMPONENT = new ImageComponent();
@@ -121,15 +121,16 @@ public class PageLayout extends Layout implements ContextualLayout, CleanableLay
     }
 
     private void loadPodcastData() {
-        MessageRouter.getInstance().userRequest(
-                UserRequestType.GET_PODCAST_BY_ID,
-                "[PODCAST]",
-                paginationState.getCurrentPodcastId()
-        );
+        if (paginationState.getCurrentPage() < 1)
+            MessageRouter.getInstance().userRequest(
+                    UserRequestType.GET_PODCAST_BY_ID,
+                    generateId("PODCAST"),
+                    paginationState.getCurrentPodcastId()
+            );
 
         MessageRouter.getInstance().userRequest(
                 UserRequestType.GET_EPISODE_BY_PODCAST_ID,
-                "[PODCAST]",
+                generateId("EPISODE"),
                 createUserDataRequest()
         );
     }
@@ -139,13 +140,18 @@ public class PageLayout extends Layout implements ContextualLayout, CleanableLay
         UserDataRequest request = createUserDataRequest();
 
         switch (pageType) {
-            case QUEUE_PAGE -> sendRequest(UserRequestType.GET_QUEUE_ALL, "[QUEUE]", request);
-            case INBOX_PAGE -> sendRequest(UserRequestType.GET_INBOX_ALL, "[INBOX]", request);
-            case DOWNLOADS_PAGE -> sendRequest(UserRequestType.GET_DOWNLOAD_ALL, "[DOWNLOAD]", request);
-            case SUBSCRIPTIONS_PAGE -> sendRequest(UserRequestType.GET_NAVIGATION_LIST, "[NAVIGATION]", request);
-            case HISTORY_PAGE -> sendRequest(UserRequestType.GET_HISTORY_ALL, "[HISTORY]", request);
+            case QUEUE_PAGE -> sendRequest(UserRequestType.GET_QUEUE_ALL, generateId("QUEUE"), request);
+            case INBOX_PAGE -> sendRequest(UserRequestType.GET_INBOX_ALL, generateId("INBOX"), request);
+            case DOWNLOADS_PAGE -> sendRequest(UserRequestType.GET_DOWNLOAD_ALL, generateId("DOWNLOAD"), request);
+            case SUBSCRIPTIONS_PAGE ->
+                    sendRequest(UserRequestType.GET_NAVIGATION_LIST, generateId("NAVIGATION"), request);
+            case HISTORY_PAGE -> sendRequest(UserRequestType.GET_HISTORY_ALL, generateId("HISTORY"), request);
             default -> LOGGER.warn("Type de page non reconnu: {}", pageType);
         }
+    }
+
+    private String generateId(String service) {
+        return "[" + service + "]" + UUID.randomUUID();
     }
 
     private void sendRequest(UserRequestType requestType, String tag, UserDataRequest request) {
@@ -155,7 +161,7 @@ public class PageLayout extends Layout implements ContextualLayout, CleanableLay
     private UserDataRequest createUserDataRequest() {
         return new UserDataRequest(
                 paginationState.getCurrentPodcastId(),
-                paginationState.getCurrentPage(),
+                paginationState.getCurrentPage() * PAGE_SIZE,
                 PAGE_SIZE
         );
     }
@@ -190,19 +196,7 @@ public class PageLayout extends Layout implements ContextualLayout, CleanableLay
     }
 
     private void registerEpisodeHandlers(UIEventManager eventManager) {
-        eventManager.registerHandler(EventType.EPISODE_BY_PODCAST_ID_UPDATED,
-                event -> handleEpisodeUpdate(event.getEpisodeItems()));
-
-        eventManager.registerHandler(EventType.QUEUE_ALL_UPDATED,
-                event -> handleEpisodeUpdate(event.getEpisodeItems()));
-
-        eventManager.registerHandler(EventType.INBOX_ALL_UPDATED,
-                event -> handleEpisodeUpdate(event.getEpisodeItems()));
-
-        eventManager.registerHandler(EventType.DOWNLOAD_ALL_UPDATED,
-                event -> handleEpisodeUpdate(event.getEpisodeItems()));
-
-        eventManager.registerHandler(EventType.HISTORY_ALL_UPDATED,
+        eventManager.registerHandler(EventType.EPISODE_ALL_UPDATED,
                 event -> handleEpisodeUpdate(event.getEpisodeItems()));
     }
 
@@ -228,14 +222,14 @@ public class PageLayout extends Layout implements ContextualLayout, CleanableLay
 
     private void handleEpisodeUpdate(List<EpisodeItem> episodes) {
         boolean isFirstPage = paginationState.isFirstPage();
-        updateEpisode(episodes, !isFirstPage);
         checkForMoreData(episodes);
+        updateEpisode(episodes, !isFirstPage);
     }
 
     private void handleNavigationUpdate(List<NavigationItem> items) {
         boolean isFirstPage = paginationState.isFirstPage();
-        updateSubscriptions(items, !isFirstPage);
         checkForMoreData(items);
+        updateSubscriptions(items, !isFirstPage);
     }
 
     private void updateEpisode(List<EpisodeItem> episodeItems, boolean append) {

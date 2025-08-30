@@ -12,7 +12,7 @@ public class AsyncNavigationService extends AsyncService {
         super("NAVIGATION");
     }
 
-    public CompletableFuture<RequestResult<List<NavigationItem>>> getListAsync() {
-        return createRequestFuture(RequestType.GET_NAVIGATION_LIST);
+    public CompletableFuture<RequestResult<List<NavigationItem>>> getListAsync(String serviceId) {
+        return createRequestFuture(RequestType.GET_NAVIGATION_LIST, serviceId);
     }
 }

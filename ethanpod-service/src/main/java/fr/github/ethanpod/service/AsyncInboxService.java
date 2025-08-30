@@ -13,15 +13,15 @@ public class AsyncInboxService extends AsyncService {
         super("INBOX");
     }
 
-    public CompletableFuture<RequestResult<Integer>> getInboxCountAsync() {
-        return createRequestFuture(RequestType.GET_INBOX_COUNT);
+    public CompletableFuture<RequestResult<Integer>> getInboxCountAsync(String serviceId) {
+        return createRequestFuture(RequestType.GET_INBOX_COUNT, serviceId);
     }
 
-    public CompletableFuture<RequestResult<List<EpisodeItem>>> getTop8InInbox() {
-        return createRequestFuture(RequestType.GET_INBOX_TOP8);
+    public CompletableFuture<RequestResult<List<EpisodeItem>>> getTop8InInbox(String serviceId) {
+        return createRequestFuture(RequestType.GET_INBOX_TOP8, serviceId);
     }
 
-    public CompletableFuture<RequestResult<List<EpisodeItem>>> getAllInbox(UserDataRequest userDataRequest) {
-        return createRequestFuture(RequestType.GET_INBOX_ALL, userDataRequest);
+    public CompletableFuture<RequestResult<List<EpisodeItem>>> getAllInbox(String serviceId, UserDataRequest userDataRequest) {
+        return createRequestFuture(RequestType.GET_INBOX_ALL, serviceId, userDataRequest);
     }
 }

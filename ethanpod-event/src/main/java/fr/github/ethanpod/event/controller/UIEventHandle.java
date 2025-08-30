@@ -59,16 +59,8 @@ public class UIEventHandle {
                     uiControllerManager.getDownloadService().updateDownloadTop8UI((List<EpisodeItem>) message.data());
             case PODCAST_BY_ID_UPDATED ->
                     uiControllerManager.getPodcastService().updatePodcastById((PodcastItem) message.data());
-            case EPISODE_BY_PODCAST_ID_UPDATED ->
-                    uiControllerManager.getEpisodeService().updateEpisodeByPodcastId((List<EpisodeItem>) message.data());
-            case QUEUE_ALL_UPDATED ->
-                    uiControllerManager.getQueueService().updateQueueAllUI((List<EpisodeItem>) message.data());
-            case INBOX_ALL_UPDATED ->
-                    uiControllerManager.getInboxService().updateInboxAll((List<EpisodeItem>) message.data());
-            case DOWNLOAD_ALL_UPDATED ->
-                    uiControllerManager.getDownloadService().updateDownloadAllUI((List<EpisodeItem>) message.data());
-            case HISTORY_ALL_UPDATED ->
-                    uiControllerManager.getHistoryService().updateHistoryAllUI((List<EpisodeItem>) message.data());
+            case EPISODE_ALL_UPDATED ->
+                    uiControllerManager.getEpisodeService().updateEpisodeAll((List<EpisodeItem>) message.data());
             default -> logger.warn("Requête non reconnue: {}", content);
 
         }

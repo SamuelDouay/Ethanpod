@@ -1,6 +1,5 @@
 package fr.github.ethanpod.controller;
 
-import fr.github.ethanpod.core.UserDataRequest;
 import fr.github.ethanpod.core.thread.ThreadMessage;
 import fr.github.ethanpod.core.thread.UserRequestType;
 import fr.github.ethanpod.service.AsyncServiceManager;
@@ -60,19 +59,18 @@ public class ControllerManager extends BaseServiceManager<Controller> {
         UserRequestType type = (UserRequestType) message.type();
 
         switch (type) {
-            case GET_PODCAST_BY_ID -> getPodcastController().getPodcastById((Integer) message.data());
-            case GET_EPISODE_BY_PODCAST_ID ->
-                    getEpisodeController().getEpisodeByPodcastId((UserDataRequest) message.data());
-            case GET_NAVIGATION_LIST -> getNavigationController().loadNavigationData();
-            case GET_INBOX_COUNT -> getInboxController().loadInboxCount();
-            case GET_INBOX_TOP8 -> getInboxController().loadInboxTop8();
-            case GET_DOWNLOAD_TOP8 -> getDownloadController().loadDownloadTop8();
-            case GET_QUEUE_TOP8 -> getQueueController().loadQueueTop8();
-            case GET_PODCAST_READ_TOP8 -> getPodcastController().loadTop8PodcastRead();
-            case GET_QUEUE_ALL -> getQueueController().loadQueueAll((UserDataRequest) message.data());
-            case GET_INBOX_ALL -> getInboxController().loadInboxAll((UserDataRequest) message.data());
-            case GET_DOWNLOAD_ALL -> getDownloadController().loadDownloadAll((UserDataRequest) message.data());
-            case GET_HISTORY_ALL -> getHistoryController().loadHistoryAll((UserDataRequest) message.data());
+            case GET_PODCAST_BY_ID -> getPodcastController().getPodcastById(message);
+            case GET_EPISODE_BY_PODCAST_ID -> getEpisodeController().getEpisodeByPodcastId(message);
+            case GET_NAVIGATION_LIST -> getNavigationController().loadNavigationData(message);
+            case GET_INBOX_COUNT -> getInboxController().loadInboxCount(message);
+            case GET_INBOX_TOP8 -> getInboxController().loadInboxTop8(message);
+            case GET_DOWNLOAD_TOP8 -> getDownloadController().loadDownloadTop8(message);
+            case GET_QUEUE_TOP8 -> getQueueController().loadQueueTop8(message);
+            case GET_PODCAST_READ_TOP8 -> getPodcastController().loadTop8PodcastRead(message);
+            case GET_QUEUE_ALL -> getQueueController().loadQueueAll(message);
+            case GET_INBOX_ALL -> getInboxController().loadInboxAll(message);
+            case GET_DOWNLOAD_ALL -> getDownloadController().loadDownloadAll(message);
+            case GET_HISTORY_ALL -> getHistoryController().loadHistoryAll(message);
             default -> logger.warn("Type de message non géré: {}", message.type());
         }
     }

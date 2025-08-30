@@ -13,8 +13,8 @@ public class AsyncEpisodeDataService extends AsyncService {
         super("EPISODE");
     }
 
-    public CompletableFuture<RequestResult<List<EpisodeItem>>> getEpisodeByPodcastId(UserDataRequest userDataRequest) {
-        return createRequestFuture(RequestType.GET_EPISODE_BY_PODCAST_ID, userDataRequest);
+    public CompletableFuture<RequestResult<List<EpisodeItem>>> getEpisodeByPodcastId(String serviceId, UserDataRequest userDataRequest) {
+        return createRequestFuture(RequestType.GET_EPISODE_BY_PODCAST_ID, serviceId, userDataRequest);
 
     }
 }

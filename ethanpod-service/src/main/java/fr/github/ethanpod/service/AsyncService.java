@@ -11,7 +11,6 @@ import fr.github.ethanpod.exception.thread.ThreadTimeoutException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -50,11 +49,6 @@ public abstract class AsyncService {
         logger.debug("Arrêt du service {}", serviceId);
         active.set(false);
         pendingRequests.clear();
-    }
-
-
-    private String generateRequestId() {
-        return "[" + serviceId + "]" + UUID.randomUUID();
     }
 
 
@@ -99,22 +93,22 @@ public abstract class AsyncService {
                 });
     }
 
-    private <T> CompletableFuture<RequestResult<T>> createFuture(RequestType requestType, Object data) {
+    private <T> CompletableFuture<RequestResult<T>> createFuture(RequestType requestType, String serviceId, Object data) {
         CompletableFuture<T> future = new CompletableFuture<>();
-        String requestId = generateRequestId();
-        logger.debug("Service: Création requête {} avec ID: {}", requestType, requestId);
-        pendingRequests.put(requestId, future);
-        futureTimeOut(future, requestId);
-        messageRouter.sendRequest(requestType, requestId, data);
-        return future.thenApply(donne -> new RequestResult<>(requestId, donne));
+        //String requestId = generateRequestId(serviceId);
+        logger.debug("Service: Création requête {} avec ID: {}", requestType, serviceId);
+        pendingRequests.put(serviceId, future);
+        futureTimeOut(future, serviceId);
+        messageRouter.sendRequest(requestType, serviceId, data);
+        return future.thenApply(donne -> new RequestResult<>(serviceId, donne));
     }
 
-    protected <T> CompletableFuture<RequestResult<T>> createRequestFuture(RequestType request) {
-        return createFuture(request, null);
+    protected <T> CompletableFuture<RequestResult<T>> createRequestFuture(RequestType request, String serviceId) {
+        return createFuture(request, serviceId, null);
     }
 
-    protected <T> CompletableFuture<RequestResult<T>> createRequestFuture(RequestType request, Object data) {
-        return createFuture(request, data);
+    protected <T> CompletableFuture<RequestResult<T>> createRequestFuture(RequestType request, String serviceId, Object data) {
+        return createFuture(request, serviceId, data);
     }
 
     public record RequestResult<T>(String requestId, T data) {

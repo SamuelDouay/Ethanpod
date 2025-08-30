@@ -26,6 +26,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
+import java.util.UUID;
 
 public class HomeLayout extends Layout implements ContextualLayout {
     private static final String TITLE_EXAMPLE = "Lil Nas X, une icône noire, et gay et flamboyante [REDIF]";
@@ -44,10 +45,14 @@ public class HomeLayout extends Layout implements ContextualLayout {
     public HomeLayout(UIEventManager uiEventManager, ScrollPane scrollPane) {
         super("Home", uiEventManager, scrollPane);
         registerEventHandlers();
-        MessageRouter.getInstance().userRequest(UserRequestType.GET_INBOX_TOP8, "[INBOX]", null);
-        MessageRouter.getInstance().userRequest(UserRequestType.GET_DOWNLOAD_TOP8, "[DOWNLOAD]", null);
-        MessageRouter.getInstance().userRequest(UserRequestType.GET_QUEUE_TOP8, "[QUEUE", null);
-        MessageRouter.getInstance().userRequest(UserRequestType.GET_PODCAST_READ_TOP8, "[PODCAST]", null);
+        MessageRouter.getInstance().userRequest(UserRequestType.GET_INBOX_TOP8, generateId("INBOX"), null);
+        MessageRouter.getInstance().userRequest(UserRequestType.GET_DOWNLOAD_TOP8, generateId("DOWNLOAD"), null);
+        MessageRouter.getInstance().userRequest(UserRequestType.GET_QUEUE_TOP8, generateId("QUEUE"), null);
+        MessageRouter.getInstance().userRequest(UserRequestType.GET_PODCAST_READ_TOP8, generateId("PODCAST"), null);
+    }
+
+    private String generateId(String service) {
+        return "[" + service + "]" + UUID.randomUUID();
     }
 
     private VBox getNewsSection() {

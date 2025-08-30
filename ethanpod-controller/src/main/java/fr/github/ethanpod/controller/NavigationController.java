@@ -1,6 +1,7 @@
 package fr.github.ethanpod.controller;
 
 import fr.github.ethanpod.core.thread.EventType;
+import fr.github.ethanpod.core.thread.ThreadMessage;
 import fr.github.ethanpod.service.AsyncServiceManager;
 
 public class NavigationController extends Controller {
@@ -9,10 +10,10 @@ public class NavigationController extends Controller {
         super(asyncServiceManager);
     }
 
-    public void loadNavigationData() {
+    public void loadNavigationData(ThreadMessage message) {
         executeAsyncOperation(
                 "Chargement des données de navigation",
-                () -> asyncServiceManager.getNavigationService().getListAsync(),
+                () -> asyncServiceManager.getNavigationService().getListAsync(message.id()),
                 EventType.NAVIGATION_UPDATED,
                 "Erreur lors du chargement de la navigation"
         );
