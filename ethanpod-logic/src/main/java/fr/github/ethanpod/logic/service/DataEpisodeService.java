@@ -25,4 +25,10 @@ public class DataEpisodeService extends DataService {
                 () -> episodeDao.getEpisodeByPodcastId(userDataRequest),
                 "getting episode by podcast n°" + userDataRequest.data());
     }
+
+    public void getEpisodeAll(String requestId, UserDataRequest userDataRequest) {
+        executeAsync(requestId, ResponseType.EPISODE_ALL_RESULT,
+                () -> episodeDao.getEpisodeAll(userDataRequest),
+                "getting all episode");
+    }
 }

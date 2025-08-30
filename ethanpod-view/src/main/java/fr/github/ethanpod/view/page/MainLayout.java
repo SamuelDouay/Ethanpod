@@ -2,6 +2,7 @@ package fr.github.ethanpod.view.page;
 
 import fr.github.ethanpod.event.UIEventManager;
 import fr.github.ethanpod.view.component.SearchComponent;
+import fr.github.ethanpod.view.context.PageContext;
 import fr.github.ethanpod.view.util.ColorThemeConstants;
 import fr.github.ethanpod.view.util.LayoutType;
 import javafx.geometry.Insets;
@@ -21,7 +22,7 @@ public class MainLayout {
 
         ScrollPane scrollPane = createMainContainer();
         layoutManager = new LayoutManager(scrollPane, uiEventManager);
-        layoutManager.setLayout(LayoutType.HOME);
+        layoutManager.setLayout(LayoutType.PAGE, new PageContext("Home", 0));
 
         root.getChildren().addAll(scrollPane, createHeader(), createNavigationMenu(), createFooter());
         root.setBackground(new Background(new BackgroundFill(ColorThemeConstants.getGrey000(), null, null)));

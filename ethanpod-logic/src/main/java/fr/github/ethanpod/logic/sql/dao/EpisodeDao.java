@@ -19,4 +19,11 @@ public class EpisodeDao extends BaseDao {
                 LIMIT_OFFSET;
         return executeQueryWithParams(sql, EPISODE_LIST_MAPPER, new ArrayList<>(), "GET EPISODE BY PODCAST ID", userDataRequest.data(), userDataRequest.pageSize(), userDataRequest.currentPage());
     }
+
+    public List<EpisodeItem> getEpisodeAll(UserDataRequest userDataRequest) {
+        String sql = EPISODE_BASE_QUERY +
+                "ORDER BY FeedItems.pubDate DESC " +
+                LIMIT_OFFSET;
+        return executeQueryWithParams(sql, EPISODE_LIST_MAPPER, new ArrayList<>(), "GET ALL EPISODE", userDataRequest.pageSize(), userDataRequest.currentPage());
+    }
 }

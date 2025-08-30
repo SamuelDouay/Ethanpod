@@ -61,6 +61,8 @@ public class UIEventHandle {
                     uiControllerManager.getPodcastService().updatePodcastById((PodcastItem) message.data());
             case EPISODE_ALL_UPDATED ->
                     uiControllerManager.getEpisodeService().updateEpisodeAll((List<EpisodeItem>) message.data());
+            case SUBSCRIPTION_ALL_UPDATED ->
+                    uiControllerManager.getPodcastService().updateSubscriptionAll((List<NavigationItem>) message.data());
             default -> logger.warn("Requête non reconnue: {}", content);
 
         }

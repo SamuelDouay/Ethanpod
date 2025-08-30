@@ -71,6 +71,8 @@ public class ControllerManager extends BaseServiceManager<Controller> {
             case GET_INBOX_ALL -> getInboxController().loadInboxAll(message);
             case GET_DOWNLOAD_ALL -> getDownloadController().loadDownloadAll(message);
             case GET_HISTORY_ALL -> getHistoryController().loadHistoryAll(message);
+            case GET_SUBSCRIPTION_ALL -> getPodcastController().getSubscriptionAll(message);
+            case GET_EPISODE_ALL -> getEpisodeController().getEpisodeAll(message);
             default -> logger.warn("Type de message non géré: {}", message.type());
         }
     }

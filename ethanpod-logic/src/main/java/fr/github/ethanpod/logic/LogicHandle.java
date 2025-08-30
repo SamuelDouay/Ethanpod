@@ -63,6 +63,10 @@ public class LogicHandle {
                     serviceManager.getDownloadService().getDownloadAll(requestId, (UserDataRequest) message.data());
             case GET_HISTORY_ALL ->
                     serviceManager.getHistoryService().getAllInHistory(requestId, (UserDataRequest) message.data());
+            case GET_SUBSCRIPTION_ALL ->
+                    serviceManager.getPodcastService().getAllSusbcription(requestId, (UserDataRequest) message.data());
+            case GET_EPISODE_ALL ->
+                    serviceManager.getEpisodeService().getEpisodeAll(requestId, (UserDataRequest) message.data());
             default -> logger.warn("Requête non reconnue: {}", content);
 
         }

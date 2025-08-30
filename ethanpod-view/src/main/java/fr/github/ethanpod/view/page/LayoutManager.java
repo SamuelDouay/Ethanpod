@@ -4,7 +4,6 @@ import fr.github.ethanpod.event.UIEventManager;
 import fr.github.ethanpod.view.context.CleanableLayout;
 import fr.github.ethanpod.view.context.ContextualLayout;
 import fr.github.ethanpod.view.context.LayoutContext;
-import fr.github.ethanpod.view.layout.HomeLayout;
 import fr.github.ethanpod.view.util.LayoutType;
 import javafx.scene.control.ScrollPane;
 import org.apache.logging.log4j.LogManager;
@@ -31,7 +30,6 @@ public class LayoutManager {
     }
 
     private void initializeLayouts() {
-        layoutCache.put(LayoutType.HOME, new HomeLayout(uiEventManager, scrollPane));
         layoutCache.put(LayoutType.PAGE, new PageLayout(uiEventManager, scrollPane));
     }
 

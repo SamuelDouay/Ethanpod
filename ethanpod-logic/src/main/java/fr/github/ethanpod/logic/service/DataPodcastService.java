@@ -1,5 +1,6 @@
 package fr.github.ethanpod.logic.service;
 
+import fr.github.ethanpod.core.UserDataRequest;
 import fr.github.ethanpod.core.thread.ResponseType;
 import fr.github.ethanpod.logic.sql.dao.PodcastDao;
 import fr.github.ethanpod.logic.sql.setting.DatabaseManager;
@@ -29,5 +30,11 @@ public class DataPodcastService extends DataService {
         executeAsync(requestId, ResponseType.PODCAST_BY_ID_RESULT,
                 () -> podcastDao.getPodcastById(id),
                 "getting podcast n°" + id);
+    }
+
+    public void getAllSusbcription(String requestId, UserDataRequest userDataRequest) {
+        executeAsync(requestId, ResponseType.SUBSCRIPTION_ALL_RESULT,
+                () -> podcastDao.getAllSubscription(userDataRequest),
+                "getting all subscription");
     }
 }

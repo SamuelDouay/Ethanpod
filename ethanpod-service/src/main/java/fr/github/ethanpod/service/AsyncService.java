@@ -95,7 +95,6 @@ public abstract class AsyncService {
 
     private <T> CompletableFuture<RequestResult<T>> createFuture(RequestType requestType, String serviceId, Object data) {
         CompletableFuture<T> future = new CompletableFuture<>();
-        //String requestId = generateRequestId(serviceId);
         logger.debug("Service: Création requête {} avec ID: {}", requestType, serviceId);
         pendingRequests.put(serviceId, future);
         futureTimeOut(future, serviceId);

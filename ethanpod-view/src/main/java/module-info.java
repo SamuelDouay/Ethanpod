@@ -1,6 +1,5 @@
 module ethanpod.view {
     exports fr.github.ethanpod.view;
-    exports fr.github.ethanpod.view.layout;
     exports fr.github.ethanpod.view.context;
     exports fr.github.ethanpod.view.util;
     exports fr.github.ethanpod.view.component.image;

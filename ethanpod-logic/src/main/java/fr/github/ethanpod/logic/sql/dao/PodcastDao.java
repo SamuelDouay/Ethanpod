@@ -1,6 +1,8 @@
 package fr.github.ethanpod.logic.sql.dao;
 
+import fr.github.ethanpod.core.UserDataRequest;
 import fr.github.ethanpod.core.item.EpisodeItem;
+import fr.github.ethanpod.core.item.NavigationItem;
 import fr.github.ethanpod.core.item.PodcastItem;
 import fr.github.ethanpod.logic.sql.setting.DatabaseManager;
 
@@ -64,4 +66,27 @@ public class PodcastDao extends BaseDao {
                 "GET PODCAST NUMBER " + id,
                 id);
     }
+
+    public List<NavigationItem> getAllSubscription(UserDataRequest userDataRequest) {
+        String sql = "SELECT f.id, f.title, f.image_url, " +
+                "(SELECT COUNT(*) FROM FeedItems fi WHERE fi.feed = f.id AND fi.read = -1) as unread_count " +
+                " FROM Feeds f ORDER BY unread_count DESC, f.title ASC " +
+                LIMIT_OFFSET;
+
+        return executeQueryWithParams(sql, rs -> {
+                    List<NavigationItem> result = new ArrayList<>();
+                    while (rs.next()) {
+                        result.add(new NavigationItem(
+                                rs.getString("image_url"),
+                                rs.getString("title"),
+                                rs.getInt("unread_count"),
+                                false,
+                                rs.getInt("id")
+                        ));
+                    }
+                    return result;
+                }, new ArrayList<>(),
+                "GET LIT OF SUBSCRIPTION", userDataRequest.pageSize(), userDataRequest.currentPage());
+    }
+
 }

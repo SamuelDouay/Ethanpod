@@ -18,4 +18,13 @@ public class EpisodeController extends Controller {
                 "Erreur episode by podcast n° " + message.data()
         );
     }
+
+    public void getEpisodeAll(ThreadMessage message) {
+        executeAsyncOperation(
+                "Getting all episode",
+                () -> asyncServiceManager.getEpisodeService().getEpisodeAll(message.id(), (UserDataRequest) message.data()),
+                EventType.EPISODE_ALL_UPDATED,
+                "Erreur episode by podcast"
+        );
+    }
 }
