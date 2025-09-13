@@ -3,7 +3,6 @@ module ethanpod.view {
     exports fr.github.ethanpod.view.context;
     exports fr.github.ethanpod.view.util;
     exports fr.github.ethanpod.view.component.image;
-    exports fr.github.ethanpod.view.component.surprise;
     exports fr.github.ethanpod.view.component;
     exports fr.github.ethanpod.view.page;
     requires javafx.base;
@@ -16,4 +15,5 @@ module ethanpod.view {
     requires ethanpod.service;
     requires ethanpod.util;
     requires ethanpod.event;
+    requires javafx.media;
 }

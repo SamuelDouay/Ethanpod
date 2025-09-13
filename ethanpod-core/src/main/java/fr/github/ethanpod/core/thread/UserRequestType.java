@@ -14,5 +14,6 @@ public enum UserRequestType {
     GET_DOWNLOAD_ALL,
     GET_HISTORY_ALL,
     GET_SUBSCRIPTION_ALL,
-    GET_EPISODE_ALL
+    GET_EPISODE_ALL,
+    GET_SURPRISE_ALL
 }

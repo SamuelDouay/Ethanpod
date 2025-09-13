@@ -1,5 +1,6 @@
 package fr.github.ethanpod.view.page;
 
+import fr.github.ethanpod.core.item.Item;
 import fr.github.ethanpod.core.item.ItemManager;
 import fr.github.ethanpod.core.item.NavigationItem;
 import fr.github.ethanpod.core.thread.EventType;
@@ -151,12 +152,13 @@ public class NavigationContainer {
         layoutManager.setLayout(LayoutType.PAGE, context);
     }
 
-    private void updateNavigationList(List<NavigationItem> navigationList) {
+    private void updateNavigationList(List<Item> navigationList) {
         scrollBox.getChildren().clear();
 
-        for (NavigationItem item : navigationList) {
+        for (Item item : navigationList) {
+            NavigationItem navigationItem = (NavigationItem) item;
             try {
-                HBox component = createOptimizedNavigationBox(item);
+                HBox component = createOptimizedNavigationBox(navigationItem);
                 scrollBox.getChildren().add(component);
             } catch (Exception e) {
                 log.error("Erreur création composant pour {}", item, e);
@@ -209,7 +211,7 @@ public class NavigationContainer {
     private void registerEventHandlers(UIEventManager eventManager) {
         eventManager.registerHandler(EventType.NAVIGATION_UPDATED,
                 (UIEventHandler<NavigationUpdatedEvent>) event ->
-                        updateNavigationList(event.getNavigationItems())
+                        updateNavigationList(event.getItems())
 
         );
 

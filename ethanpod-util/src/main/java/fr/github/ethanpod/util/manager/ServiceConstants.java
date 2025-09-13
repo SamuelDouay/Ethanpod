@@ -3,7 +3,7 @@ package fr.github.ethanpod.util.manager;
 public enum ServiceConstants {
     NAVIGATION_SERVICE("navigation"), INBOX_SERVICE("inbox"), QUEUE_SERVICE("queue"),
     PODCAST_SERVICE("podcast"), DOWNLOAD_SERVICE("download"), FEED_SERVICE("feed"),
-    EPISODE_SERVICE("episode"), HISTORY_SERVICE("history");
+    EPISODE_SERVICE("episode"), HISTORY_SERVICE("history"), SURPRISE_SERVICE("surprise");
     private final String name;
 
     ServiceConstants(String name) {

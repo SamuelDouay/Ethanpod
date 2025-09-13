@@ -3,6 +3,7 @@ package fr.github.ethanpod.event.controller;
 import fr.github.ethanpod.core.item.EpisodeItem;
 import fr.github.ethanpod.core.item.NavigationItem;
 import fr.github.ethanpod.core.item.PodcastItem;
+import fr.github.ethanpod.core.item.SurpriseItem;
 import fr.github.ethanpod.core.thread.EventType;
 import fr.github.ethanpod.core.thread.MessageCategory;
 import fr.github.ethanpod.core.thread.MessageRouter;
@@ -63,6 +64,8 @@ public class UIEventHandle {
                     uiControllerManager.getEpisodeService().updateEpisodeAll((List<EpisodeItem>) message.data());
             case SUBSCRIPTION_ALL_UPDATED ->
                     uiControllerManager.getPodcastService().updateSubscriptionAll((List<NavigationItem>) message.data());
+            case SURPRISE_ALL_UPDATED ->
+                    uiControllerManager.getSurpriseService().updateSurpriseList((List<SurpriseItem>) message.data());
             default -> logger.warn("Requête non reconnue: {}", content);
 
         }

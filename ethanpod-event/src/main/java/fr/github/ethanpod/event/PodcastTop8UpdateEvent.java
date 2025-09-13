@@ -8,6 +8,6 @@ import java.util.List;
 public class PodcastTop8UpdateEvent extends UIEvent {
     public PodcastTop8UpdateEvent(String source, List<EpisodeItem> episodeItems) {
         super(source, EventType.PODCAST_TOP8_UPDATED);
-        this.episodeItems = List.copyOf(episodeItems); // Copie défensive
+        this.items = List.copyOf(episodeItems); // Copie défensive
     }
 }

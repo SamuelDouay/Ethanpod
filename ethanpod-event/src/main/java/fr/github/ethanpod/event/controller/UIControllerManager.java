@@ -16,6 +16,7 @@ public class UIControllerManager extends BaseServiceManager<UIController> {
         registerService(ServiceConstants.PODCAST_SERVICE, new PodcastUIController());
         registerService(ServiceConstants.DOWNLOAD_SERVICE, new DownloadUIController());
         registerService(ServiceConstants.EPISODE_SERVICE, new EpisodeUIController());
+        registerService(ServiceConstants.SURPRISE_SERVICE, new SurpriseUIController());
     }
 
     public NavigationUIController getNavigationService() {
@@ -40,5 +41,9 @@ public class UIControllerManager extends BaseServiceManager<UIController> {
 
     public EpisodeUIController getEpisodeService() {
         return getService(ServiceConstants.EPISODE_SERVICE, EpisodeUIController.class);
+    }
+
+    public SurpriseUIController getSurpriseService() {
+        return getService(ServiceConstants.SURPRISE_SERVICE, SurpriseUIController.class);
     }
 }

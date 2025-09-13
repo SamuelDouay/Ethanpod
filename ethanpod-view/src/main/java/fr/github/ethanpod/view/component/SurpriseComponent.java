@@ -1,4 +1,4 @@
-package fr.github.ethanpod.view.component.surprise;
+package fr.github.ethanpod.view.component;
 
 import fr.github.ethanpod.view.util.ColorThemeConstants;
 import fr.github.ethanpod.view.util.ImageCache;
@@ -12,32 +12,12 @@ import static fr.github.ethanpod.view.util.Constant.*;
 import static fr.github.ethanpod.view.util.FontThemeConstants.MEDIUM_14;
 import static fr.github.ethanpod.view.util.FontThemeConstants.REGULAR_10;
 
-public class SurpriseBuilder {
-    private String imageUrl;
-    private String episodeTitle;
-    private String podcastTitle;
-
-    public SurpriseBuilder() {
-        // no parameter
+public class SurpriseComponent {
+    public SurpriseComponent() {
+        //  no parameters
     }
 
-    public SurpriseBuilder withEpisodeTitle(String episodeTitle) {
-        this.episodeTitle = episodeTitle;
-        return this;
-    }
-
-    public SurpriseBuilder withPodcastTitle(String podcastTitle) {
-        this.podcastTitle = podcastTitle;
-        return this;
-    }
-
-
-    public SurpriseBuilder withImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-        return this;
-    }
-
-    public HBox build() {
+    public HBox createSurprise(String imageUrl, String episodeTitle, String podcastTitle) {
         HBox box = getContainer();
 
         ImageView imageView = new ImageView(ImageCache.getImage(imageUrl));
@@ -49,7 +29,7 @@ public class SurpriseBuilder {
 
         box.getChildren().add(imageView);
         addSpacer(box);
-        box.getChildren().add(getTextComponent());
+        box.getChildren().add(getTextComponent(episodeTitle, podcastTitle));
         addSpacer(box);
         box.getChildren().add(icon);
 
@@ -73,7 +53,7 @@ public class SurpriseBuilder {
         return box;
     }
 
-    private VBox getTextComponent() {
+    private VBox getTextComponent(String episodeTitle, String podcastTitle) {
         VBox box = new VBox();
 
         box.setMaxSize(USE_PREF_SIZE, USE_PREF_SIZE);

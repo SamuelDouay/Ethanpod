@@ -1,7 +1,6 @@
 package fr.github.ethanpod.view.page;
 
-import fr.github.ethanpod.core.item.EpisodeItem;
-import fr.github.ethanpod.core.item.NavigationItem;
+import fr.github.ethanpod.core.item.Item;
 import fr.github.ethanpod.core.thread.EventType;
 import fr.github.ethanpod.event.PodcastFindByIdUpdate;
 import fr.github.ethanpod.event.UIEventManager;
@@ -33,27 +32,29 @@ public class PageEventHandler {
         });
 
         eventManager.registerHandler(EventType.EPISODE_ALL_UPDATED,
-                event -> handleEpisodeUpdate(event.getEpisodeItems()));
+                event -> handleEpisodeUpdate(event.getItems()));
 
         eventManager.registerHandler(EventType.SUBSCRIPTION_ALL_UPDATED,
-                event -> handleNavigationUpdate(event.getNavigationItems()));
+                event -> handleNavigationUpdate(event.getItems()));
 
         eventManager.registerHandler(EventType.QUEUE_TOP8_UPDATED,
-                event -> contentRenderer.updateSection(event.getEpisodeItems(), "Continue listening", "QUEUE"));
+                event -> contentRenderer.updateSection(event.getItems(), "Continue listening", "QUEUE"));
         eventManager.registerHandler(EventType.INBOX_TOP8_UPDATED,
-                event -> contentRenderer.updateSection(event.getEpisodeItems(), "See what's news", "INBOX"));
+                event -> contentRenderer.updateSection(event.getItems(), "See what's news", "INBOX"));
         eventManager.registerHandler(EventType.PODCAST_TOP8_UPDATED,
-                event -> contentRenderer.updateSection(event.getEpisodeItems(), "Check your classic", "PODCAST"));
+                event -> contentRenderer.updateSection(event.getItems(), "Check your classic", "PODCAST"));
         eventManager.registerHandler(EventType.DOWNLOAD_TOP8_UPDATED,
-                event -> contentRenderer.updateSection(event.getEpisodeItems(), "Manage downloads", "DOWNLOAD"));
+                event -> contentRenderer.updateSection(event.getItems(), "Manage downloads", "DOWNLOAD"));
+        eventManager.registerHandler(EventType.SURPRISE_ALL_UPDATED,
+                event -> contentRenderer.updateSection(event.getItems(), "Get surprises", "SURPRISE"));
     }
 
-    private void handleEpisodeUpdate(List<EpisodeItem> episodes) {
+    private void handleEpisodeUpdate(List<Item> episodes) {
         checkForMoreData(episodes);
         contentRenderer.updateEpisodes(episodes, !dataLoader.isFirstPage());
     }
 
-    private void handleNavigationUpdate(List<NavigationItem> items) {
+    private void handleNavigationUpdate(List<Item> items) {
         checkForMoreData(items);
         contentRenderer.updateSubscriptions(items, !dataLoader.isFirstPage());
     }

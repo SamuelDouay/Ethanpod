@@ -8,7 +8,7 @@ import java.util.List;
 public class EpisodeAllUpdatedEvent extends UIEvent {
     public EpisodeAllUpdatedEvent(String source, List<EpisodeItem> episodeItems) {
         super(source, EventType.EPISODE_ALL_UPDATED);
-        this.episodeItems = List.copyOf(episodeItems); // Copie défensive
+        this.items = List.copyOf(episodeItems); // Copie défensive
     }
 
 }

@@ -1,12 +1,17 @@
 package fr.github.ethanpod.view.page;
 
 import fr.github.ethanpod.core.item.EpisodeItem;
+import fr.github.ethanpod.core.item.Item;
 import fr.github.ethanpod.core.item.NavigationItem;
+import fr.github.ethanpod.core.item.SurpriseItem;
 import fr.github.ethanpod.event.PodcastFindByIdUpdate;
 import fr.github.ethanpod.view.component.EpisodeComponent;
+import fr.github.ethanpod.view.component.SurpriseComponent;
 import fr.github.ethanpod.view.component.image.ImageComponent;
 import fr.github.ethanpod.view.util.ColorThemeConstants;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
@@ -22,8 +27,8 @@ import java.util.Set;
 public class PageContentRenderer {
     private static final EpisodeComponent EPISODE_COMPONENT = new EpisodeComponent();
     private static final ImageComponent IMAGE_COMPONENT = new ImageComponent();
+    private static final SurpriseComponent SURPRISE_COMPONENT = new SurpriseComponent();
     private static final Logger LOGGER = LogManager.getLogger(PageContentRenderer.class);
-
     private final VBox container;
     private final FlowPane grid;
     private final Runnable gridInitializer;
@@ -35,11 +40,41 @@ public class PageContentRenderer {
     private VBox inboxBox;
     private VBox classicBox;
     private VBox downloadBox;
+    private VBox surpriseBox;
 
     public PageContentRenderer(VBox container, FlowPane grid, Runnable gridInitializer) {
         this.container = container;
         this.grid = grid;
         this.gridInitializer = gridInitializer;
+    }
+
+    private HBox addHImageItems(List<Item> episodeItems) {
+        HBox classicContainer = new HBox(15.0);
+        classicContainer.getChildren().clear();
+        for (Item item : episodeItems) {
+            EpisodeItem episodeItem = (EpisodeItem) item;
+            classicContainer.getChildren().add(IMAGE_COMPONENT.createImageCard(episodeItem.getUrlImage()));
+        }
+        return classicContainer;
+    }
+
+    private HBox addHEpisodeItem(List<Item> episodeItems) {
+        HBox topQueue = new HBox(15.0);
+        topQueue.getChildren().clear();
+        for (Item item : episodeItems) {
+            EpisodeItem episodeItem = (EpisodeItem) item;
+            topQueue.getChildren().add(IMAGE_COMPONENT.createImageCard(episodeItem.getUrlImage(), episodeItem.getTitle(), episodeItem.getDate()));
+        }
+        return topQueue;
+    }
+
+    private VBox addVEpisodeItems(List<Item> episodeItems) {
+        VBox box = new VBox();
+        box.getChildren().clear();
+        for (Item episodeItem : episodeItems) {
+            box.getChildren().add(EPISODE_COMPONENT.createEpisode((EpisodeItem) episodeItem));
+        }
+        return box;
     }
 
     public void updatePodcastTitle(PodcastFindByIdUpdate event) {
@@ -53,7 +88,7 @@ public class PageContentRenderer {
         container.getChildren().add(subtitle);
     }
 
-    public void updateEpisodes(List<EpisodeItem> episodes, boolean append) {
+    public void updateEpisodes(List<Item> episodes, boolean append) {
         LOGGER.info("Getting {} episodes, append: {}", episodes.size(), append);
 
         if (!append) {
@@ -64,11 +99,11 @@ public class PageContentRenderer {
         }
 
         episodes.forEach(episode ->
-                container.getChildren().add(EPISODE_COMPONENT.createEpisode(episode))
+                container.getChildren().add(EPISODE_COMPONENT.createEpisode((EpisodeItem) episode))
         );
     }
 
-    public void updateSubscriptions(List<NavigationItem> items, boolean append) {
+    public void updateSubscriptions(List<Item> items, boolean append) {
         if (!append) {
             initializeGrid();
             grid.getChildren().clear();
@@ -77,13 +112,34 @@ public class PageContentRenderer {
             initializeGridIfNeeded();
         }
 
-        items.forEach(item ->
-                grid.getChildren().add(IMAGE_COMPONENT.createImageCard(
-                        item.getUrlImage(), item.getTitle(), item.getNumber()))
-        );
+        for (Item item : items) {
+            NavigationItem navigationItem = (NavigationItem) item;
+            grid.getChildren().add(IMAGE_COMPONENT.createImageCard(
+                    navigationItem.getUrlImage(), navigationItem.getTitle(), navigationItem.getNumber()));
+        }
 
         if (!append && !container.getChildren().contains(grid)) {
             container.getChildren().add(grid);
+        }
+    }
+
+    public void updateSurprise(List<Item> items, GridPane box) {
+        int numColumns = 3;
+
+        for (int i = 0; i < numColumns; i++) {
+            ColumnConstraints column = new ColumnConstraints();
+            column.setHgrow(Priority.ALWAYS);
+            column.setPercentWidth(100.0 / numColumns);
+            box.getColumnConstraints().add(column);
+        }
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                SurpriseItem surpriseItem = (SurpriseItem) items.get(i * 3 + j);
+                LOGGER.debug("i = {}, j ={}, i* 3 + j ={}", i, j, i * 3 + j);
+                Node surpriseComponent = SURPRISE_COMPONENT.createSurprise(surpriseItem.getImageUrl(), surpriseItem.getTitle(), surpriseItem.getPodcastTitle());
+                GridPane.setHalignment(surpriseComponent, HPos.CENTER);
+                box.add(surpriseComponent, i, j, 1, 1);
+            }
         }
     }
 
@@ -106,6 +162,9 @@ public class PageContentRenderer {
         }
         if (classicBox != null) {
             box.getChildren().add(classicBox);
+        }
+        if (surpriseBox != null) {
+            box.getChildren().add(surpriseBox);
         }
         if (downloadBox != null) {
             box.getChildren().add(downloadBox);
@@ -130,61 +189,49 @@ public class PageContentRenderer {
         return scrollPane;
     }
 
-    public void updateSection(List<EpisodeItem> episodeItems, String title, String section) {
+    public void updateSection(List<Item> items, String title, String section) {
         sectionsReceived.add(section);
-
         switch (section) {
             case "INBOX" -> {
                 inboxBox = new VBox(12);
-                inboxBox.setPrefWidth(Region.USE_PREF_SIZE);
-                inboxBox.setMaxHeight(Region.USE_PREF_SIZE);
-                HBox.setHgrow(inboxBox, Priority.ALWAYS);
+                setPropertiesBox(inboxBox);
+                VBox inboxContainer = addVEpisodeItems(items);
                 inboxBox.getChildren().add(getTitleSection(title));
-                VBox inboxContainer = new VBox();
                 inboxBox.getChildren().add(inboxContainer);
-                inboxContainer.getChildren().clear();
-                for (EpisodeItem episodeItem : episodeItems) {
-                    inboxContainer.getChildren().add(EPISODE_COMPONENT.createEpisode(episodeItem));
-                }
             }
             case "DOWNLOAD" -> {
                 downloadBox = new VBox(12);
-                downloadBox.setPrefWidth(Region.USE_PREF_SIZE);
-                downloadBox.setMaxHeight(Region.USE_PREF_SIZE);
-                HBox.setHgrow(downloadBox, Priority.ALWAYS);
+                setPropertiesBox(downloadBox);
+                VBox topDownload = addVEpisodeItems(items);
                 downloadBox.getChildren().add(getTitleSection(title));
-                VBox topDownload = new VBox();
                 downloadBox.getChildren().add(topDownload);
-                topDownload.getChildren().clear();
-                for (EpisodeItem episodeItem : episodeItems) {
-                    topDownload.getChildren().add(EPISODE_COMPONENT.createEpisode(episodeItem));
-                }
             }
             case "QUEUE" -> {
                 queueBox = new VBox(12);
-                queueBox.setPrefWidth(Region.USE_PREF_SIZE);
-                queueBox.setMaxHeight(Region.USE_PREF_SIZE);
-                HBox.setHgrow(queueBox, Priority.ALWAYS);
+                setPropertiesBox(queueBox);
+                HBox topQueue = addHEpisodeItem(items);
                 queueBox.getChildren().add(getTitleSection(title));
-                HBox topQueue = new HBox(15.0);
                 queueBox.getChildren().add(getScollPane(topQueue));
-                topQueue.getChildren().clear();
-                for (EpisodeItem episodeItem : episodeItems) {
-                    topQueue.getChildren().add(IMAGE_COMPONENT.createImageCard(episodeItem.getUrlImage(), episodeItem.getTitle(), episodeItem.getDate()));
-                }
             }
             case "PODCAST" -> {
                 classicBox = new VBox(12);
-                classicBox.setPrefWidth(Region.USE_PREF_SIZE);
-                classicBox.setMaxHeight(Region.USE_PREF_SIZE);
-                HBox.setHgrow(classicBox, Priority.ALWAYS);
+                setPropertiesBox(classicBox);
+                HBox classicContainer = addHImageItems(items);
                 classicBox.getChildren().add(getTitleSection(title));
-                HBox classicContainer = new HBox(15.0);
                 classicBox.getChildren().add(getScollPane(classicContainer));
-                classicContainer.getChildren().clear();
-                for (EpisodeItem episodeItem : episodeItems) {
-                    classicContainer.getChildren().add(IMAGE_COMPONENT.createImageCard(episodeItem.getUrlImage()));
-                }
+            }
+
+            case "SURPRISE" -> {
+                surpriseBox = new VBox(12);
+                setPropertiesBox(surpriseBox);
+                GridPane box = new GridPane();
+                box.setVgap(15.0);
+                box.setHgap(15.0);
+                box.setPrefWidth(Region.USE_PREF_SIZE);
+                box.setMaxHeight(Region.USE_PREF_SIZE);
+                surpriseBox.getChildren().add(getTitleSection(title));
+                surpriseBox.getChildren().add(box);
+                updateSurprise(items, box);
             }
             default -> LOGGER.debug("Section null");
         }
@@ -195,9 +242,12 @@ public class PageContentRenderer {
         }
     }
 
-    /**
-     * Vérifie si toutes les sections attendues ont été reçues
-     */
+    private void setPropertiesBox(VBox inboxBox) {
+        inboxBox.setPrefWidth(Region.USE_PREF_SIZE);
+        inboxBox.setMaxHeight(Region.USE_PREF_SIZE);
+        HBox.setHgrow(inboxBox, Priority.ALWAYS);
+    }
+
     private boolean allSectionsReceived() {
         return sectionsReceived.containsAll(expectedSections);
     }

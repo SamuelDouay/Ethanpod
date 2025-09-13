@@ -87,6 +87,7 @@ public class PageDataLoader {
         sendRequest(UserRequestType.GET_DOWNLOAD_TOP8, "DOWNLOAD", null);
         sendRequest(UserRequestType.GET_QUEUE_TOP8, "QUEUE", null);
         sendRequest(UserRequestType.GET_PODCAST_READ_TOP8, "PODCAST", null);
+        sendRequest(UserRequestType.GET_SURPRISE_ALL, "SURPRISE", null);
     }
 
     private void sendRequest(UserRequestType type, String service, Object data) {

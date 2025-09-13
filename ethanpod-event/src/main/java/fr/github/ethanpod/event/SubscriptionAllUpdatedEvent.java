@@ -8,6 +8,6 @@ import java.util.List;
 public class SubscriptionAllUpdatedEvent extends UIEvent {
     public SubscriptionAllUpdatedEvent(String source, List<NavigationItem> navigationItems) {
         super(source, EventType.SUBSCRIPTION_ALL_UPDATED);
-        this.navigationItems = List.copyOf(navigationItems); // Copie défensive
+        this.items = List.copyOf(navigationItems); // Copie défensive
     }
 }

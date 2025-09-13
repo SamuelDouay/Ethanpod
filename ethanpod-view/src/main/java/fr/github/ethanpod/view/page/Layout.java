@@ -20,7 +20,6 @@ public abstract class Layout {
     protected final UIEventManager eventManager;
     protected final VBox container;
     protected final ScrollPane scrollPane;
-
     protected final FlowPane grid;
 
     protected Layout(String initialTitle, UIEventManager eventManager, ScrollPane scrollPane) {

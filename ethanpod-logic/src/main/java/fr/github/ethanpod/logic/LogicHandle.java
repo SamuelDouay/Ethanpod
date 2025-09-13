@@ -67,6 +67,7 @@ public class LogicHandle {
                     serviceManager.getPodcastService().getAllSusbcription(requestId, (UserDataRequest) message.data());
             case GET_EPISODE_ALL ->
                     serviceManager.getEpisodeService().getEpisodeAll(requestId, (UserDataRequest) message.data());
+            case GET_SURPRISE_ALL -> serviceManager.getSurpriseService().getSurpriseListAsync(requestId);
             default -> logger.warn("Requête non reconnue: {}", content);
 
         }

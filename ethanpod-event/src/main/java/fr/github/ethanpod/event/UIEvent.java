@@ -1,8 +1,6 @@
 package fr.github.ethanpod.event;
 
-import fr.github.ethanpod.core.item.EpisodeItem;
-import fr.github.ethanpod.core.item.NavigationItem;
-import fr.github.ethanpod.core.item.PodcastItem;
+import fr.github.ethanpod.core.item.*;
 import fr.github.ethanpod.core.thread.EventType;
 
 import java.util.List;
@@ -13,6 +11,8 @@ public abstract class UIEvent {
     protected PodcastItem podcastItem;
     protected List<EpisodeItem> episodeItems;
     protected List<NavigationItem> navigationItems;
+    protected List<SurpriseItem> surpriseItems;
+    protected List<Item> items;
     protected Integer count;
 
     protected UIEvent(String source, EventType eventType) {
@@ -28,20 +28,19 @@ public abstract class UIEvent {
         return eventType;
     }
 
-    public List<EpisodeItem> getEpisodeItems() {
-        return episodeItems;
+    public List<Item> getItems() {
+        return items;
     }
 
     public PodcastItem getPodcastItem() {
         return podcastItem;
     }
 
-    public List<NavigationItem> getNavigationItems() {
-        return navigationItems;
-    }
-
     public Integer getCount() {
         return count;
     }
 
+    public List<SurpriseItem> getSurpriseItems() {
+        return surpriseItems;
+    }
 }
