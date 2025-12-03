@@ -9,6 +9,8 @@
 [![Code Smells](http://sonar.sadory.fr/api/project_badges/measure?project=Ethanpod&metric=code_smells&token=sqb_7a80407e10cbab346026ad3c85efd465334fdf1a)](http://sonar.sadory.fr/dashboard?id=Ethanpod)
 [![Bugs](http://sonar.sadory.fr/api/project_badges/measure?project=Ethanpod&metric=bugs&token=sqb_7a80407e10cbab346026ad3c85efd465334fdf1a)](http://sonar.sadory.fr/dashboard?id=Ethanpod)
 
+
+
 # EthanPod
 
 EthanPod is a Java application for managing and listening to podcasts.
