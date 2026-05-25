@@ -17,7 +17,7 @@ public class SurpriseRequestHandler extends BaseRequestHandler {
     }
 
     @Subscribe
-    public void onGetNavigationList(GetSurpriseRequest request) {
+    public void onGetSurpriseList(GetSurpriseRequest request) {
         List<SurpriseItem> items = surpriseDao.getList();
         postEvent(new SurpriseAllUpdated(items));
     }

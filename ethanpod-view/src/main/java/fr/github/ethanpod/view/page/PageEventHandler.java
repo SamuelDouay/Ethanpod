@@ -24,11 +24,6 @@ public class PageEventHandler {
         GlobalEventBus.getInstance().register(this);
     }
 
-    private void handleEpisodeUpdate(List<Item> episodes) {
-        checkForMoreData(episodes);
-        contentRenderer.updateEpisodes(episodes, !dataLoader.isFirstPage());
-    }
-
     @Subscribe
     public void onSurpriseUpdated(SurpriseAllUpdated event) {
         Platform.runLater(() -> contentRenderer.updateSection(event.getItems(), "Get surprises", "SURPRISE"));
@@ -56,6 +51,7 @@ public class PageEventHandler {
     }
 
     private void handleAllUpdated(List<? extends Item> items) {
+        checkForMoreData(items);
         Platform.runLater(() -> contentRenderer.updateEpisodes(items, !dataLoader.isFirstPage()));
     }
 
