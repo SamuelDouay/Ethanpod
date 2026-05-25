@@ -47,7 +47,7 @@ public class PageContentRenderer {
         this.gridInitializer = gridInitializer;
     }
 
-    private HBox addHImageItems(List<Item> episodeItems) {
+    private HBox addHImageItems(List<? extends Item> episodeItems) {
         HBox classicContainer = new HBox(15.0);
         classicContainer.getChildren().clear();
         for (Item item : episodeItems) {
@@ -57,7 +57,7 @@ public class PageContentRenderer {
         return classicContainer;
     }
 
-    private HBox addHEpisodeItem(List<Item> episodeItems) {
+    private HBox addHEpisodeItem(List<? extends Item> episodeItems) {
         HBox topQueue = new HBox(15.0);
         topQueue.getChildren().clear();
         for (Item item : episodeItems) {
@@ -67,7 +67,7 @@ public class PageContentRenderer {
         return topQueue;
     }
 
-    private VBox addVEpisodeItems(List<Item> episodeItems) {
+    private VBox addVEpisodeItems(List<? extends Item> episodeItems) {
         VBox box = new VBox();
         box.getChildren().clear();
         for (Item episodeItem : episodeItems) {
@@ -88,7 +88,7 @@ public class PageContentRenderer {
         container.getChildren().add(subtitle);
     } */
 
-    public void updateEpisodes(List<Item> episodes, boolean append) {
+    public void updateEpisodes(List<? extends Item> episodes, boolean append) {
         LOGGER.info("Getting {} episodes, append: {}", episodes.size(), append);
 
         if (!append) {
@@ -103,7 +103,7 @@ public class PageContentRenderer {
         );
     }
 
-    public void updateSubscriptions(List<Item> items, boolean append) {
+    public void updateSubscriptions(List<? extends Item> items, boolean append) {
         if (!append) {
             initializeGrid();
             grid.getChildren().clear();
@@ -123,7 +123,7 @@ public class PageContentRenderer {
         }
     }
 
-    public void updateSurprise(List<Item> items, GridPane box) {
+    public void updateSurprise(List<? extends Item> items, GridPane box) {
         int numColumns = 3;
 
         for (int i = 0; i < numColumns; i++) {
@@ -188,7 +188,7 @@ public class PageContentRenderer {
         return scrollPane;
     }
 
-    public void updateSection(List<Item> items, String title, String section) {
+    public void updateSection(List<? extends Item> items, String title, String section) {
         sectionsReceived.add(section);
         switch (section) {
             case "INBOX" -> {

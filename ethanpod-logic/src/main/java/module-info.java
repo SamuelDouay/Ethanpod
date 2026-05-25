@@ -8,6 +8,7 @@ module ethanpod.logic {
     requires ethanpod.exception;
     requires ethanpod.event;
     requires com.google.common;
+    requires org.apache.logging.log4j.core;
 
     exports fr.github.ethanpod.logic.sql.dao;
     exports fr.github.ethanpod.logic.sql.setting;

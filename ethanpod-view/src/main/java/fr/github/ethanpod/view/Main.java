@@ -1,7 +1,6 @@
 package fr.github.ethanpod.view;
 
-import fr.github.ethanpod.logic.handler.*;
-import fr.github.ethanpod.logic.sql.dao.*;
+import fr.github.ethanpod.logic.handler.HandlerInitializer;
 import fr.github.ethanpod.logic.sql.setting.DatabaseManager;
 import fr.github.ethanpod.util.setting.ConfigProperties;
 import fr.github.ethanpod.view.page.MainLayout;
@@ -91,23 +90,7 @@ public class Main extends Application {
         DatabaseManager databaseManager = new DatabaseManager();
         databaseManager.initialize();
 
-        // DAOs
-        NavigationDao navigationDao = new NavigationDao(databaseManager);
-        InboxDao inboxDao = new InboxDao(databaseManager);
-        DownloadDao downloadDao = new DownloadDao(databaseManager);
-        EpisodeDao episodeDao = new EpisodeDao(databaseManager);
-        QueueDao queueDao = new QueueDao(databaseManager);
-        PodcastDao podcastDao = new PodcastDao(databaseManager);
-        SurpriseDao surpriseDao = new SurpriseDao(databaseManager);
-
-        // Handlers (s'enregistrent automatiquement sur le bus)
-        new NavigationRequestHandler(navigationDao);
-        new InboxRequestHandler(inboxDao);
-        new DownloadRequestHandler(downloadDao);
-        new EpisodeRequestHandler(episodeDao);
-        new QueueRequestHandler(queueDao);
-        new PodcastRequestHandler(podcastDao);
-        new SurpriseRequestHandler(surpriseDao);
+        HandlerInitializer.initializeAll(databaseManager);
 
         logger.info("Système initialisé avec succès");
     }

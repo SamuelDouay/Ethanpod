@@ -64,16 +64,6 @@
             </dependency>
             <dependency>
                 <groupId>fr.github</groupId>
-                <artifactId>ethanpod-service</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>fr.github</groupId>
-                <artifactId>ethanpod-controller</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>fr.github</groupId>
                 <artifactId>ethanpod-view</artifactId>
                 <version>${project.version}</version>
             </dependency>

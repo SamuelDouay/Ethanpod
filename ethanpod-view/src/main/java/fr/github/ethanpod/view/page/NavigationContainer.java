@@ -157,7 +157,7 @@ public class NavigationContainer {
         layoutManager.setLayout(LayoutType.PAGE, context);
     }
 
-    private void updateNavigationList(List<Item> navigationList) {
+    private void updateNavigationList(List<? extends Item> navigationList) {
         log.debug("updateNavigationList appelé avec {} éléments", navigationList.size());
         scrollBox.getChildren().clear();
 

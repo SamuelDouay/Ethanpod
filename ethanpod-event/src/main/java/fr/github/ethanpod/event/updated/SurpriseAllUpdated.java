@@ -1,18 +1,12 @@
 package fr.github.ethanpod.event.updated;
 
-import fr.github.ethanpod.core.item.Item;
 import fr.github.ethanpod.core.item.SurpriseItem;
 
 import java.util.List;
 
-public class SurpriseAllUpdated {
-    private final List<Item> items;
+public class SurpriseAllUpdated extends AbstractEpisodeListUpdated<SurpriseItem> {
 
     public SurpriseAllUpdated(List<SurpriseItem> items) {
-        this.items = List.copyOf(items); // copie défensive
-    }
-
-    public List<Item> getItems() {
-        return items;
+        super(items); // copie défensive
     }
 }

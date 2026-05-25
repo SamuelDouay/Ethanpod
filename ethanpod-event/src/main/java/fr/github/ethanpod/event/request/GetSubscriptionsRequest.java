@@ -2,14 +2,10 @@ package fr.github.ethanpod.event.request;
 
 import fr.github.ethanpod.core.UserDataRequest;
 
-public class GetSubscriptionsRequest {
-    private final UserDataRequest userDataRequest;
+public class GetSubscriptionsRequest extends AbstractPaginatedRequest {
 
     public GetSubscriptionsRequest(UserDataRequest userDataRequest) {
-        this.userDataRequest = userDataRequest;
+        super(userDataRequest);
     }
 
-    public UserDataRequest getUserDataRequest() {
-        return userDataRequest;
-    }
 }

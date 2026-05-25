@@ -34,56 +34,6 @@ public class PageEventHandler {
         Platform.runLater(() -> contentRenderer.updateSection(event.getItems(), "Get surprises", "SURPRISE"));
     }
 
-    @Subscribe
-    public void onInboxTop8Updated(InboxTop8Updated event) {
-        Platform.runLater(() -> contentRenderer.updateSection(event.getItems(), "See what's news", "INBOX"));
-    }
-
-    @Subscribe
-    public void onPodcastReadTop8Updated(PodcastReadTop8Updated event) {
-        Platform.runLater(() -> contentRenderer.updateSection(event.getItems(), "Check your classic", "PODCAST"));
-    }
-
-    @Subscribe
-    public void onQueueTop8Updated(QueueTop8Updated event) {
-        Platform.runLater(() -> contentRenderer.updateSection(event.getItems(), "Continue listening", "QUEUE"));
-    }
-
-    @Subscribe
-    public void onDownloadTop8Updated(DownloadTop8Updated event) {
-        Platform.runLater(() -> contentRenderer.updateSection(event.getItems(), "Manage downloads", "DOWNLOAD"));
-    }
-
-    @Subscribe
-    public void onDownloadAllUpdated(DownloadAllUpdated event) {
-        Platform.runLater(() -> contentRenderer.updateEpisodes(event.getItems(), !dataLoader.isFirstPage()));
-    }
-
-    @Subscribe
-    public void onEpisodesAllUpdated(EpisodeAllUpdated event) {
-        Platform.runLater(() -> contentRenderer.updateEpisodes(event.getItems(), !dataLoader.isFirstPage()));
-    }
-
-    @Subscribe
-    public void onSubscriptionAllUpdated(SubscriptionAllUpdated event) {
-        Platform.runLater(() -> handleNavigationUpdate(event.getItems()));
-    }
-
-    @Subscribe
-    public void onInboxAllUpdated(InboxAllUpdated event) {
-        Platform.runLater(() -> contentRenderer.updateEpisodes(event.getItems(), !dataLoader.isFirstPage()));
-    }
-
-    @Subscribe
-    public void onHistoryAllUpdated(HistoryAllUpdated event) {
-        Platform.runLater(() -> contentRenderer.updateEpisodes(event.getItems(), !dataLoader.isFirstPage()));
-    }
-
-    @Subscribe
-    public void onQueueAllUpdated(QueueAllUpdated event) {
-        Platform.runLater(() -> contentRenderer.updateEpisodes(event.getItems(), !dataLoader.isFirstPage()));
-    }
-
     /*
     @Subscribe
     public void onEpisodesByPodcastIdUpdated(PodcastByIdUpdated event, Consumer<String> titleSetter) {
@@ -93,7 +43,7 @@ public class PageEventHandler {
         contentRenderer.updateEpisodes(event.getItems(), !dataLoader.isFirstPage());
     }
 */
-    private void handleNavigationUpdate(List<Item> items) {
+    private void handleNavigationUpdate(List<? extends Item> items) {
         checkForMoreData(items);
         contentRenderer.updateSubscriptions(items, !dataLoader.isFirstPage());
     }
@@ -103,6 +53,69 @@ public class PageEventHandler {
             dataLoader.setHasMoreData(false);
             LOGGER.debug("Plus de données disponibles - reçu {} éléments", items.size());
         }
+    }
+
+    private void handleAllUpdated(List<? extends Item> items) {
+        Platform.runLater(() -> contentRenderer.updateEpisodes(items, !dataLoader.isFirstPage()));
+    }
+
+    private void handleTop8Updated(List<? extends Item> items, String title, String section) {
+        Platform.runLater(() -> contentRenderer.updateSection(items, title, section));
+    }
+
+    @Subscribe
+    public void onSubscriptionAllUpdated(SubscriptionAllUpdated event) {
+        Platform.runLater(() -> handleNavigationUpdate(event.getItems()));
+    }
+
+    @Subscribe
+    public void onInboxTop8Updated(InboxTop8Updated e) {
+        handleTop8Updated(e.getItems(), "See what's news", "INBOX");
+    }
+
+    @Subscribe
+    public void onDownloadTop8Updated(DownloadTop8Updated e) {
+        handleTop8Updated(e.getItems(), "Manage downloads", "DOWNLOAD");
+    }
+
+    @Subscribe
+    public void onQueueTop8Updated(QueueTop8Updated e) {
+        handleTop8Updated(e.getItems(), "Continue listening", "QUEUE");
+    }
+
+    @Subscribe
+    public void onPodcastTop8Updated(PodcastReadTop8Updated e) {
+        handleTop8Updated(e.getItems(), "Check your classic", "PODCAST");
+    }
+
+    @Subscribe
+    public void onSurpriseAllUpdated(SurpriseAllUpdated e) {
+        handleTop8Updated(e.getItems(), "Get surprises", "SURPRISE");
+    }
+
+    @Subscribe
+    public void onInboxAllUpdated(InboxAllUpdated e) {
+        handleAllUpdated(e.getItems());
+    }
+
+    @Subscribe
+    public void onDownloadAllUpdated(DownloadAllUpdated e) {
+        handleAllUpdated(e.getItems());
+    }
+
+    @Subscribe
+    public void onQueueAllUpdated(QueueAllUpdated e) {
+        handleAllUpdated(e.getItems());
+    }
+
+    @Subscribe
+    public void onEpisodesAllUpdated(EpisodeAllUpdated e) {
+        handleAllUpdated(e.getItems());
+    }
+
+    @Subscribe
+    public void onHistoryAllUpdated(HistoryAllUpdated e) {
+        handleAllUpdated(e.getItems());
     }
 
     // Nettoyage

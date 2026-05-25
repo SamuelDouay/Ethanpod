@@ -1,18 +1,12 @@
 package fr.github.ethanpod.event.updated;
 
 import fr.github.ethanpod.core.item.EpisodeItem;
-import fr.github.ethanpod.core.item.Item;
 
 import java.util.List;
 
-public class InboxAllUpdated {
-    private final List<Item> items;
+public class InboxAllUpdated extends AbstractEpisodeListUpdated<EpisodeItem> {
 
     public InboxAllUpdated(List<EpisodeItem> items) {
-        this.items = List.copyOf(items); // copie défensive
-    }
-
-    public List<Item> getItems() {
-        return items;
+        super(items); // copie défensive
     }
 }
