@@ -62,7 +62,10 @@ public class ImageBuilder {
         StackPane container = createContainer(contentHeight);
 
         // Ajouter les composants dans l'ordre z-index
-        container.getChildren().addAll(createBlurredBackground(image, contentHeight), createColorOverlay(contentHeight), createContent(image));
+        if (title != null)
+            container.getChildren().addAll(createBlurredBackground(image, contentHeight), createColorOverlay(contentHeight), createContent(image));
+        else
+            container.getChildren().addAll(createBlurredBackground(image, contentHeight));
 
         // Ajouter le badge de compteur d'épisodes si nécessaire
         if (episodeCount > 0) {
@@ -95,19 +98,21 @@ public class ImageBuilder {
         double totalHeight = calculateTotalHeight(height);
 
         ImageView blurredBackground = new ImageView(image);
+        blurredBackground.setFitHeight(totalHeight);
+        blurredBackground.setFitWidth(totalWidth);
 
-        // Dimensionner l'image d'arrière-plan pour qu'elle couvre entièrement
-        double scaleFactor = 1.2;
-        blurredBackground.setFitWidth(totalWidth * scaleFactor);
-        blurredBackground.setFitHeight(totalHeight * scaleFactor);
+        if (title != null) {
 
-        // Centrer l'image agrandie
-        blurredBackground.setTranslateX((totalWidth * scaleFactor - totalWidth) / -2);
-        blurredBackground.setTranslateY((totalHeight * scaleFactor - totalHeight) / -2);
-
-        // Appliquer l'effet de flou
-        blurredBackground.setEffect(PODCAST_CARD_BACKGROUND_BLUR);
-
+            // Dimensionner l'image d'arrière-plan pour qu'elle couvre entièrement
+            double scaleFactor = 1.2;
+            blurredBackground.setFitWidth(totalWidth * scaleFactor);
+            blurredBackground.setFitHeight(totalHeight * scaleFactor);
+            // Centrer l'image agrandie
+            blurredBackground.setTranslateX((totalWidth * scaleFactor - totalWidth) / -2);
+            blurredBackground.setTranslateY((totalHeight * scaleFactor - totalHeight) / -2);
+            // Appliquer l'effet de flou
+            blurredBackground.setEffect(PODCAST_CARD_BACKGROUND_BLUR);
+        }
         return blurredBackground;
     }
 

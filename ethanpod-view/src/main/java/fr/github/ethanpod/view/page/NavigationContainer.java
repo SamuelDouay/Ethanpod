@@ -1,19 +1,19 @@
 package fr.github.ethanpod.view.page;
 
+import com.google.common.eventbus.Subscribe;
 import fr.github.ethanpod.core.item.Item;
 import fr.github.ethanpod.core.item.ItemManager;
 import fr.github.ethanpod.core.item.NavigationItem;
-import fr.github.ethanpod.core.thread.EventType;
-import fr.github.ethanpod.core.thread.MessageRouter;
-import fr.github.ethanpod.core.thread.UserRequestType;
-import fr.github.ethanpod.event.InboxCountUpdatedEvent;
-import fr.github.ethanpod.event.NavigationUpdatedEvent;
-import fr.github.ethanpod.event.UIEventHandler;
-import fr.github.ethanpod.event.UIEventManager;
+import fr.github.ethanpod.event.GlobalEventBus;
+import fr.github.ethanpod.event.request.GetInboxCountRequest;
+import fr.github.ethanpod.event.request.GetNavigationRequest;
+import fr.github.ethanpod.event.updated.InboxCountUpdated;
+import fr.github.ethanpod.event.updated.NavigationAllUpdated;
 import fr.github.ethanpod.view.component.NavigationComponent;
 import fr.github.ethanpod.view.context.PageContext;
 import fr.github.ethanpod.view.util.ColorThemeConstants;
 import fr.github.ethanpod.view.util.LayoutType;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -50,15 +50,20 @@ public class NavigationContainer {
     private VBox scrollBox;
     private HBox selectedBox;
 
-    public NavigationContainer(LayoutManager layoutManager, UIEventManager uiEventManager) {
+    public NavigationContainer(LayoutManager layoutManager) {
         this.layoutManager = layoutManager;
-        registerEventHandlers(uiEventManager);
         createFixedItems();
-        MessageRouter.getInstance().userRequest(UserRequestType.GET_NAVIGATION_LIST, "[NAVIGATION]", null);
-        MessageRouter.getInstance().userRequest(UserRequestType.GET_INBOX_COUNT, "[INBOX]", null);
+
+        log.debug("NavigationContainer instancié avec le nouveau bus");
+        GlobalEventBus.getInstance().register(this);
+        log.debug("Posting GetNavigationListRequest on bus: {}", GlobalEventBus.getInstance());
+        GlobalEventBus.getInstance().post(new GetNavigationRequest());
+        GlobalEventBus.getInstance().post(new GetInboxCountRequest());
     }
 
+
     public VBox createMenu() {
+        log.debug("Création du menu à partir du nouveau NavigationContainer");
         VBox mainContainer = new VBox(createFixedList(), createScrollList());
         mainContainer.setBackground(MAIN_BG);
         VBox.setVgrow(mainContainer, Priority.ALWAYS);
@@ -153,6 +158,7 @@ public class NavigationContainer {
     }
 
     private void updateNavigationList(List<Item> navigationList) {
+        log.debug("updateNavigationList appelé avec {} éléments", navigationList.size());
         scrollBox.getChildren().clear();
 
         for (Item item : navigationList) {
@@ -208,18 +214,22 @@ public class NavigationContainer {
         return null;
     }
 
-    private void registerEventHandlers(UIEventManager eventManager) {
-        eventManager.registerHandler(EventType.NAVIGATION_UPDATED,
-                (UIEventHandler<NavigationUpdatedEvent>) event ->
-                        updateNavigationList(event.getItems())
-
-        );
-
-        eventManager.registerHandler(EventType.INBOX_COUNT_UPDATED,
-                (UIEventHandler<InboxCountUpdatedEvent>) event -> {
-                    log.info("Inbox count update: {}", event.getCount());
-                    updateInboxCount(event.getCount());
-                }
-        );
+    public void dispose() {
+        GlobalEventBus.getInstance().unregister(this);
     }
+
+    @Subscribe
+    public void onNavigationUpdated(NavigationAllUpdated event) {
+        log.debug("onNavigationUpdated reçu avec {} items", event.getItems().size());
+        Platform.runLater(() -> updateNavigationList(event.getItems()));
+    }
+
+    @Subscribe
+    public void onInboxCountUpdated(InboxCountUpdated event) {
+        Platform.runLater(() -> {
+            log.info("Inbox count update: {}", event.getCount());
+            updateInboxCount(event.getCount());
+        });
+    }
+
 }

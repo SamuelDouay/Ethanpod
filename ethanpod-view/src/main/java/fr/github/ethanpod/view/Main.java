@@ -1,9 +1,11 @@
 package fr.github.ethanpod.view;
 
-import fr.github.ethanpod.core.thread.MessageRouter;
-import fr.github.ethanpod.core.thread.NotificationType;
+import fr.github.ethanpod.logic.handler.*;
+import fr.github.ethanpod.logic.sql.dao.*;
+import fr.github.ethanpod.logic.sql.setting.DatabaseManager;
 import fr.github.ethanpod.util.setting.ConfigProperties;
 import fr.github.ethanpod.view.page.MainLayout;
+import fr.github.ethanpod.view.util.ImageCache;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -12,9 +14,13 @@ import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class Main extends Application {
     public static final ConfigProperties CONFIG_PROPERTIES = ConfigProperties.getInstance();
     public static final Logger logger = LogManager.getLogger(Main.class);
+    private LocalDateTime startTime;
 
     public static void main(String[] args) {
         logger.info("Initialisation de l'interface utilisateur principale (Main)");
@@ -26,7 +32,6 @@ public class Main extends Application {
         System.setProperty("prism.subpixeltext", CONFIG_PROPERTIES.getProperty("prism.subpixeltext"));
         System.setProperty("prism.lcdtext", CONFIG_PROPERTIES.getProperty("prism.lcdtext"));
 
-        // Configurer le comportement de fermeture de JavaFX
         Platform.setImplicitExit(false);
 
         try {
@@ -41,7 +46,14 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
+        // Horodatage du démarrage
+        startTime = LocalDateTime.now();
+        logStartup(startTime);
+
         try {
+            // Initialisation de la base et des handlers
+            initializeSystem();
+
             logger.debug("Démarrage de l'interface utilisateur JavaFX");
 
             // Créer le layout principal
@@ -65,10 +77,7 @@ public class Main extends Application {
             stage.show();
             logger.debug("Interface utilisateur initialisée avec succès");
 
-            // Notifier le ViewThread que JavaFX est prêt
-            notifyViewThreadReady();
-
-            // Nettoie les objets temporaires du setup
+            // Nettoyage
             Platform.runLater(System::gc);
 
         } catch (Exception e) {
@@ -78,15 +87,35 @@ public class Main extends Application {
         }
     }
 
-    private void notifyViewThreadReady() {
-        MessageRouter.getInstance().sendNotification(MessageRouter.JAVAFX_THREAD, MessageRouter.VIEW_THREAD, NotificationType.JAVAFX_READY);
+    private void initializeSystem() {
+        DatabaseManager databaseManager = new DatabaseManager();
+        databaseManager.initialize();
+
+        // DAOs
+        NavigationDao navigationDao = new NavigationDao(databaseManager);
+        InboxDao inboxDao = new InboxDao(databaseManager);
+        DownloadDao downloadDao = new DownloadDao(databaseManager);
+        EpisodeDao episodeDao = new EpisodeDao(databaseManager);
+        QueueDao queueDao = new QueueDao(databaseManager);
+        PodcastDao podcastDao = new PodcastDao(databaseManager);
+        SurpriseDao surpriseDao = new SurpriseDao(databaseManager);
+
+        // Handlers (s'enregistrent automatiquement sur le bus)
+        new NavigationRequestHandler(navigationDao);
+        new InboxRequestHandler(inboxDao);
+        new DownloadRequestHandler(downloadDao);
+        new EpisodeRequestHandler(episodeDao);
+        new QueueRequestHandler(queueDao);
+        new PodcastRequestHandler(podcastDao);
+        new SurpriseRequestHandler(surpriseDao);
+
+        logger.info("Système initialisé avec succès");
     }
 
     private void handleApplicationShutdown() {
         try {
             logger.debug("Début de l'arrêt de l'application JavaFX");
             Platform.exit();
-
         } catch (Exception e) {
             logger.error("Erreur lors de l'arrêt de l'application", e);
         }
@@ -95,6 +124,18 @@ public class Main extends Application {
     @Override
     public void stop() throws Exception {
         logger.debug("Méthode stop() de JavaFX appelée");
+        ImageCache.shutdown();
+        logShutdown();
         super.stop();
+    }
+
+    private void logStartup(LocalDateTime startTime) {
+        String date = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss").format(startTime);
+        logger.info("=== Démarrage de l'application Ethanpod ===");
+        logger.info("Heure de démarrage: {}", date);
+    }
+
+    private void logShutdown() {
+        logger.info("=== Fermeture de l'application Ethanpod ===");
     }
 }

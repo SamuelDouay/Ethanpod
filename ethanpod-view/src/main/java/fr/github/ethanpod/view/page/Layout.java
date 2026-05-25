@@ -1,6 +1,5 @@
 package fr.github.ethanpod.view.page;
 
-import fr.github.ethanpod.event.UIEventManager;
 import fr.github.ethanpod.view.util.ColorThemeConstants;
 import fr.github.ethanpod.view.util.ImageCache;
 import javafx.application.Platform;
@@ -17,16 +16,14 @@ import javafx.scene.text.FontWeight;
 public abstract class Layout {
     private static final String FONT_FAMILY = "Inter";
     protected final StringProperty titleProperty;
-    protected final UIEventManager eventManager;
     protected final VBox container;
     protected final ScrollPane scrollPane;
     protected final FlowPane grid;
 
-    protected Layout(String initialTitle, UIEventManager eventManager, ScrollPane scrollPane) {
+    protected Layout(String initialTitle, ScrollPane scrollPane) {
         Platform.runLater(System::gc);
         ImageCache.cleanupDeadReferences();
         this.titleProperty = new SimpleStringProperty(initialTitle);
-        this.eventManager = eventManager;
         this.container = new VBox();
         this.grid = new FlowPane();
         this.scrollPane = scrollPane;

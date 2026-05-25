@@ -1,13 +1,11 @@
 package fr.github.ethanpod.view.page;
 
 import fr.github.ethanpod.core.UserDataRequest;
-import fr.github.ethanpod.core.thread.MessageRouter;
-import fr.github.ethanpod.core.thread.UserRequestType;
+import fr.github.ethanpod.event.GlobalEventBus;
+import fr.github.ethanpod.event.request.*;
 import fr.github.ethanpod.view.util.PaginationState;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.UUID;
 
 public class PageDataLoader {
     private static final Logger LOGGER = LogManager.getLogger(PageDataLoader.class);
@@ -59,9 +57,9 @@ public class PageDataLoader {
 
     private void loadPodcastData() {
         if (paginationState.getCurrentPage() < 1) {
-            sendRequest(UserRequestType.GET_PODCAST_BY_ID, "PODCAST", paginationState.getCurrentPodcastId());
+            GlobalEventBus.getInstance().post(new GetPodcastByIdRequest(paginationState.getCurrentPodcastId()));
         }
-        sendRequest(UserRequestType.GET_EPISODE_BY_PODCAST_ID, "EPISODE", createUserDataRequest());
+        GlobalEventBus.getInstance().post(new GetPodcastByIdRequest(paginationState.getCurrentPodcastId()));
     }
 
     private void loadPageData() {
@@ -69,12 +67,12 @@ public class PageDataLoader {
         UserDataRequest request = createUserDataRequest();
 
         switch (pageType) {
-            case "Queue" -> sendRequest(UserRequestType.GET_QUEUE_ALL, "QUEUE", request);
-            case "Inbox" -> sendRequest(UserRequestType.GET_INBOX_ALL, "INBOX", request);
-            case "Downloads" -> sendRequest(UserRequestType.GET_DOWNLOAD_ALL, "DOWNLOAD", request);
-            case "Subscriptions" -> sendRequest(UserRequestType.GET_SUBSCRIPTION_ALL, "PODCAST", request);
-            case "Playback history" -> sendRequest(UserRequestType.GET_HISTORY_ALL, "HISTORY", request);
-            case "Episodes" -> sendRequest(UserRequestType.GET_EPISODE_ALL, "EPISODE", request);
+            case "Queue" -> GlobalEventBus.getInstance().post(new GetQueueAllRequest(request));
+            case "Inbox" -> GlobalEventBus.getInstance().post(new GetInboxAllRequest(request));
+            case "Downloads" -> GlobalEventBus.getInstance().post(new GetDownloadAllRequest(request));
+            case "Subscriptions" -> GlobalEventBus.getInstance().post(new GetSubscriptionsRequest(request));
+            case "Playback history" -> GlobalEventBus.getInstance().post(new GetHistoryAllRequest(request));
+            case "Episodes" -> GlobalEventBus.getInstance().post(new GetEpisodeAllRequest(request));
             case "Home" -> loadDataHomePage();
             default -> LOGGER.warn("Type de page non reconnu: {}", pageType);
         }
@@ -83,16 +81,11 @@ public class PageDataLoader {
     private void loadDataHomePage() {
         paginationState.setHasMoreData(false);
         this.pageContentRenderer.updateHomePage();
-        sendRequest(UserRequestType.GET_INBOX_TOP8, "INBOX", null);
-        sendRequest(UserRequestType.GET_DOWNLOAD_TOP8, "DOWNLOAD", null);
-        sendRequest(UserRequestType.GET_QUEUE_TOP8, "QUEUE", null);
-        sendRequest(UserRequestType.GET_PODCAST_READ_TOP8, "PODCAST", null);
-        sendRequest(UserRequestType.GET_SURPRISE_ALL, "SURPRISE", null);
-    }
-
-    private void sendRequest(UserRequestType type, String service, Object data) {
-        String id = "[" + service + "]" + UUID.randomUUID();
-        MessageRouter.getInstance().userRequest(type, id, data);
+        GlobalEventBus.getInstance().post(new GetInboxTop8Request());
+        GlobalEventBus.getInstance().post(new GetDownloadTop8Request());
+        GlobalEventBus.getInstance().post(new GetQueueTop8Request());
+        GlobalEventBus.getInstance().post(new GetPodcastReadTop8Request());
+        GlobalEventBus.getInstance().post(new GetSurpriseRequest());
     }
 
     private UserDataRequest createUserDataRequest() {

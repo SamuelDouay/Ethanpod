@@ -6,9 +6,10 @@ module ethanpod.logic {
     requires com.zaxxer.hikari;
     requires org.xerial.sqlitejdbc;
     requires ethanpod.exception;
+    requires ethanpod.event;
+    requires com.google.common;
 
-    exports fr.github.ethanpod.logic;
     exports fr.github.ethanpod.logic.sql.dao;
-    exports fr.github.ethanpod.logic.service;
     exports fr.github.ethanpod.logic.sql.setting;
+    exports fr.github.ethanpod.logic.handler;
 }

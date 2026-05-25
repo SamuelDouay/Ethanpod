@@ -64,10 +64,6 @@
         </dependency>
         <dependency>
             <groupId>fr.github</groupId>
-            <artifactId>ethanpod-service</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>fr.github</groupId>
             <artifactId>ethanpod-event</artifactId>
         </dependency>
     </dependencies>

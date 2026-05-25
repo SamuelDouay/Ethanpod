@@ -12,8 +12,9 @@ module ethanpod.view {
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.ikonli.materialdesign2;
     requires ethanpod.core;
-    requires ethanpod.service;
     requires ethanpod.util;
     requires ethanpod.event;
     requires javafx.media;
+    requires com.google.common;
+    requires ethanpod.logic;
 }

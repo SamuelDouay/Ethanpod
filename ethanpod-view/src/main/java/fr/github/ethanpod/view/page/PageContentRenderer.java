@@ -4,7 +4,6 @@ import fr.github.ethanpod.core.item.EpisodeItem;
 import fr.github.ethanpod.core.item.Item;
 import fr.github.ethanpod.core.item.NavigationItem;
 import fr.github.ethanpod.core.item.SurpriseItem;
-import fr.github.ethanpod.event.PodcastFindByIdUpdate;
 import fr.github.ethanpod.view.component.EpisodeComponent;
 import fr.github.ethanpod.view.component.SurpriseComponent;
 import fr.github.ethanpod.view.component.image.ImageComponent;
@@ -77,6 +76,7 @@ public class PageContentRenderer {
         return box;
     }
 
+    /*
     public void updatePodcastTitle(PodcastFindByIdUpdate event) {
         LOGGER.info("Getting podcast: {}", event.getPodcastItem().getTitle());
 
@@ -86,7 +86,7 @@ public class PageContentRenderer {
                 new Label(event.getPodcastItem().getDescription())
         );
         container.getChildren().add(subtitle);
-    }
+    } */
 
     public void updateEpisodes(List<Item> episodes, boolean append) {
         LOGGER.info("Getting {} episodes, append: {}", episodes.size(), append);
@@ -135,7 +135,6 @@ public class PageContentRenderer {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 SurpriseItem surpriseItem = (SurpriseItem) items.get(i * 3 + j);
-                LOGGER.debug("i = {}, j ={}, i* 3 + j ={}", i, j, i * 3 + j);
                 Node surpriseComponent = SURPRISE_COMPONENT.createSurprise(surpriseItem.getImageUrl(), surpriseItem.getTitle(), surpriseItem.getPodcastTitle());
                 GridPane.setHalignment(surpriseComponent, HPos.CENTER);
                 box.add(surpriseComponent, i, j, 1, 1);

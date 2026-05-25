@@ -1,6 +1,5 @@
 package fr.github.ethanpod.view.page;
 
-import fr.github.ethanpod.event.UIEventManager;
 import fr.github.ethanpod.view.context.CleanableLayout;
 import fr.github.ethanpod.view.context.ContextualLayout;
 import fr.github.ethanpod.view.context.LayoutContext;
@@ -21,12 +20,13 @@ public class PageLayout extends Layout implements ContextualLayout, CleanableLay
     private final PageScrollManager scrollManager;
     private final PageEventHandler eventHandler;
 
-    public PageLayout(UIEventManager eventManager, ScrollPane scrollPane) {
-        super(DEFAULT_TITLE, eventManager, scrollPane);
+
+    public PageLayout(ScrollPane scrollPane) {
+        super(DEFAULT_TITLE, scrollPane);
         this.contentRenderer = new PageContentRenderer(container, grid, this::getGrid);
         this.dataLoader = new PageDataLoader(contentRenderer);
         this.scrollManager = new PageScrollManager(scrollPane, dataLoader);
-        this.eventHandler = new PageEventHandler(eventManager, this::setTitle, contentRenderer, dataLoader);
+        this.eventHandler = new PageEventHandler(contentRenderer, dataLoader);
     }
 
     @Override

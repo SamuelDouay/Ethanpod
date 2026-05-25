@@ -15,10 +15,8 @@
         <module>ethanpod-core</module>
         <module>ethanpod-util</module>
         <module>ethanpod-logic</module>
-        <module>ethanpod-service</module>
         <module>ethanpod-view</module>
         <module>ethanpod-app</module>
-        <module>ethanpod-controller</module>
         <module>ethanpod-exception</module>
         <module>ethanpod-event</module>
     </modules>
@@ -33,12 +31,11 @@
         <log4j.version>2.23.1</log4j.version>
         <slf4j.version>2.0.17</slf4j.version>
         <jackson.version>2.18.2</jackson.version>
-        <dom4j.version>2.1.4</dom4j.version>
-        <jaxen.version>2.0.0</jaxen.version>
         <rssreader.version>3.9.1</rssreader.version>
         <ikonli.version>12.3.1</ikonli.version>
         <hikaricp.version>6.3.0</hikaricp.version>
         <mockito.version>5.18.0</mockito.version>
+        <guava.version>33.6.0-jre</guava.version>
 
         <!-- SonarQube -->
         <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
@@ -139,19 +136,21 @@
 
             <!-- XML et JSON -->
             <dependency>
-                <groupId>jaxen</groupId>
-                <artifactId>jaxen</artifactId>
-                <version>${jaxen.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.dom4j</groupId>
-                <artifactId>dom4j</artifactId>
-                <version>${dom4j.version}</version>
+                <groupId>com.fasterxml.jackson.dataformat</groupId>
+                <artifactId>jackson-dataformat-xml</artifactId>
+                <version>${jackson.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
                 <version>${jackson.version}</version>
+            </dependency>
+
+            <!-- Event -->
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
             </dependency>
 
             <!-- RSS -->

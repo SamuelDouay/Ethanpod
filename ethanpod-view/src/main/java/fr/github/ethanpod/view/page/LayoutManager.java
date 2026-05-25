@@ -1,6 +1,5 @@
 package fr.github.ethanpod.view.page;
 
-import fr.github.ethanpod.event.UIEventManager;
 import fr.github.ethanpod.view.context.CleanableLayout;
 import fr.github.ethanpod.view.context.ContextualLayout;
 import fr.github.ethanpod.view.context.LayoutContext;
@@ -19,18 +18,16 @@ public class LayoutManager {
     private final ScrollPane scrollPane;
     private final Map<LayoutType, Layout> layoutCache;
     private final Map<LayoutType, LayoutContext> contextCache;
-    private final UIEventManager uiEventManager;
 
-    public LayoutManager(ScrollPane scrollPane, UIEventManager eventManager) {
+    public LayoutManager(ScrollPane scrollPane) {
         this.scrollPane = Objects.requireNonNull(scrollPane, "ScrollPane cannot be null");
         this.layoutCache = new EnumMap<>(LayoutType.class);
         this.contextCache = new ConcurrentHashMap<>();
-        this.uiEventManager = eventManager;
         initializeLayouts();
     }
 
     private void initializeLayouts() {
-        layoutCache.put(LayoutType.PAGE, new PageLayout(uiEventManager, scrollPane));
+        layoutCache.put(LayoutType.PAGE, new PageLayout(scrollPane));
     }
 
     public void setLayout(LayoutType layoutType) {

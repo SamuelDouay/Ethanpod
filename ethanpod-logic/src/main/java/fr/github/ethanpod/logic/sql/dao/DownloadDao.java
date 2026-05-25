@@ -27,4 +27,12 @@ public class DownloadDao extends BaseDao {
                 LIMIT_OFFSET;
         return executeQueryWithParams(sql, EPISODE_LIST_MAPPER, new ArrayList<>(), "GET ALL DOWNLOAD", userDataRequest.pageSize(), userDataRequest.currentPage());
     }
+
+    public List<EpisodeItem> getAllDownload() {
+        String sql = EPISODE_BASE_QUERY +
+                "WHERE FeedMedia.downloaded != 0 " +
+                "ORDER BY FeedMedia.downloaded DESC " +
+                LIMIT_OFFSET;
+        return executeQueryWithParams(sql, EPISODE_LIST_MAPPER, new ArrayList<>(), "GET ALL DOWNLOAD");
+    }
 }
