@@ -17,7 +17,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.List;
 
 public class PodcastRequestHandler extends BaseRequestHandler {
-    private static final Logger logger = LogManager.getLogger(PodcastRequestHandler.class);
+    private static final Logger log = LogManager.getLogger(PodcastRequestHandler.class);
     private final PodcastDao podcastDao;
 
     public PodcastRequestHandler(PodcastDao podcastDao) {
@@ -32,7 +32,7 @@ public class PodcastRequestHandler extends BaseRequestHandler {
     }
 
     @Subscribe
-    public void onGetPodacastById(GetPodcastByIdRequest request) {
+    public void onGetPodcastById(GetPodcastByIdRequest request) {
         PodcastItem item = podcastDao.getPodcastById(request.getId());
         postEvent(new PodcastByIdUpdated(item));
     }

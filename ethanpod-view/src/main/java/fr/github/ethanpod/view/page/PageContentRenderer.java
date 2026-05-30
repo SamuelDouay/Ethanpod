@@ -1,9 +1,7 @@
 package fr.github.ethanpod.view.page;
 
-import fr.github.ethanpod.core.item.EpisodeItem;
-import fr.github.ethanpod.core.item.Item;
-import fr.github.ethanpod.core.item.NavigationItem;
-import fr.github.ethanpod.core.item.SurpriseItem;
+import fr.github.ethanpod.core.item.*;
+import fr.github.ethanpod.event.updated.PodcastByIdUpdated;
 import fr.github.ethanpod.view.component.EpisodeComponent;
 import fr.github.ethanpod.view.component.SurpriseComponent;
 import fr.github.ethanpod.view.component.image.ImageComponent;
@@ -76,17 +74,18 @@ public class PageContentRenderer {
         return box;
     }
 
-    /*
-    public void updatePodcastTitle(PodcastFindByIdUpdate event) {
-        LOGGER.info("Getting podcast: {}", event.getPodcastItem().getTitle());
+
+    public void updatePodcastTitle(PodcastByIdUpdated event) {
+        PodcastItem podcastItem = (PodcastItem) event.getItem();
+        LOGGER.info("Getting podcast: {}", podcastItem.getTitle());
 
         VBox subtitle = new VBox();
         subtitle.getChildren().addAll(
-                new Label(event.getPodcastItem().getAuthor()),
-                new Label(event.getPodcastItem().getDescription())
+                new Label(podcastItem.getAuthor()),
+                new Label(podcastItem.getDescription())
         );
         container.getChildren().add(subtitle);
-    } */
+    }
 
     public void updateEpisodes(List<? extends Item> episodes, boolean append) {
         LOGGER.info("Getting {} episodes, append: {}", episodes.size(), append);

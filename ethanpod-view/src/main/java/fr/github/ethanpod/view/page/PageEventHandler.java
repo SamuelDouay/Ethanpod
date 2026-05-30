@@ -29,15 +29,17 @@ public class PageEventHandler {
         Platform.runLater(() -> contentRenderer.updateSection(event.getItems(), "Get surprises", "SURPRISE"));
     }
 
-    /*
+
     @Subscribe
-    public void onEpisodesByPodcastIdUpdated(PodcastByIdUpdated event, Consumer<String> titleSetter) {
-        PodcastFindByIdUpdate podcastEvent = (PodcastFindByIdUpdate) event;
-        titleSetter.accept(podcastEvent.getPodcastItem().getTitle());
-        contentRenderer.updatePodcastTitle(podcastEvent);
-        contentRenderer.updateEpisodes(event.getItems(), !dataLoader.isFirstPage());
+    public void onEpisodesByPodcastIdUpdated(PodcastByIdUpdated event) {
+        Platform.runLater(() -> contentRenderer.updatePodcastTitle(event));
     }
-*/
+
+    @Subscribe
+    public void onEpisodesByPodcastIdUpdated(EpisodeByPodcastIdUpdated event) {
+        handleAllUpdated(event.getItems());
+    }
+
     private void handleNavigationUpdate(List<? extends Item> items) {
         checkForMoreData(items);
         contentRenderer.updateSubscriptions(items, !dataLoader.isFirstPage());

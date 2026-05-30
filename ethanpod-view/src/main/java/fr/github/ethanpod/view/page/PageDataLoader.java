@@ -28,11 +28,12 @@ public class PageDataLoader {
 
     public void loadDataForCurrentPage() {
         LOGGER.debug("Chargement page: {}", paginationState.getCurrentPage());
+        UserDataRequest request = createUserDataRequest();
 
         if (paginationState.hasPodcastId()) {
-            loadPodcastData();
+            loadPodcastData(request);
         } else {
-            loadPageData();
+            loadPageData(request);
         }
     }
 
@@ -55,17 +56,16 @@ public class PageDataLoader {
         return paginationState.isFirstPage();
     }
 
-    private void loadPodcastData() {
-        if (paginationState.getCurrentPage() < 1) {
+    private void loadPodcastData(UserDataRequest request) {
+        LOGGER.debug("Loading podcast data currentpage " + paginationState.getCurrentPage());
+        if (paginationState.getCurrentPage() == 0) {
             GlobalEventBus.getInstance().post(new GetPodcastByIdRequest(paginationState.getCurrentPodcastId()));
         }
-        GlobalEventBus.getInstance().post(new GetPodcastByIdRequest(paginationState.getCurrentPodcastId()));
+        GlobalEventBus.getInstance().post(new GetEpisodeByPodcastIdRequest(request));
     }
 
-    private void loadPageData() {
+    private void loadPageData(UserDataRequest request) {
         String pageType = paginationState.getCurrentPageType();
-        UserDataRequest request = createUserDataRequest();
-
         switch (pageType) {
             case "Queue" -> GlobalEventBus.getInstance().post(new GetQueueAllRequest(request));
             case "Inbox" -> GlobalEventBus.getInstance().post(new GetInboxAllRequest(request));
