@@ -10,6 +10,7 @@ public class PodcastByIdQuery extends SqlQueryBuilder {
                 .where("feed.id = ?");
     }
 
+    @Override
     public Object[] getParameters() {
         return new Object[]{id};
     }

@@ -24,6 +24,7 @@ public class EpisodeByPodcastIdQuery extends SqlQueryBuilder {
                 .limitOffset();
     }
 
+    @Override
     public Object[] getParameters() {
         return new Object[]{podcastId, pageSize, currentPage};
     }

@@ -28,6 +28,6 @@ public class InboxDao extends BaseDao {
 
     public List<EpisodeItem> getAllInInbox(UserDataRequest userDataRequest) {
         AllInboxQuery query = new AllInboxQuery(userDataRequest.pageSize(), userDataRequest.currentPage());
-        return executeQueryWithParams(query, EPISODE_LIST_MAPPER, new ArrayList<>(), "GET ALL IN INBOX", query.getParameters());
+        return executeQueryWithParams(query, EPISODE_LIST_MAPPER, new ArrayList<>(), "GET ALL IN INBOX");
     }
 }

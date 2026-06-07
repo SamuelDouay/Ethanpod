@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class SqlQueryBuilder {
+public abstract class SqlQueryBuilder implements QueryBuilder {
 
     protected final StringBuilder queryBuilder;
 
@@ -93,6 +93,7 @@ public abstract class SqlQueryBuilder {
         queryBuilder.setLength(0);
     }
 
+    @Override
     public String build() {
         if (structuredMode && !selectColumns.isEmpty() && !fromTables.isEmpty()) {
             reset();
@@ -144,5 +145,10 @@ public abstract class SqlQueryBuilder {
     @Override
     public String toString() {
         return build();
+    }
+
+    @Override
+    public Object[] getParameters() {
+        return new Object[]{};
     }
 }

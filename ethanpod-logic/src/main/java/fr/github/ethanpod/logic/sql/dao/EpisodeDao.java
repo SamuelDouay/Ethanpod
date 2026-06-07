@@ -16,11 +16,11 @@ public class EpisodeDao extends BaseDao {
 
     public List<EpisodeItem> getEpisodeByPodcastId(UserDataRequest userDataRequest) {
         EpisodeByPodcastIdQuery query = new EpisodeByPodcastIdQuery((Integer) userDataRequest.data(), userDataRequest.pageSize(), userDataRequest.currentPage());
-        return executeQueryWithParams(query, EPISODE_LIST_MAPPER, new ArrayList<>(), "GET EPISODE BY PODCAST ID", query.getParameters());
+        return executeQueryWithParams(query, EPISODE_LIST_MAPPER, new ArrayList<>(), "GET EPISODE BY PODCAST ID");
     }
 
     public List<EpisodeItem> getEpisodeAll(UserDataRequest userDataRequest) {
         AllEpisodesQuery query = new AllEpisodesQuery(userDataRequest.pageSize(), userDataRequest.currentPage());
-        return executeQueryWithParams(query, EPISODE_LIST_MAPPER, new ArrayList<>(), "GET ALL EPISODE", query.getParameters());
+        return executeQueryWithParams(query, EPISODE_LIST_MAPPER, new ArrayList<>(), "GET ALL EPISODE");
     }
 }

@@ -56,8 +56,7 @@ public class PodcastDao extends BaseDao {
                     return null;
                 },
                 new PodcastItem(null, null, null, null),
-                "GET PODCAST NUMBER " + id,
-                id);
+                "GET PODCAST NUMBER " + id);
     }
 
     public List<NavigationItem> getAllSubscription(UserDataRequest userDataRequest) {
@@ -77,7 +76,7 @@ public class PodcastDao extends BaseDao {
                     }
                     return result;
                 }, new ArrayList<>(),
-                "GET LIT OF SUBSCRIPTION", userDataRequest.pageSize(), userDataRequest.currentPage());
+                "GET LIT OF SUBSCRIPTION");
     }
 
 }

@@ -21,6 +21,6 @@ public class DownloadDao extends BaseDao {
 
     public List<EpisodeItem> getAllDownload(UserDataRequest userDataRequest) {
         AllDownloadQuery query = new AllDownloadQuery(userDataRequest.pageSize(), userDataRequest.currentPage());
-        return executeQueryWithParams(query, EPISODE_LIST_MAPPER, new ArrayList<>(), "GET ALL DOWNLOAD", query.getParameters());
+        return executeQueryWithParams(query, EPISODE_LIST_MAPPER, new ArrayList<>(), "GET ALL DOWNLOAD");
     }
 }

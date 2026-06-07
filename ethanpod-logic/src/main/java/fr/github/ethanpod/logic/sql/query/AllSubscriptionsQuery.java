@@ -14,6 +14,7 @@ public class AllSubscriptionsQuery extends SqlQueryBuilder {
                 .limitOffset();
     }
 
+    @Override
     public Object[] getParameters() {
         return new Object[]{pageSize, currentPage};
     }

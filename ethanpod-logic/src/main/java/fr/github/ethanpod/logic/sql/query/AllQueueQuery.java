@@ -20,6 +20,7 @@ public class AllQueueQuery extends SqlQueryBuilder {
                 .limitOffset();
     }
 
+    @Override
     public Object[] getParameters() {
         return new Object[]{pageSize, currentPage};
     }

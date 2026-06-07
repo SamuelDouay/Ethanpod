@@ -21,6 +21,7 @@ public class AllHistoryQuery extends SqlQueryBuilder {
                 .limitOffset();
     }
 
+    @Override
     public Object[] getParameters() {
         return new Object[]{pageSize, currentPage};
     }

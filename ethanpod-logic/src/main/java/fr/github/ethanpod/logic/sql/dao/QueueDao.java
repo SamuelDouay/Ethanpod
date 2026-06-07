@@ -21,6 +21,6 @@ public class QueueDao extends BaseDao {
 
     public List<EpisodeItem> getAllInQueue(UserDataRequest userDataRequest) {
         AllQueueQuery query = new AllQueueQuery(userDataRequest.pageSize(), userDataRequest.currentPage());
-        return executeQueryWithParams(query, EPISODE_LIST_MAPPER, new ArrayList<>(), "GET ALL IN QUEUE", query.getParameters());
+        return executeQueryWithParams(query, EPISODE_LIST_MAPPER, new ArrayList<>(), "GET ALL IN QUEUE");
     }
 }

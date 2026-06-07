@@ -107,9 +107,10 @@ public abstract class BaseDao {
         }
     }
 
-    protected <T> T executeQueryWithParams(SqlQueryBuilder sqlQueryBuilder, ResultSetMapper<T> mapper, T defaultValue, String context, Object... params) {
+    protected <T> T executeQueryWithParams(SqlQueryBuilder sqlQueryBuilder, ResultSetMapper<T> mapper, T defaultValue, String context) {
         long startTime = System.currentTimeMillis();
         String sql = sqlQueryBuilder.build();
+        Object[] params = sqlQueryBuilder.getParameters();
         try {
             return databaseManager.executeWithConnection(conn -> {
                 try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -132,9 +133,10 @@ public abstract class BaseDao {
         }
     }
 
-    protected int executeUpdate(SqlQueryBuilder sqlQueryBuilder, String context, Object... params) {
+    protected int executeUpdate(SqlQueryBuilder sqlQueryBuilder, String context) {
         long startTime = System.currentTimeMillis();
         String sql = sqlQueryBuilder.build();
+        Object[] params = sqlQueryBuilder.getParameters();
         try {
             return databaseManager.executeWithConnection(conn -> {
                 try (PreparedStatement stmt = conn.prepareStatement(sql)) {

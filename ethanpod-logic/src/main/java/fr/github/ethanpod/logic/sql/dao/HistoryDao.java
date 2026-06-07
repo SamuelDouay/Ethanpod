@@ -15,6 +15,6 @@ public class HistoryDao extends BaseDao {
 
     public List<EpisodeItem> getAllInHistory(UserDataRequest userDataRequest) {
         AllHistoryQuery query = new AllHistoryQuery(userDataRequest.pageSize(), userDataRequest.currentPage());
-        return executeQueryWithParams(query, EPISODE_LIST_MAPPER, new ArrayList<>(), "GET ALL IN HISTORY", query.getParameters());
+        return executeQueryWithParams(query, EPISODE_LIST_MAPPER, new ArrayList<>(), "GET ALL IN HISTORY");
     }
 }
