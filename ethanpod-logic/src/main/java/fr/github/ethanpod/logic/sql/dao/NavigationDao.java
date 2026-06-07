@@ -1,6 +1,7 @@
 package fr.github.ethanpod.logic.sql.dao;
 
 import fr.github.ethanpod.core.item.NavigationItem;
+import fr.github.ethanpod.logic.sql.query.AllNavigationItemsQuery;
 import fr.github.ethanpod.logic.sql.setting.DatabaseManager;
 
 import java.util.ArrayList;
@@ -12,11 +13,8 @@ public class NavigationDao extends BaseDao {
     }
 
     public List<NavigationItem> getList() {
-        String sql = "SELECT f.id, f.title, f.image_url, " +
-                "(SELECT COUNT(*) FROM FeedItems fi WHERE fi.feed = f.id AND fi.read = -1) as unread_count " +
-                " FROM Feeds f ORDER BY unread_count DESC, f.title ASC";
-
-        return executeQuery(sql, rs -> {
+        AllNavigationItemsQuery query = new AllNavigationItemsQuery();
+        return executeQuery(query, rs -> {
                     List<NavigationItem> result = new ArrayList<>();
                     while (rs.next()) {
                         result.add(new NavigationItem(

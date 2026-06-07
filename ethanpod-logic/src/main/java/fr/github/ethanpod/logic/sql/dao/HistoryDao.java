@@ -2,6 +2,7 @@ package fr.github.ethanpod.logic.sql.dao;
 
 import fr.github.ethanpod.core.UserDataRequest;
 import fr.github.ethanpod.core.item.EpisodeItem;
+import fr.github.ethanpod.logic.sql.query.AllHistoryQuery;
 import fr.github.ethanpod.logic.sql.setting.DatabaseManager;
 
 import java.util.ArrayList;
@@ -13,9 +14,7 @@ public class HistoryDao extends BaseDao {
     }
 
     public List<EpisodeItem> getAllInHistory(UserDataRequest userDataRequest) {
-        String sql = EPISODE_BASE_QUERY +
-                "ORDER BY FeedMedia.playback_completion_date DESC " +
-                LIMIT_OFFSET;
-        return executeQueryWithParams(sql, EPISODE_LIST_MAPPER, new ArrayList<>(), "GET ALL IN HISTORY", userDataRequest.pageSize(), userDataRequest.currentPage());
+        AllHistoryQuery query = new AllHistoryQuery(userDataRequest.pageSize(), userDataRequest.currentPage());
+        return executeQueryWithParams(query, EPISODE_LIST_MAPPER, new ArrayList<>(), "GET ALL IN HISTORY", query.getParameters());
     }
 }

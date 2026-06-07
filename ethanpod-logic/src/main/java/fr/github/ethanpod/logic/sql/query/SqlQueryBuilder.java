@@ -1,0 +1,151 @@
+package fr.github.ethanpod.logic.sql.query;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public abstract class SqlQueryBuilder {
+
+    protected final StringBuilder queryBuilder;
+
+    protected final List<String> selectColumns = new ArrayList<>();
+    protected final List<String> fromTables = new ArrayList<>();
+    protected final List<String> joins = new ArrayList<>();
+    protected final List<String> whereConditions = new ArrayList<>();
+    protected final List<String> groupByColumns = new ArrayList<>();
+    protected final List<String> orderByColumns = new ArrayList<>();
+
+    private boolean hasLimitOffsetPlaceholders = false;
+    private String customLimitOffset = null;
+    private boolean structuredMode = false;
+
+    protected SqlQueryBuilder() {
+        this.queryBuilder = new StringBuilder();
+    }
+
+    protected SqlQueryBuilder select(String... columns) {
+        structuredMode = true;
+        for (String col : columns) selectColumns.add(col);
+        return this;
+    }
+
+    protected SqlQueryBuilder from(String table) {
+        structuredMode = true;
+        fromTables.add(table);
+        return this;
+    }
+
+    protected SqlQueryBuilder innerJoin(String table, String condition) {
+        structuredMode = true;
+        joins.add("INNER JOIN " + table + " ON " + condition);
+        return this;
+    }
+
+    protected SqlQueryBuilder leftJoin(String table, String condition) {
+        structuredMode = true;
+        joins.add("LEFT JOIN " + table + " ON " + condition);
+        return this;
+    }
+
+    protected SqlQueryBuilder where(String condition) {
+        structuredMode = true;
+        whereConditions.add(condition);
+        return this;
+    }
+
+    protected SqlQueryBuilder orderBy(String... columns) {
+        structuredMode = true;
+        for (String col : columns) orderByColumns.add(col);
+        return this;
+    }
+
+    protected SqlQueryBuilder groupBy(String... columns) {
+        structuredMode = true;
+        for (String col : columns) groupByColumns.add(col);
+        return this;
+    }
+
+    // Pour les placeholders de pagination
+    protected SqlQueryBuilder limitOffset() {
+        structuredMode = true;
+        this.hasLimitOffsetPlaceholders = true;
+        return this;
+    }
+
+    // Pour les valeurs fixes (ex: LIMIT 8)
+    protected SqlQueryBuilder limitValue(int limit) {
+        structuredMode = true;
+        this.customLimitOffset = "LIMIT " + limit;
+        return this;
+    }
+
+    // Compatibilité avec l'ancien append
+    protected void append(String clause) {
+        if (structuredMode && queryBuilder.length() == 0) structuredMode = false;
+        if (queryBuilder.length() > 0 && !clause.trim().startsWith("LIMIT") &&
+                !clause.trim().startsWith("ORDER BY") && !queryBuilder.toString().trim().endsWith("(")) {
+            queryBuilder.append(" ");
+        }
+        queryBuilder.append(clause);
+    }
+
+    protected void appendNewLine() {
+        queryBuilder.append("\n");
+    }
+
+    protected void reset() {
+        queryBuilder.setLength(0);
+    }
+
+    public String build() {
+        if (structuredMode && !selectColumns.isEmpty() && !fromTables.isEmpty()) {
+            reset();
+            appendSelect();
+            appendFrom();
+            appendJoins();
+            appendWhere();
+            appendGroupBy();
+            appendOrderBy();
+            if (customLimitOffset != null) {
+                queryBuilder.append(customLimitOffset);
+            } else if (hasLimitOffsetPlaceholders) {
+                queryBuilder.append("LIMIT ? OFFSET ?");
+            }
+        }
+        return queryBuilder.toString().trim();
+    }
+
+    private void appendSelect() {
+        queryBuilder.append("SELECT ").append(String.join(", ", selectColumns)).append("\n");
+    }
+
+    private void appendFrom() {
+        queryBuilder.append("FROM ").append(String.join(", ", fromTables)).append("\n");
+    }
+
+    private void appendJoins() {
+        for (String join : joins) queryBuilder.append(join).append("\n");
+    }
+
+    private void appendWhere() {
+        if (!whereConditions.isEmpty()) {
+            queryBuilder.append("WHERE ").append(String.join(" ", whereConditions)).append("\n");
+        }
+    }
+
+    private void appendGroupBy() {
+        if (!groupByColumns.isEmpty()) {
+            queryBuilder.append("GROUP BY ").append(String.join(", ", groupByColumns)).append("\n");
+        }
+    }
+
+    private void appendOrderBy() {
+        if (!orderByColumns.isEmpty()) {
+            queryBuilder.append("ORDER BY ").append(String.join(", ", orderByColumns)).append("\n");
+        }
+    }
+
+    @Override
+    public String toString() {
+        return build();
+    }
+}

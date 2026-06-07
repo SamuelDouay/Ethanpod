@@ -1,6 +1,7 @@
 package fr.github.ethanpod.logic.sql.dao;
 
 import fr.github.ethanpod.core.item.SurpriseItem;
+import fr.github.ethanpod.logic.sql.query.SurpriseListQuery;
 import fr.github.ethanpod.logic.sql.setting.DatabaseManager;
 
 import java.util.ArrayList;
@@ -20,7 +21,8 @@ public class SurpriseDao extends BaseDao {
                 "ORDER BY RANDOM() " +
                 "LIMIT 9";
 
-        return executeQuery(sql, rs -> {
+        SurpriseListQuery query = new SurpriseListQuery();
+        return executeQuery(query, rs -> {
                     List<SurpriseItem> result = new ArrayList<>();
                     while (rs.next()) {
                         String imageUrl = getImageUrl(rs.getString(3), rs.getString(4));

@@ -4,28 +4,23 @@ import fr.github.ethanpod.core.UserDataRequest;
 import fr.github.ethanpod.core.item.EpisodeItem;
 import fr.github.ethanpod.core.item.NavigationItem;
 import fr.github.ethanpod.core.item.PodcastItem;
+import fr.github.ethanpod.logic.sql.query.AllSubscriptionsQuery;
+import fr.github.ethanpod.logic.sql.query.PodcastByIdQuery;
+import fr.github.ethanpod.logic.sql.query.Top8PodcastReadQuery;
 import fr.github.ethanpod.logic.sql.setting.DatabaseManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PodcastDao extends BaseDao {
-    private static final String FEED_ITEMS_JOIN = "INNER JOIN FeedItems ON FeedItems.feed = Feeds.id ";
-    private static final String LIMIT_8 = "LIMIT 8";
 
     public PodcastDao(DatabaseManager databaseManager) {
         super(databaseManager);
     }
 
     public List<EpisodeItem> getTop8PodcastRead() {
-        String sql = "SELECT Feeds.title, Feeds.image_url , count(*) as item_read FROM Feeds " +
-                FEED_ITEMS_JOIN +
-                "WHERE FeedItems.read = 1 " +
-                "GROUP BY Feeds.title " +
-                "ORDER BY item_read DESC " +
-                LIMIT_8;
-
-        return executeQuery(sql, rs -> {
+        Top8PodcastReadQuery query = new Top8PodcastReadQuery();
+        return executeQuery(query, rs -> {
                     List<EpisodeItem> result = new ArrayList<>();
                     while (rs.next()) {
                         result.add(new EpisodeItem(
@@ -47,11 +42,9 @@ public class PodcastDao extends BaseDao {
     }
 
     public PodcastItem getPodcastById(Integer id) {
-        String sql = "SELECT feed.title, feed.author, feed.description, feed.image_url " +
-                "FROM Feeds feed " +
-                "WHERE feed.id = ?";
+        PodcastByIdQuery query = new PodcastByIdQuery(id);
 
-        return executeQueryWithParams(sql, rs -> {
+        return executeQueryWithParams(query, rs -> {
                     if (rs.next()) {
                         return new PodcastItem(
                                 rs.getString("title"),
@@ -68,12 +61,10 @@ public class PodcastDao extends BaseDao {
     }
 
     public List<NavigationItem> getAllSubscription(UserDataRequest userDataRequest) {
-        String sql = "SELECT f.id, f.title, f.image_url, " +
-                "(SELECT COUNT(*) FROM FeedItems fi WHERE fi.feed = f.id AND fi.read = -1) as unread_count " +
-                " FROM Feeds f ORDER BY unread_count DESC, f.title ASC " +
-                LIMIT_OFFSET;
 
-        return executeQueryWithParams(sql, rs -> {
+        AllSubscriptionsQuery query = new AllSubscriptionsQuery(userDataRequest.pageSize(), userDataRequest.currentPage());
+
+        return executeQueryWithParams(query, rs -> {
                     List<NavigationItem> result = new ArrayList<>();
                     while (rs.next()) {
                         result.add(new NavigationItem(

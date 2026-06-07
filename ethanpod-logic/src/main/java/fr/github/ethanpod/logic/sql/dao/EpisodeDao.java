@@ -2,6 +2,8 @@ package fr.github.ethanpod.logic.sql.dao;
 
 import fr.github.ethanpod.core.UserDataRequest;
 import fr.github.ethanpod.core.item.EpisodeItem;
+import fr.github.ethanpod.logic.sql.query.AllEpisodesQuery;
+import fr.github.ethanpod.logic.sql.query.EpisodeByPodcastIdQuery;
 import fr.github.ethanpod.logic.sql.setting.DatabaseManager;
 
 import java.util.ArrayList;
@@ -13,17 +15,12 @@ public class EpisodeDao extends BaseDao {
     }
 
     public List<EpisodeItem> getEpisodeByPodcastId(UserDataRequest userDataRequest) {
-        String sql = EPISODE_BASE_QUERY +
-                "WHERE Feeds.id = ? " +
-                "ORDER BY FeedItems.pubDate DESC " +
-                LIMIT_OFFSET;
-        return executeQueryWithParams(sql, EPISODE_LIST_MAPPER, new ArrayList<>(), "GET EPISODE BY PODCAST ID", userDataRequest.data(), userDataRequest.pageSize(), userDataRequest.currentPage());
+        EpisodeByPodcastIdQuery query = new EpisodeByPodcastIdQuery((Integer) userDataRequest.data(), userDataRequest.pageSize(), userDataRequest.currentPage());
+        return executeQueryWithParams(query, EPISODE_LIST_MAPPER, new ArrayList<>(), "GET EPISODE BY PODCAST ID", query.getParameters());
     }
 
     public List<EpisodeItem> getEpisodeAll(UserDataRequest userDataRequest) {
-        String sql = EPISODE_BASE_QUERY +
-                "ORDER BY FeedItems.pubDate DESC " +
-                LIMIT_OFFSET;
-        return executeQueryWithParams(sql, EPISODE_LIST_MAPPER, new ArrayList<>(), "GET ALL EPISODE", userDataRequest.pageSize(), userDataRequest.currentPage());
+        AllEpisodesQuery query = new AllEpisodesQuery(userDataRequest.pageSize(), userDataRequest.currentPage());
+        return executeQueryWithParams(query, EPISODE_LIST_MAPPER, new ArrayList<>(), "GET ALL EPISODE", query.getParameters());
     }
 }
