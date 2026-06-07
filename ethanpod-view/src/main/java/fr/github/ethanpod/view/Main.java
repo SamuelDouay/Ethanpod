@@ -19,7 +19,6 @@ import java.time.format.DateTimeFormatter;
 public class Main extends Application {
     public static final ConfigProperties CONFIG_PROPERTIES = ConfigProperties.getInstance();
     public static final Logger logger = LogManager.getLogger(Main.class);
-    private LocalDateTime startTime;
 
     public static void main(String[] args) {
         logger.info("Initialisation de l'interface utilisateur principale (Main)");
@@ -46,7 +45,7 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) {
         // Horodatage du démarrage
-        startTime = LocalDateTime.now();
+        LocalDateTime startTime = LocalDateTime.now();
         logStartup(startTime);
 
         try {

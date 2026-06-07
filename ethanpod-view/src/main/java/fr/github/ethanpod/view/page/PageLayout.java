@@ -16,17 +16,15 @@ public class PageLayout extends Layout implements ContextualLayout, CleanableLay
     private static final Logger LOGGER = LogManager.getLogger(PageLayout.class);
 
     private final PageDataLoader dataLoader;
-    private final PageContentRenderer contentRenderer;
     private final PageScrollManager scrollManager;
-    private final PageEventHandler eventHandler;
 
 
     public PageLayout(ScrollPane scrollPane) {
         super(DEFAULT_TITLE, scrollPane);
-        this.contentRenderer = new PageContentRenderer(container, grid, this::getGrid);
+        PageContentRenderer contentRenderer = new PageContentRenderer(container, grid, this::getGrid);
         this.dataLoader = new PageDataLoader(contentRenderer);
         this.scrollManager = new PageScrollManager(scrollPane, dataLoader);
-        this.eventHandler = new PageEventHandler(contentRenderer, dataLoader);
+        new PageEventHandler(contentRenderer, dataLoader);
     }
 
     @Override

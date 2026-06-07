@@ -11,13 +11,10 @@ import fr.github.ethanpod.event.updated.PodcastByIdUpdated;
 import fr.github.ethanpod.event.updated.PodcastReadTop8Updated;
 import fr.github.ethanpod.event.updated.SubscriptionAllUpdated;
 import fr.github.ethanpod.logic.sql.dao.PodcastDao;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
 public class PodcastRequestHandler extends BaseRequestHandler {
-    private static final Logger log = LogManager.getLogger(PodcastRequestHandler.class);
     private final PodcastDao podcastDao;
 
     public PodcastRequestHandler(PodcastDao podcastDao) {

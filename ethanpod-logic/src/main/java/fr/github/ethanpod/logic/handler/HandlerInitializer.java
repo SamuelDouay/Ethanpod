@@ -6,6 +6,10 @@ import fr.github.ethanpod.logic.sql.setting.DatabaseManager;
 import java.util.List;
 
 public final class HandlerInitializer {
+
+    private HandlerInitializer() {
+    }
+
     public static void initializeAll(DatabaseManager dbManager) {
         List<Runnable> initializers = List.of(
                 () -> new NavigationRequestHandler(new NavigationDao(dbManager)),

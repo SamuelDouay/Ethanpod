@@ -27,7 +27,6 @@ public class PageDataLoader {
     }
 
     public void loadDataForCurrentPage() {
-        LOGGER.debug("Chargement page: {}", paginationState.getCurrentPage());
         UserDataRequest request = createUserDataRequest();
 
         if (paginationState.hasPodcastId()) {
@@ -57,7 +56,6 @@ public class PageDataLoader {
     }
 
     private void loadPodcastData(UserDataRequest request) {
-        LOGGER.debug("Loading podcast data currentpage " + paginationState.getCurrentPage());
         if (paginationState.getCurrentPage() == 0) {
             GlobalEventBus.getInstance().post(new GetPodcastByIdRequest(paginationState.getCurrentPodcastId()));
         }

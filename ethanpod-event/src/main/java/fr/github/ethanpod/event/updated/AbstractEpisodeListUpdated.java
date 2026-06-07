@@ -7,7 +7,7 @@ import java.util.List;
 public abstract class AbstractEpisodeListUpdated<T extends Item> {
     private final List<T> items;
 
-    public AbstractEpisodeListUpdated(List<T> items) {
+    protected AbstractEpisodeListUpdated(List<T> items) {
         this.items = List.copyOf(items);
     }
 
