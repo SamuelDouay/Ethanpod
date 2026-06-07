@@ -13,6 +13,7 @@ public class MainLayout {
     private LayoutManager layoutManager;
 
     public MainLayout() {
+        // no parameters
     }
 
     public AnchorPane createInterface() {
