@@ -1,6 +1,7 @@
 package fr.github.ethanpod.logic.sql.query;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public abstract class SqlQueryBuilder {
@@ -24,7 +25,7 @@ public abstract class SqlQueryBuilder {
 
     protected SqlQueryBuilder select(String... columns) {
         structuredMode = true;
-        for (String col : columns) selectColumns.add(col);
+        selectColumns.addAll(Arrays.asList(columns));
         return this;
     }
 
@@ -54,13 +55,13 @@ public abstract class SqlQueryBuilder {
 
     protected SqlQueryBuilder orderBy(String... columns) {
         structuredMode = true;
-        for (String col : columns) orderByColumns.add(col);
+        orderByColumns.addAll(Arrays.asList(columns));
         return this;
     }
 
     protected SqlQueryBuilder groupBy(String... columns) {
         structuredMode = true;
-        for (String col : columns) groupByColumns.add(col);
+        groupByColumns.addAll(Arrays.asList(columns));
         return this;
     }
 
@@ -80,16 +81,12 @@ public abstract class SqlQueryBuilder {
 
     // Compatibilité avec l'ancien append
     protected void append(String clause) {
-        if (structuredMode && queryBuilder.length() == 0) structuredMode = false;
-        if (queryBuilder.length() > 0 && !clause.trim().startsWith("LIMIT") &&
+        if (structuredMode && queryBuilder.isEmpty()) structuredMode = false;
+        if (!queryBuilder.isEmpty() && !clause.trim().startsWith("LIMIT") &&
                 !clause.trim().startsWith("ORDER BY") && !queryBuilder.toString().trim().endsWith("(")) {
             queryBuilder.append(" ");
         }
         queryBuilder.append(clause);
-    }
-
-    protected void appendNewLine() {
-        queryBuilder.append("\n");
     }
 
     protected void reset() {

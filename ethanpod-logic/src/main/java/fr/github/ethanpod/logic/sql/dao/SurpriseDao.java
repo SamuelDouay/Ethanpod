@@ -13,14 +13,6 @@ public class SurpriseDao extends BaseDao {
     }
 
     public List<SurpriseItem> getList() {
-        String sql = "SELECT FeedItems.title, Feeds.title, FeedItems.image_url as item_image, Feeds.image_url as feed_image " +
-                "FROM FeedItems " +
-                "INNER JOIN FeedMedia ON FeedMedia.feeditem = FeedItems.id " +
-                "INNER JOIN Feeds ON Feeds.id = FeedItems.feed " +
-                "WHERE FeedItems.read != 1 " +
-                "ORDER BY RANDOM() " +
-                "LIMIT 9";
-
         SurpriseListQuery query = new SurpriseListQuery();
         return executeQuery(query, rs -> {
                     List<SurpriseItem> result = new ArrayList<>();
