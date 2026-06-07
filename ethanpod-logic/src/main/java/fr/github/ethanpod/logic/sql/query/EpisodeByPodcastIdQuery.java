@@ -10,9 +10,16 @@ public class EpisodeByPodcastIdQuery extends SqlQueryBuilder {
         this.pageSize = pageSize;
         this.currentPage = currentPage;
         select(
-                "FeedItems.title", "FeedItems.pubDate", "FeedItems.read", "FeedItems.description",
-                "FeedItems.image_url as item_image", "FeedMedia.duration", "FeedMedia.filesize",
-                "Feeds.image_url as feed_image", "Queue.id as queue", "Favorites.id as favorie"
+                "FeedItems.title AS episodeTitle",
+                "FeedItems.pubDate AS pubDate",
+                "FeedItems.read AS readStatus",
+                "FeedItems.description AS episodeDescription",
+                "FeedItems.image_url AS itemImage",
+                "FeedMedia.duration AS duration",
+                "FeedMedia.filesize AS filesize",
+                "Feeds.image_url AS feedImage",
+                "Queue.id AS queueId",
+                "Favorites.id AS favoriteId"
         )
                 .from("FeedItems")
                 .innerJoin("FeedMedia", "FeedMedia.feeditem = FeedItems.id")

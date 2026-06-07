@@ -2,6 +2,7 @@ package fr.github.ethanpod.logic.sql.dao;
 
 import fr.github.ethanpod.core.UserDataRequest;
 import fr.github.ethanpod.core.item.EpisodeItem;
+import fr.github.ethanpod.logic.sql.mapper.ResultMappers;
 import fr.github.ethanpod.logic.sql.query.AllHistoryQuery;
 import fr.github.ethanpod.logic.sql.setting.DatabaseManager;
 
@@ -15,6 +16,6 @@ public class HistoryDao extends BaseDao {
 
     public List<EpisodeItem> getAllInHistory(UserDataRequest userDataRequest) {
         AllHistoryQuery query = new AllHistoryQuery(userDataRequest.pageSize(), userDataRequest.currentPage());
-        return executeQueryWithParams(query, EPISODE_LIST_MAPPER, new ArrayList<>(), "GET ALL IN HISTORY");
+        return executeQueryWithParams(query, ResultMappers.episodeListMapper(), new ArrayList<>(), "GET ALL IN HISTORY");
     }
 }

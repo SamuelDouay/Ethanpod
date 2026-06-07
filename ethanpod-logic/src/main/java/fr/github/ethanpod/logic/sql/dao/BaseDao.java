@@ -1,78 +1,25 @@
 package fr.github.ethanpod.logic.sql.dao;
 
-import fr.github.ethanpod.core.item.EpisodeItem;
 import fr.github.ethanpod.exception.technical.DatabaseException;
 import fr.github.ethanpod.logic.sql.query.SqlQueryBuilder;
 import fr.github.ethanpod.logic.sql.setting.DatabaseManager;
-import fr.github.ethanpod.util.Converter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class BaseDao {
     protected static final Logger LOGGER = LogManager.getLogger(BaseDao.class);
 
-    protected static final ResultSetMapper<List<EpisodeItem>> EPISODE_LIST_MAPPER = rs -> {
-        List<EpisodeItem> result = new ArrayList<>();
-        while (rs.next()) {
-            String imageUrl = getImageUrl(rs.getString(5), rs.getString(8));
-            result.add(new EpisodeItem(
-                    rs.getString(1),
-                    Converter.timestampToDate(rs.getLong(2)),
-                    rs.getInt(3) == 1,
-                    rs.getString(4),
-                    imageUrl,
-                    Converter.convertToHHMMSS(rs.getLong(6)),
-                    Converter.getSize(rs.getLong(7)),
-                    rs.getString(9) != null,
-                    rs.getInt(3) == -1,
-                    rs.getString(10) != null
-            ));
-        }
-        return result;
-    };
+
     private final DatabaseManager databaseManager;
 
     protected BaseDao(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;
     }
 
-    protected static String getImageUrl(String itemImage, String feedImage) {
-        String imageUrl;
-        if (itemImage != null && !itemImage.trim().isEmpty()) {
-            if (itemImage.startsWith("http")) {
-                imageUrl = itemImage;
-            } else {
-                String baseUrl = getUrl(feedImage, itemImage);
-                imageUrl = baseUrl + itemImage;
-            }
-        } else {
-            imageUrl = feedImage;
-        }
-        return imageUrl;
-    }
-
-    private static String getUrl(String feedImage, String itemImage) {
-        if (feedImage != null) {
-            try {
-                URL url = new URI(feedImage).toURL();
-                return url.getProtocol() + "://" + url.getHost();
-            } catch (MalformedURLException | URISyntaxException _) {
-                return itemImage;
-            }
-        } else {
-            return itemImage;
-        }
-    }
 
     private void logMetrics(String sql, long startTime) {
         long executionTime = System.currentTimeMillis() - startTime;
@@ -159,7 +106,7 @@ public abstract class BaseDao {
     }
 
     @FunctionalInterface
-    protected interface ResultSetMapper<T> {
+    public interface ResultSetMapper<T> {
         T map(ResultSet rs) throws SQLException;
     }
 }

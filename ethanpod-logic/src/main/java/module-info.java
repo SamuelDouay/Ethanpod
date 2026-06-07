@@ -12,5 +12,7 @@ module ethanpod.logic {
 
     exports fr.github.ethanpod.logic.sql.dao;
     exports fr.github.ethanpod.logic.sql.setting;
+    exports fr.github.ethanpod.logic.sql.query;
+    exports fr.github.ethanpod.logic.sql.mapper;
     exports fr.github.ethanpod.logic.handler;
 }

@@ -1,17 +1,22 @@
 package fr.github.ethanpod.logic.sql.query;
 
 public class PodcastByIdQuery extends SqlQueryBuilder {
-    private final int id;
+    private final int podcastId;
 
-    public PodcastByIdQuery(int id) {
-        this.id = id;
-        select("feed.title", "feed.author", "feed.description", "feed.image_url")
+    public PodcastByIdQuery(Integer podcastId) {
+        this.podcastId = podcastId;
+        select(
+                "feed.title AS podcastTitle",
+                "feed.author AS author",
+                "feed.description AS description",
+                "feed.image_url AS imageUrl"
+        )
                 .from("Feeds feed")
                 .where("feed.id = ?");
     }
 
     @Override
     public Object[] getParameters() {
-        return new Object[]{id};
+        return new Object[]{podcastId};
     }
 }

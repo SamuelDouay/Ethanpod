@@ -1,6 +1,7 @@
 package fr.github.ethanpod.logic.sql.dao;
 
 import fr.github.ethanpod.core.item.SurpriseItem;
+import fr.github.ethanpod.logic.sql.mapper.ResultMappers;
 import fr.github.ethanpod.logic.sql.query.SurpriseListQuery;
 import fr.github.ethanpod.logic.sql.setting.DatabaseManager;
 
@@ -14,18 +15,6 @@ public class SurpriseDao extends BaseDao {
 
     public List<SurpriseItem> getList() {
         SurpriseListQuery query = new SurpriseListQuery();
-        return executeQuery(query, rs -> {
-                    List<SurpriseItem> result = new ArrayList<>();
-                    while (rs.next()) {
-                        String imageUrl = getImageUrl(rs.getString(3), rs.getString(4));
-                        result.add(new SurpriseItem(
-                                rs.getString(1),
-                                rs.getString(2),
-                                imageUrl
-                        ));
-                    }
-                    return result;
-                }, new ArrayList<>(),
-                "GET LIT OF SURPRISE");
+        return executeQuery(query, ResultMappers.surpriseItemListMapper(), new ArrayList<>(), "GET LIT OF SURPRISE");
     }
 }

@@ -2,9 +2,13 @@ package fr.github.ethanpod.logic.sql.query;
 
 public class AllNavigationItemsQuery extends SqlQueryBuilder {
     public AllNavigationItemsQuery() {
-        select("f.id", "f.title", "f.image_url",
-                "(SELECT COUNT(*) FROM FeedItems fi WHERE fi.feed = f.id AND fi.read = -1) as unread_count")
+        select(
+                "f.id AS podcastId",
+                "f.title AS podcastTitle",
+                "f.image_url AS imageUrl",
+                "(SELECT COUNT(*) FROM FeedItems fi WHERE fi.feed = f.id AND fi.read = -1) AS unreadCount"
+        )
                 .from("Feeds f")
-                .orderBy("unread_count DESC", "f.title ASC");
+                .orderBy("unreadCount DESC", "f.title ASC");
     }
 }
