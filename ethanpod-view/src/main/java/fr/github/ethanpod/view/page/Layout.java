@@ -2,7 +2,6 @@ package fr.github.ethanpod.view.page;
 
 import fr.github.ethanpod.view.util.ColorThemeConstants;
 import fr.github.ethanpod.view.util.ImageCache;
-import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
@@ -21,7 +20,6 @@ public abstract class Layout {
     protected final FlowPane grid;
 
     protected Layout(String initialTitle, ScrollPane scrollPane) {
-        Platform.runLater(System::gc);
         ImageCache.cleanupDeadReferences();
         this.titleProperty = new SimpleStringProperty(initialTitle);
         this.container = new VBox();

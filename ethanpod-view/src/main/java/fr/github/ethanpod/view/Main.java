@@ -17,8 +17,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Main extends Application {
-    public static final ConfigProperties CONFIG_PROPERTIES = ConfigProperties.getInstance();
-    public static final Logger logger = LogManager.getLogger(Main.class);
+    private static final Logger logger = LogManager.getLogger(Main.class);
+    private static final ConfigProperties CONFIG_PROPERTIES = ConfigProperties.getInstance();
 
     public static void main(String[] args) {
         logger.info("Initialisation de l'interface utilisateur principale (Main)");
@@ -29,9 +29,7 @@ public class Main extends Application {
         System.setProperty("prism.text", CONFIG_PROPERTIES.getProperty("prism.text"));
         System.setProperty("prism.subpixeltext", CONFIG_PROPERTIES.getProperty("prism.subpixeltext"));
         System.setProperty("prism.lcdtext", CONFIG_PROPERTIES.getProperty("prism.lcdtext"));
-
-        Platform.setImplicitExit(false);
-
+        
         try {
             launch(args);
         } catch (Exception e) {
@@ -74,9 +72,6 @@ public class Main extends Application {
             // Afficher la fenêtre
             stage.show();
             logger.debug("Interface utilisateur initialisée avec succès");
-
-            // Nettoyage
-            Platform.runLater(System::gc);
 
         } catch (Exception e) {
             logger.error("Erreur lors de l'initialisation de l'interface", e);

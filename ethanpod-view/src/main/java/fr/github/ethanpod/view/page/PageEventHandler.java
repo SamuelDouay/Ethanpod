@@ -24,11 +24,6 @@ public class PageEventHandler {
         GlobalEventBus.getInstance().register(this);
     }
 
-    @Subscribe
-    public void onSurpriseUpdated(SurpriseAllUpdated event) {
-        Platform.runLater(() -> contentRenderer.updateSection(event.getItems(), "Get surprises", "SURPRISE"));
-    }
-
 
     @Subscribe
     public void onEpisodesByPodcastIdUpdated(PodcastByIdUpdated event) {

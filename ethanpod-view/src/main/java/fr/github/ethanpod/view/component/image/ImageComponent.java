@@ -4,8 +4,17 @@ import javafx.scene.Node;
 
 public class ImageComponent {
 
-    public ImageComponent() {
+    private static ImageComponent INSTANCE;
+
+    private ImageComponent() {
         // no parameter
+    }
+
+    public static ImageComponent getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new ImageComponent();
+        }
+        return INSTANCE;
     }
 
     public Node createImageCard(String imageUrl) {

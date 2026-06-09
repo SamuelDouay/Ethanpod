@@ -1,7 +1,7 @@
 package fr.github.ethanpod.view.page;
 
+import fr.github.ethanpod.view.component.Buttons;
 import fr.github.ethanpod.view.component.SearchComponent;
-import fr.github.ethanpod.view.component.button.ButtonComponent;
 import fr.github.ethanpod.view.util.ColorThemeConstants;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -21,7 +21,6 @@ import org.kordamp.ikonli.materialdesign2.MaterialDesignS;
 
 public class FooterLayout {
     private static final Logger log = LogManager.getLogger(FooterLayout.class);
-    private final ButtonComponent buttonComponent;
     private Timeline progressTimeline;
     private MediaPlayer player;
     private ProgressBar progressBar;
@@ -30,7 +29,7 @@ public class FooterLayout {
     private boolean sliderBeingAdjusted = false;
 
     public FooterLayout() {
-        this.buttonComponent = new ButtonComponent();
+        // no parameters
     }
 
     public HBox createFooter() {
@@ -71,9 +70,9 @@ public class FooterLayout {
             mediaReady = false;
         }
 
-        Button play = buttonComponent.createPrimaryButton(new FontIcon(MaterialDesignP.PLAY));
-        Button pause = buttonComponent.createPrimaryButton(new FontIcon(MaterialDesignP.PAUSE));
-        Button stop = buttonComponent.createPrimaryButton(new FontIcon(MaterialDesignS.STOP));
+        Button play = Buttons.primaryIcon(new FontIcon(MaterialDesignP.PLAY));
+        Button pause = Buttons.primaryIcon(new FontIcon(MaterialDesignP.PAUSE));
+        Button stop = Buttons.primaryIcon(new FontIcon(MaterialDesignS.STOP));
 
         progressBar = new ProgressBar(0);
         progressBar.setPrefWidth(200);
@@ -176,7 +175,7 @@ public class FooterLayout {
 
     private void setupProgressTimeline() {
         progressTimeline = new Timeline(
-                new KeyFrame(Duration.millis(1), event -> { // Intervalle plus court pour plus de fluidité
+                new KeyFrame(Duration.millis(250), _ -> {
                     updateProgress();
                 })
         );
@@ -197,18 +196,15 @@ public class FooterLayout {
                 double progress = currentTime.toMillis() / totalDuration.toMillis();
                 double clampedProgress = Math.min(Math.max(progress, 0.0), 1.0);
 
-                // Mise à jour seulement si l'utilisateur n'est pas en train d'ajuster le slider
+
                 if (!sliderBeingAdjusted) {
                     progressBar.setProgress(clampedProgress);
                     slider.setValue(clampedProgress);
                 }
 
-                // Log de debug (optionnel)
-                if (System.currentTimeMillis() % 1000 < 50) { // Log toutes les secondes environ
-                    log.debug("Media progress: " + String.format("%.2f%%", clampedProgress * 100) +
-                            " - Current: " + formatDuration(currentTime) +
-                            " / Total: " + formatDuration(totalDuration));
-                }
+                log.debug("Media progress: " + String.format("%.2f%%", clampedProgress * 100) +
+                        " - Current: " + formatDuration(currentTime) +
+                        " / Total: " + formatDuration(totalDuration));
             }
         }
     }

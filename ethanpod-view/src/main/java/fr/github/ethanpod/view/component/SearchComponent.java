@@ -14,9 +14,11 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignM;
 
 public class SearchComponent {
+
     private SearchComponent() {
 
     }
+
 
     public static HBox createSearchComponent() {
         HBox box = new HBox();
@@ -32,7 +34,7 @@ public class SearchComponent {
         box.getChildren().addAll(icon, label);
 
         box.setAlignment(Pos.CENTER_LEFT);
-        box.setPadding(new Insets(10.0, 22.0,10.0,22.0));
+        box.setPadding(new Insets(10.0, 22.0, 10.0, 22.0));
         box.setSpacing(12.0);
         box.setPrefWidth(448.0);
         box.setBackground(new Background(new BackgroundFill(ColorThemeConstants.getGrey050(), new CornerRadii(4.0), null)));

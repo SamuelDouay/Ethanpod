@@ -13,8 +13,18 @@ import static fr.github.ethanpod.view.util.FontThemeConstants.MEDIUM_14;
 import static fr.github.ethanpod.view.util.FontThemeConstants.REGULAR_10;
 
 public class SurpriseComponent {
-    public SurpriseComponent() {
+    private static SurpriseComponent INSTANCE;
+    private final Background containerBg = new Background(new BackgroundFill(ColorThemeConstants.getMain500(), null, null));
+
+    private SurpriseComponent() {
         //  no parameters
+    }
+
+    public static SurpriseComponent getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new SurpriseComponent();
+        }
+        return INSTANCE;
     }
 
     public HBox createSurprise(String imageUrl, String episodeTitle, String podcastTitle) {
@@ -48,7 +58,7 @@ public class SurpriseComponent {
         box.setMinSize(USE_PREF_SIZE, USE_PREF_SIZE);
         HBox.setHgrow(box, PRIORITY_ALWAYS);
         box.setPadding(SURPRISE_PADDING);
-        box.setBackground(new Background(new BackgroundFill(ColorThemeConstants.getMain500(), null, null)));
+        box.setBackground(containerBg);
         box.setAlignment(POS_CENTER);
         return box;
     }

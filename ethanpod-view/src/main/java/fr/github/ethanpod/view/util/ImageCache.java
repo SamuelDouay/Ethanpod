@@ -36,9 +36,6 @@ public class ImageCache {
      * Récupère une image du cache ou la charge si nécessaire
      */
     public static Image getImage(String url) {
-        // Nettoyage des références mortes avant de procéder
-        cleanupDeadReferences();
-
         // Vérifier si l'image est déjà en cache et encore référencée
         WeakReference<Image> weakRef = IMAGE_CACHE.get(url);
         if (weakRef != null) {
@@ -89,7 +86,7 @@ public class ImageCache {
             } catch (Exception e) {
                 LOGGER.warn("Erreur lors du nettoyage automatique: {}", e.getMessage(), e);
             }
-        }, 5, 5, TimeUnit.SECONDS); // Nettoyage toutes les 30 secondes
+        }, 5, 5, TimeUnit.SECONDS);
     }
 
     /**

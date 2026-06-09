@@ -26,19 +26,17 @@ import java.util.List;
 
 public class NavigationContainer {
     private static final Logger log = LogManager.getLogger(NavigationContainer.class);
-
+    private static final Border SCROLL_BORDER = new Border(
+            new BorderStroke(ColorThemeConstants.getGrey950(), BorderStrokeStyle.SOLID, null, new BorderWidths(1.0, 0, 0, 0))
+    );
     // Réutilisation d'objets pour éviter les allocations
     private static final Background MAIN_BG = new Background(
             new BackgroundFill(ColorThemeConstants.getMain000(), null, null)
     );
+    private static final Insets LIST_PADDING = new Insets(8.0);
     private static final Background PRESSED_BG = new Background(
             new BackgroundFill(ColorThemeConstants.getMain050(), null, null)
     );
-    private static final Border SCROLL_BORDER = new Border(
-            new BorderStroke(ColorThemeConstants.getGrey950(), BorderStrokeStyle.SOLID, null, new BorderWidths(1.0, 0, 0, 0))
-    );
-    private static final Insets LIST_PADDING = new Insets(8.0);
-
     private final ItemManager manager = new ItemManager();
     private final LayoutManager layoutManager;
     private final NavigationComponent navComponent = new NavigationComponent();
@@ -212,10 +210,6 @@ public class NavigationContainer {
             return (Label) navBox.getChildren().get(2);
         }
         return null;
-    }
-
-    public void dispose() {
-        GlobalEventBus.getInstance().unregister(this);
     }
 
     @Subscribe
