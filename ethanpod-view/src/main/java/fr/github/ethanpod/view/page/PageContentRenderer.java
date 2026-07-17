@@ -39,7 +39,6 @@ public class PageContentRenderer {
     private final Runnable gridInitializer;
     // Tracking des sections reçues
     private final Set<Section> sectionsReceived = EnumSet.noneOf(Section.class);
-    //private final Set<String> expectedSections = Set.of("QUEUE", "INBOX", "PODCAST", "DOWNLOAD");
     // Variables pour les sections dans l'ordre fixe souhaité
     private VBox homeWrapper;
     private VBox queueBox;
@@ -52,38 +51,6 @@ public class PageContentRenderer {
         this.container = container;
         this.grid = grid;
         this.gridInitializer = gridInitializer;
-    }
-
-    private HBox addHImageItems(List<? extends Item> episodeItems) {
-        HBox classicContainer = new HBox(15.0);
-        List<Node> card = new ArrayList<>(episodeItems.size());
-        for (Item item : episodeItems) {
-            EpisodeItem episodeItem = (EpisodeItem) item;
-            card.add(Cards.image(episodeItem.getUrlImage()));
-        }
-        classicContainer.getChildren().addAll(card);
-        return classicContainer;
-    }
-
-    private HBox addHEpisodeItem(List<? extends Item> episodeItems) {
-        HBox topQueue = new HBox(15.0);
-        List<Node> card = new ArrayList<>(episodeItems.size());
-        for (Item item : episodeItems) {
-            EpisodeItem episodeItem = (EpisodeItem) item;
-            card.add(Cards.image(episodeItem.getUrlImage(), episodeItem.getTitle(), episodeItem.getDate()));
-        }
-        topQueue.getChildren().addAll(card);
-        return topQueue;
-    }
-
-    private VBox addVEpisodeItems(List<? extends Item> episodeItems) {
-        VBox box = new VBox();
-        List<Node> node = new ArrayList<>(episodeItems.size());
-        for (Item episodeItem : episodeItems) {
-            node.add(EPISODE_COMPONENT.createEpisode((EpisodeItem) episodeItem));
-        }
-        box.getChildren().addAll(node);
-        return box;
     }
 
     public void updatePodcastTitle(PodcastByIdUpdated event) {
@@ -191,7 +158,7 @@ public class PageContentRenderer {
         Section section;
         try {
             section = Section.valueOf(sectionStr);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException _) {
             LOGGER.debug("Section inconnue ignorée : {}", sectionStr);
             return;
         }
@@ -255,13 +222,6 @@ public class PageContentRenderer {
         scrollPane.setBackground(GREY_BG);
         HBox.setHgrow(scrollPane, Priority.ALWAYS);
         return scrollPane;
-    }
-
-
-    private void setPropertiesBox(VBox inboxBox) {
-        inboxBox.setPrefWidth(Region.USE_PREF_SIZE);
-        inboxBox.setMaxHeight(Region.USE_PREF_SIZE);
-        HBox.setHgrow(inboxBox, Priority.ALWAYS);
     }
 
     private boolean allSectionsReceived() {

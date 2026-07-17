@@ -1,4 +1,4 @@
-package fr.github.ethanpod.view.component.image;
+package fr.github.ethanpod.view.component;
 
 import fr.github.ethanpod.view.util.ColorThemeConstants;
 import fr.github.ethanpod.view.util.ImageCache;

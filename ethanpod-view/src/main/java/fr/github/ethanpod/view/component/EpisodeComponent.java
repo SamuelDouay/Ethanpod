@@ -19,7 +19,7 @@ import static fr.github.ethanpod.view.util.Constant.*;
 import static fr.github.ethanpod.view.util.FontThemeConstants.MEDIUM_14;
 
 public class EpisodeComponent {
-    private static EpisodeComponent INSTANCE;
+    private static EpisodeComponent Instance;
 
     private Background hoverBg = buildHoverBg();
 
@@ -28,10 +28,10 @@ public class EpisodeComponent {
     }
 
     public static EpisodeComponent getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new EpisodeComponent();
+        if (Instance == null) {
+            Instance = new EpisodeComponent();
         }
-        return INSTANCE;
+        return Instance;
     }
 
     private Background buildHoverBg() {
